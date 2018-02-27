@@ -1,5 +1,5 @@
 'use strict';
-var modules=exp||{};
+var exp=modules||{};
 exp=(function () {
   return{
     add:function (a,b){return Math.max(a,b)+log10(1+10^(-Math.abs(a-b)));},
