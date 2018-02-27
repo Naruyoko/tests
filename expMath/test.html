@@ -5,7 +5,7 @@
     var var1=parseFloat(document.input.vara.value);
     var var2=parseFloat(document.input.varb.value);
     var out;
-    if (isFinite(var1)&&isFinite(var2)){
+    if (isFinite(var1)&&(isFinite(var2)||ope==6)){
       if (ope==0){out=exp.add(var1,var2);}
       if (ope==1){out=exp.sub(var1,var2);}
       if (ope==2){out=exp.mult(var1,var2);}
@@ -14,7 +14,7 @@
       if (ope==5){out=exp.root(var1,var2);}
       if (ope==6){out=exp.text(var1,varb);}
     }else{
-      out="Inputs must be number"
+      out="Inputs must be number if not outputing as text"
     }
     document.getElementById("output").textContent=out;
   }
