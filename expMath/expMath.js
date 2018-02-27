@@ -9,5 +9,5 @@ exp=(function () {
     pow:function (a,b){return a*10^b;},
     root:function (a,b){return a/10^b;},
     text:function (a,m){return string(10^(a-Math.floor(a)))+m+string(Math.floor(a))
-  };
+  }
 }());
