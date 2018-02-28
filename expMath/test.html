@@ -16,7 +16,7 @@
     }else{
       out="Inputs must be number if not outputing as text"
     }
-    if (outsci&&!ope==6){ope+="\n"+exp.text(var1,"*10^");}
+    if (outsci&&!ope==6){out+="\n"+exp.text(var1,"*10^");}
     document.getElementById("output").textContent=out;
   }
   function change(){
