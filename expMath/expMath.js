@@ -8,6 +8,6 @@ exp=(function (){
     div:function (a,b){return a-b;},
     pow:function (a,b){return a*10^b;},
     root:function (a,b){return a/10^b;},
-    text:function (a,m){return string(10**(a-Math.floor(a)))+m+string(Math.floor(a));}
+    text:function (a,m){return String(10**(a-Math.floor(a)))+m+String(Math.floor(a));}
   };
 }());
