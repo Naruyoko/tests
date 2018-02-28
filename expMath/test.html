@@ -12,17 +12,24 @@
       if (ope==3){out=exp.div(var1,var2);}
       if (ope==4){out=exp.pow(var1,var2);}
       if (ope==5){out=exp.root(var1,var2);}
-      if (ope==6){out=exp.text(var1,varb);}
+      if (ope==6){out=exp.text(var1,document.input.varb.value);}
     }else{
       out="Inputs must be number if not outputing as text"
     }
     document.getElementById("output").textContent=out;
   }
+  function change(){
+    if (document.input.operations.selectedIndex==6){
+      document.getElementById("instruction").textContent="input text to insert in the middle";
+    }else{
+      document.getElementById("instruction").textContent="";
+    }
+  }
 </script>
 <form name="input">
   a：<input type="text" name="vara" value=""><br>
-  b：<input type="text" name="varb" value=""><br>
-  <select name="operations">
+  b：<input type="text" name="varb" value=""><p id="instruction"></p><br>
+  <select name="operations" onchange="change()">
     <option>+</option>
     <option>-</option>
     <option>*</option>
