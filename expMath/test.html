@@ -16,6 +16,7 @@
     }else{
       out="Inputs must be number if not outputing as text"
     }
+    if (outsci&&!ope==6){ope+="\n"+exp.text(var1,"*10^");}
     document.getElementById("output").textContent=out;
   }
   function change(){
@@ -25,10 +26,20 @@
       document.getElementById("instruction").textContent="";
     }
   }
+  var outsci=false;
+  function togglesci(){
+    outsci = !outsci;
+    if (outsci){
+      document.input.toggle.value= "Output with equivalent number ON";
+    }else{
+      document.input.toggle.value= "Output with equivalent number OFF";
+    }
+  }
 </script>
 <form name="input">
   a：<input type="text" name="vara" value=""><br>
   b：<input type="text" name="varb" value=""><div id="instruction"></div>
+  <input type="button" name="toggle" value="Output with equivalent number OFF" onclick="togglesci()">
   <select name="operations" onchange="change()">
     <option>+</option>
     <option>-</option>
