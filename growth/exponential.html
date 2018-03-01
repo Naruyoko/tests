@@ -3,6 +3,7 @@
   var value;
   var interval;
   function run(){
+    alert("b");
     interval=setInterval("increment()",Number(document.getElementById("delay")));
   }
   function increment(){
@@ -22,6 +23,6 @@
   Delay: <input id="delay" type="text"></input> ms<br>
 </form>
 <input type="button" onclick="run()"><br>
-Step: <div id="step">0</div>
-Value: <div id="value">1</div>
+Step: <span id="step">0</span>
+Value: <span id="value">1</span>
 <div id="status" style="color:#FF0000"></div>
