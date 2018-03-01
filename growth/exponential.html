@@ -4,10 +4,10 @@
   var interval;
   function run(){
     if (Number(document.input.delay.value)<50){
-      alert("For safety, you need to make\ndelay at least 50 ms!");
+      alert("For safety, you need to make\ndelay at least 50 ms!\nYou have: "+document.input.delay.value+" ms");
       return;
     }
-    interval=setInterval(increment(),Number(document.input.delay.value));
+    interval=setInterval(increment,Number(document.input.delay.value));
   }
   function increment(){
     step++;
