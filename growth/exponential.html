@@ -1,30 +1,6 @@
+<ui:include src="layout.xhtml" />
 <script>
-  var step=0;
-  var value;
-  var interval;
-  function run(){
-    if (Number(document.input.delay.value)<50){
-      alert("For safety, you need to make\ndelay at least 50 ms!\nYou have: "+document.input.delay.value+" ms");
-      return;
-    }
-    interval=setInterval(increment,Number(document.input.delay.value));
-  }
-  function increment(){
-    step++;
-    value=Number(document.input.base.value)**step;
-    document.getElementById("step").textContent=step;
-    document.getElementById("value").textContent=value;
-    if (!isFinite(value)){
-      clearInterval(interval);
-      value.style.color="#FF0000";
-    }
-  }
+  function rule(){return Number(document.input.base.value)**step;}
+  document.getElementById("title").textContent="Exponential Growth";
+  document.getElementById("inputname")="Base"
 </script>
-<h2>Exponential Growth<font size="2">Decay</font></h2>
-<form name="input">
-  Base: <input name="base" type="text"></input><br>
-  Delay: <input name="delay" type="text"></input> ms<br>
-</form>
-<input type="button" onclick="run()" value="Run"><br>
-Step: <span id="step">0</span><br>
-Value: <span id="value">1</span>
