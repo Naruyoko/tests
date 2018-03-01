@@ -1,0 +1,30 @@
+<script>
+  var step=0;
+  var value;
+  var interval;
+  function run(){
+    if (Number(document.input.delay.value)<50){
+      alert("For safety, you need to make\ndelay at least 50 ms!\nYou have: "+document.input.delay.value+" ms");
+      return;
+    }
+    interval=setInterval(increment,Number(document.input.delay.value));
+  }
+  function increment(){
+    step++;
+    value=rule();
+    document.getElementById("step").textContent=step;
+    document.getElementById("value").textContent=value;
+    if (!isFinite(value)){
+      clearInterval(interval);
+      value.style.color="#FF0000";
+    }
+  }
+</script>
+<h2 id="title"></h2>
+<form name="input">
+  <span id="inputname"></span>: <input name="input" type="text"></input><br>
+  delay: <input name="input2" type="text"></input> ms<br>
+</form>
+<input type="button" onclick="run()" value="Run"><br>
+Step: <span id="step">0</span><br>
+Value: <span id="value">undefined</span>
