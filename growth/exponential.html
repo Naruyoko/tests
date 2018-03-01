@@ -4,11 +4,11 @@
   var interval;
   function run(){
     alert("For safety, you need to make\\ndelay at least 50 ms!");
-    interval=setInterval("increment()",Number(document.getElementById("delay")));
+    interval=setInterval("increment()",Number(document.getElementById("delay").textContent));
   }
   function increment(){
     step++;
-    value=Number(document.getElementById("base")**step;
+    value=Number(document.getElementById("base").textContent)**step;
     document.getElementById("step").textContent=step;
     document.getElementById("value").textContent=value;
     if (!isFinite(value)){
