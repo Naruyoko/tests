@@ -4,7 +4,6 @@
   var interval;
   function run(){
     if (Number(document.input.delay.value)<50){
-      alert("b");
       alert("For safety, you need to make\ndelay at least 50 ms!\nYou have: "+document.input.delay.value+" ms");
       return;
     }
@@ -22,9 +21,9 @@
   }
 </script>
 <h2>Exponential Growth<font size="2">Decay</font></h2>
-<form id="input">
-  Base: <input id="base" type="text"></input><br>
-  Delay: <input id="delay" type="text"></input> ms<br>
+<form name="input">
+  Base: <input name="base" type="text"></input><br>
+  Delay: <input name="delay" type="text"></input> ms<br>
 </form>
 <input type="button" onclick="run()" value="Run"><br>
 Step: <span id="step">0</span><br>
