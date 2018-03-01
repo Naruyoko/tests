@@ -16,7 +16,7 @@
     document.getElementById("value").textContent=value;
     if (!isFinite(value)){
       clearInterval(interval);
-      document.getElementById("status").textContent="Over Infinity!";
+      value.style.color="#FF0000";
     }
   }
 </script>
@@ -28,4 +28,3 @@
 <input type="button" onclick="run()" value="Run"><br>
 Step: <span id="step">0</span><br>
 Value: <span id="value">1</span>
-<div id="status" style="color:#FF0000"></div>
