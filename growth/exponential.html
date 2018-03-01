@@ -1,0 +1,25 @@
+<script>
+  var step=0;
+  var value;
+  var interval;
+  function run(){
+    interval=setInterval(increment(),Number(document.getElementById("delay")));
+  }
+  function increment(){
+    step++;
+    value=Number(document.getElementById("base")**step;
+    document.getElementById("value").textContent=value;
+    if (!isFinite(value)){
+      clearInterval(interval);
+    }
+  }
+</script>
+<h2>Exponential Growth<sub>Decay</sub></h2>
+<form id="input">
+  Base: <input id="base" type="text"></input><br>
+  Delay: <input id="delay" type="text"></input> ms<br>
+</form>
+<input type="button" onclick="run()">
+Step: <div id="value">0</div>
+Value: <div id="value">1</div>
+<div id="status" style="color:#FF0000"></div>
