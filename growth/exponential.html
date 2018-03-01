@@ -8,18 +8,20 @@
   function increment(){
     step++;
     value=Number(document.getElementById("base")**step;
+    document.getElementById("step").textContent=step;
     document.getElementById("value").textContent=value;
     if (!isFinite(value)){
       clearInterval(interval);
+      document.getElementById("status").textContent="Over Infinity!";
     }
   }
 </script>
-<h2>Exponential Growth<sub>Decay</sub></h2>
+<h2>Exponential Growth</h2><sub>Decay</sub><br>
 <form id="input">
   Base: <input id="base" type="text"></input><br>
   Delay: <input id="delay" type="text"></input> ms<br>
 </form>
-<input type="button" onclick="run()">
-Step: <div id="value">0</div>
+<input type="button" onclick="run()"><br>
+Step: <div id="step">0</div>
 Value: <div id="value">1</div>
 <div id="status" style="color:#FF0000"></div>
