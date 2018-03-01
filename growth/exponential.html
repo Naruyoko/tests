@@ -3,15 +3,15 @@
   var value;
   var interval;
   function run(){
-    if (Number(document.getElementById("delay").textContent)<50){
+    if (Number(document.input.delay.value)<50){
       alert("For safety, you need to make\\ndelay at least 50 ms!");
       return;
     }
-    interval=setInterval("increment()",Number(document.getElementById("delay").textContent));
+    interval=setInterval("increment()",Number(document.input.delay.value));
   }
   function increment(){
     step++;
-    value=Number(document.getElementById("base").textContent)**step;
+    value=Number(document.input.base.value)**step;
     document.getElementById("step").textContent=step;
     document.getElementById("value").textContent=value;
     if (!isFinite(value)){
