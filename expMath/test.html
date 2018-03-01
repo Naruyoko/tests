@@ -16,14 +16,14 @@
     }else{
       out="Inputs must be number if not outputing as text"
     }
-    if (outsci&&!(ope==6)){out+="\n"+exp.text(Number(out),"*10^");}
+    if (outsci&&!(ope==6)){out+="\r\n"+exp.text(Number(out),"*10^");}
     document.getElementById("output").textContent=out;
   }
   function change(){
     if (document.input.operations.selectedIndex==6){
       document.getElementById("instruction").textContent="input text to insert in the middle";
     }else{
-      document.getElementById("instruction").textContent="";
+      document.getElementById("instruction").textContent=" ";
     }
   }
   var outsci=false;
@@ -38,7 +38,7 @@
 </script>
 <form name="input">
   a：<input type="text" name="vara" value=""><br>
-  b：<input type="text" name="varb" value=""><div id="instruction"></div>
+  b：<input type="text" name="varb" value=""><div id="instruction"></div><br>
   <input type="button" name="toggle" value="Output with equivalent number OFF" onclick="togglesci()">
   <select name="operations" onchange="change()">
     <option>+</option>
