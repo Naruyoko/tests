@@ -3,7 +3,10 @@
   var value;
   var interval;
   function run(){
-    alert("For safety, you need to make\\ndelay at least 50 ms!");
+    if (Number(document.getElementById("delay").textContent)<50){
+      alert("For safety, you need to make\\ndelay at least 50 ms!");
+      return;
+    }
     interval=setInterval("increment()",Number(document.getElementById("delay").textContent));
   }
   function increment(){
