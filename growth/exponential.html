@@ -9,7 +9,7 @@
   function delay(){
     if (document.getElementById("title")!==null){
       clearInterval(interval);
-      function rule(){return Number(document.input.base.value)**step;}
+      function rule(){return Number(document.input.input.value)**step;}
       document.getElementById("title").textContent="Exponential Growth";
       document.getElementById("inputname").textContent="Base";
     }
