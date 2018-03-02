@@ -2,8 +2,13 @@
 <div w3-include-html="./layout.html"></div> 
 <script>w3IncludeHTML();</script>
 <script>
-  do{}while (document.getElementById("title")==null);
-  function rule(){return Number(document.input.base.value)**step;}
-  document.getElementById("title").textContent="Exponential Growth";
-  document.getElementById("inputname").textContent="Base";
+  function delay(){
+    if (document.getElementById("title")!==null){
+      clearInterval(interval);
+      function rule(){return Number(document.input.base.value)**step;}
+      document.getElementById("title").textContent="Exponential Growth";
+      document.getElementById("inputname").textContent="Base";
+    }
+  }
+  var interval=setInterval(delay,50);
 </script>
