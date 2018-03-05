@@ -11,7 +11,7 @@ exp=(function (){
     },
     sub:function (a,b){return exp.add(a,[b[0],!b[1]]);},
     mult:function (a,b){return [a[0]+b[0],(!a[1])&&b[1]||a[1]&&(!b[1])];},
-    div:function (a,b){return [a[0]-b[1],(!a[1])&&b[1]||a[1]&&(!b[1])];},
+    div:function (a,b){return exp.mult(a,[-b[0],b[1]];},
     pow:function (a,b){
       if (a[1]){
         return [NaN,false];
@@ -19,18 +19,12 @@ exp=(function (){
         return [a[0]*10**b[0]*-1**b[1],false];
       }
     },
-    root:function (a,b){
-      if (a[1]){
-        return [NaN,false];
-      }else{
-        return [a[0]/10**b[0]*-1**b[1],false];
-      }
-    },
+    root:function (a,b){return exp.pow(a,[-b[0],b[1]];))
     log:function (a,b){
       if (a[1]||b[1]){
         return [NaN,false];
       }else{
-        return [Math.log10(Math.abs(a[0]/b[0])),a[0]/b[0]<0];
+        return [Math.log10(Math.abs(a[0]/b[0])),a[0]<0&&(!b[0]<0)||(!a[0]<0)&&b[0]<0];
       }
     },
     tetr:function (a,b){
