@@ -1,3 +1,4 @@
+function rule(){}
 function run(){
   if (Number(document.input.delay.value)<50){
     alert("For safety, you need to make\ndelay at least 50 ms!\nYou have: "+document.input.delay.value+" ms");
