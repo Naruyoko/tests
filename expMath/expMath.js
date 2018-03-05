@@ -8,7 +8,7 @@ exp=(function (){
     div:function (a,b){return a-b;},
     pow:function (a,b){return a*10**b;},
     root:function (a,b){return a/10**b;},
-    log:function (a,b){return 
+    log:function (a,b){return a/b;},
     tetr:function (a,b){
       if (b>2){return "Tetrated too large";}
       var z=10**b-Math.ceil(10**b);
@@ -26,7 +26,7 @@ exp=(function (){
       return f;
     },
     slog:function (a,b){
-      if (b>2){return "Tetrated too large";}
+      if (!isFinite(b)){return }
       var z=10**b-Math.ceil(10**b);
       var f=Math.log10(1+(2*a*Math.log(10))/(1+a*Math.log(10))*z-(1-a*Math.log(10))/(1+a*Math.log(10))*z**2);
       for (i=0;i<Math.ceil(10**b);i++){
