@@ -31,9 +31,9 @@ exp=(function (){
       if (a[1]){return [NaN,false];}
       var A=10**a[0];
       if (A<=15){
-        var s=0;
-        var b=0;
-        for (i=0;b///;i+=A/100;){
+        var s=exp.conv(0);
+        var b=exp.conv(0);
+        for (i=0;b-.995*s>=0;i+=A/100+i*0.1;){
           s+=(
     tetr:function (a,b){
       if (a[1]){return [NaN,false];}
