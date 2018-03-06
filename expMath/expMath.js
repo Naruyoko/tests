@@ -21,12 +21,20 @@ exp=(function (){
     },
     root:function (a,b){return exp.pow(a,[-b[0],b[1]];))
     log:function (a,b){
-      if (a[1]||b[1]){
+      if (a[1]||b[1]||b[0]=0){
         return [NaN,false];
       }else{
         return [Math.log10(Math.abs(a[0]/b[0])),(a[0]<0)&&(b[0]>0)||(a[0]>0)&&(b[0]<0)];
       }
     },
+    fact:function (a){
+      if (a[1]){return [NaN,false];}
+      var A=10**a[0];
+      if (A<=15){
+        var s=0;
+        var b=0;
+        for (i=0;b///;i+=A/100;){
+          s+=(
     tetr:function (a,b){
       if (a[1]){return [NaN,false];}
       if (b[0]>2){return [Infinity,false];}
@@ -53,23 +61,14 @@ exp=(function (){
         f=exp.add(f,[0,false]);
         z=exp.log(z,b);
       }
-      while ((isFinite(z[0])){
+      while (z[1]||!isFinite(z[0])&&z[0]<0){
         f=exp.sub[f,[0,false];
         z=exp.pow(b,z);
       }
-      f+=Math.log10(-1+(2*a)/(1+a)*z-(1-a)/(1+a)*z**2);
-      if (b>0){
-        for (i=0;i<Math.ceil(10**b)-1;i++){
-          f=exp.pow(a,f);
-        }
-      }
-      if (b<=1){
-        for (i=0;i>Math.ceil(10**b)-1;i--){
-          f=exp.log(f,a);
-        }
-      }
+      f=exp.add(f,exp.conv(-1-(2*a)/(1+a)*z+(1-a)/(1+a)*z**2)));
       return f;
     },
+    conv:function (a){return [Math.log10(Math.abs(a)),a<0];},
     text:function (a,m){return String(10**Math.abs(a-Math.floor(a)))+m+String(Math.floor(a));}
   };
 }());
