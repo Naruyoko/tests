@@ -2,8 +2,12 @@
 <script>
   function calc(){
     var ope=document.input.operations.selectedIndex;
-    var var1=parseFloat(document.input.vara.value);
-    var var2=parseFloat(document.input.varb.value);
+    var var1=[parseFloat(document.input.vara.value),false];
+    var var2=[parseFloat(document.input.varb.value),false];
+    if (document.getElementById("deca").checked){var1=exp.conv(var1[0]);}
+    if (document.getElementById("decb").checked){var2=exp.conv(var2[0]);}
+    if (document.getElementById("nega").checked){var1[1]=!var1[1];}
+    if (document.getElementById("negb").checked){var2[1]=!var2[1];}
     var out;
     if (isFinite(var1)&&(isFinite(var2)||ope==6)){
       if (ope==0){out=exp.add(var1,var2);}
@@ -13,6 +17,7 @@
       if (ope==4){out=exp.pow(var1,var2);}
       if (ope==5){out=exp.root(var1,var2);}
       if (ope==6){out=exp.text(var1,document.input.varb.value);}
+      out=eval(expr[ope])
     }else{
       out="Inputs must be number if not outputing as text"
     }
@@ -38,17 +43,31 @@
 </script>
 <form name="input">
   a：<input type="text" name="vara" value="">
-  <input type="radio" id="neg1" name="style1" value="neg"><br>
+  Is negative: <input type="radio" id="nega" name="stylea" value="neg">
+  Is decimal: <input type="radio" id="deca" name="stylea" value="dec"><br>
   b：<input type="text" name="varb" value="">
+  Is negative: <input type="radio" id="negb" name="styleb" value="neg">
+  Is decimal: <input type="radio" id="decb" name="styleb" value="dec">
   <div id="instruction"></div><br>
   <input type="button" name="toggle" value="Output with equivalent number OFF" onclick="togglesci()"><br>
   <select name="operations" onchange="change()">
-    <option>+</option>
-    <option>-</option>
-    <option>*</option>
-    <option>/</option>
-    <option>^</option>
-    <option>root(a,b)</option>
+    <option>a+b</option>
+    <option>a-b</option>
+    <option>a*b</option>
+    <option>a/b</option>
+    <option>a^b</option>
+    <option>√a</option>
+    <option><sup>3</sup>√a</pbtion>
+    <option><sup>b</sup>√a</option>
+    <option>log a</option>
+    <option>log<sub>b</sub> a</option>
+    <option>a!</option>
+    <option>sf(a) Neil Sloane and Simon Plouffe's superfactorial</option>
+    <option>a$ Clifford Pickover's superfactorial</option>
+    <option>hs(a) hyperfactorial</option>
+    <option>a^^b</option>
+    <option>slog<sub>b</sub> a</option>
+    <option>convert to the custom format</option>
     <option>output as text</option>
   <input type="button" value="->" onclick="calc()"><br>
 </form>
