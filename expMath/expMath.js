@@ -31,10 +31,10 @@ exp=(function (){
       if (a[1]){return [NaN,false];}
       var A=10**a[0];
       if (A<=15){
-        var s=exp.conv(0);
-        var b=exp.conv(0);
-        for (i=0;b-.995*s>=0;i+=A/100+i*0.1;){
-          s+=(
+        var f=parseFloat("0."+(String(A)).split(".")[1]);
+        var x=exp.conv(1);
+        for (i=0;i<=A-f;i++;){
+          x*=
     tetr:function (a,b){
       if (a[1]){return [NaN,false];}
       if (b[0]>2){return [Infinity,false];}
