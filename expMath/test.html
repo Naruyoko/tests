@@ -9,8 +9,8 @@
     if (document.getElementById("nega").checked){var1[1]=!var1[1];}
     if (document.getElementById("negb").checked){var2[1]=!var2[1];}
     var out;
-    if (isFinite(var1)&&(isFinite(var2)||ope==17)){
-      var expr=["exp.add(var1,var2)","exp.sub(var1,var2)","exp.mult(var1,var2)","exp.div(var1,var2)","exp.pow(var1,var2)","exp.sqrt(var1,var2)","exp.sqrt(var1,var2)","exp.cbrt(var1,var2)","exp.root(var1,var2)","exp.log(var1,var2)","exp.fact(var1,var2)","exp.sfac(var1,var2)","exp.asfac(var1,var2)","exp.hfac(var1,var2)","exp.tetr(var1,var2)","exp.slog(var1,var2)","exp.conv(var1,var2)","exp.text(var1,var2)",]
+    if (isFinite(var1[0])&&(isFinite(var2[0])||ope==17)){
+      var expr=["exp.add(var1,var2)","exp.sub(var1,var2)","exp.mult(var1,var2)","exp.div(var1,var2)","exp.pow(var1,var2)","exp.sqrt(var1)","exp.cbrt(var1)","exp.root(var1,var2)","exp.log(var1,var2)","exp.fact(var1)","exp.sfac(var1)","exp.asfc(var1)","exp.hfac(var1)","exp.tetr(var1,var2)","exp.slog(var1,var2)","exp.conv(var1)","exp.text(var1,varb)",]
       out=eval(expr[ope])
     }else{
       out="Inputs must be number if not outputing as text"
@@ -34,14 +34,24 @@
       document.input.toggle.value= "Output with equivalent number OFF";
     }
   }
+  function del1(){
+    document.getElementById("nega").checked=false;
+    document.getElementById("deca").checked=false;
+  }
+  function del2(){
+    document.getElementById("negb").checked=false;
+    document.getElementById("decb").checked=false;
+  }
 </script>
 <form name="input">
   a：<input type="text" name="vara" value="">
   Is negative: <input type="radio" id="nega" name="stylea" value="neg">
-  Is decimal: <input type="radio" id="deca" name="stylea" value="dec"><br>
+  Is decimal: <input type="radio" id="deca" name="stylea" value="dec">
+  <input type="button" value="Neither" onclick="del1()"><br>
   b：<input type="text" name="varb" value="">
   Is negative: <input type="radio" id="negb" name="styleb" value="neg">
   Is decimal: <input type="radio" id="decb" name="styleb" value="dec">
+  <input type="button" value="Neither" onclick="del2()">
   <div id="instruction"></div><br>
   <input type="button" name="toggle" value="Output with equivalent number OFF" onclick="togglesci()"><br>
   <select name="operations" onchange="change()">
