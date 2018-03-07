@@ -6,11 +6,11 @@
     var var2=[parseFloat(document.input.varb.value),false];
     if (document.getElementById("deca").checked){var1=exp.conv(var1[0]);}
     if (document.getElementById("decb").checked){var2=exp.conv(var2[0]);}
-    if (document.getElementById("nega").checked){var1[1]=!var1[1];}
-    if (document.getElementById("negb").checked){var2[1]=!var2[1];}
+    if (document.getElementById("nega").checked){var1[1]=true;}
+    if (document.getElementById("negb").checked){var2[1]=true;}
     var out;
     if (isFinite(var1[0])&&(isFinite(var2[0])||ope==17)){
-      var expr=["exp.add(var1,var2)","exp.sub(var1,var2)","exp.mult(var1,var2)","exp.div(var1,var2)","exp.pow(var1,var2)","exp.sqrt(var1)","exp.cbrt(var1)","exp.root(var1,var2)","exp.log(var1,var2)","exp.fact(var1)","exp.sfac(var1)","exp.asfc(var1)","exp.hfac(var1)","exp.tetr(var1,var2)","exp.slog(var1,var2)","exp.conv(var1)","exp.text(var1,varb)",]
+      var expr=["exp.add(var1,var2)","exp.sub(var1,var2)","exp.mult(var1,var2)","exp.div(var1,var2)","exp.pow(var1,var2)","exp.sqrt(var1)","exp.cbrt(var1)","exp.root(var1,var2)","exp.log(var1,var2)","exp.fact(var1)","exp.sfac(var1)","exp.asfc(var1)","exp.hfac(var1)","exp.tetr(var1,var2)","exp.slog(var1,var2)","exp.conv(var1)","exp.text(var1,document.input.varb.value)",]
       out=eval(expr[ope])
     }else{
       out="Inputs must be number if not outputing as text"
