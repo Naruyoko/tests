@@ -1,5 +1,5 @@
 'use strict';
-var exp=exp||{}
+var exp=exp||{};
 exp=(function (){
   return{
     add:function (a,b){
@@ -11,7 +11,7 @@ exp=(function (){
     },
     sub:function (a,b){return exp.add(a,[b[0],!b[1]]);},
     mult:function (a,b){return [a[0]+b[0],!a[1]&&b[1]||a[1]&&!b[1]];},
-    div:function (a,b){return exp.mult(a,[-b[0],b[1]];},
+    div:function (a,b){return exp.mult(a,[-b[0],b[1]]);},
     pow:function (a,b){
       if (a[1]){
         return [NaN,false];
@@ -19,7 +19,9 @@ exp=(function (){
         return [a[0]*10**b[0]*-1**b[1],false];
       }
     },
-    root:function (a,b){return exp.pow(a,[-b[0],b[1]];))
+    sqrt:function (a){return exp.root(a,exp.conv(2));},
+    cbrt:function (a){return exp.root(a,exp.conv(3));},
+    root:function (a,b){return exp.pow(a,[-b[0],b[1]]);},
     log:function (a,b){
       if (a[1]||b[1]||b[0]=0){
         return [NaN,false];
@@ -30,11 +32,43 @@ exp=(function (){
     fact:function (a){
       if (a[1]){return [NaN,false];}
       var A=10**a[0];
-      if (A<=15){
+      if (A<=30){
         var f=parseFloat("0."+(String(A)).split(".")[1]);
-        var x=exp.conv(1);
-        for (i=0;i<=A-f;i++;){
-          x*=
+        var x=1;
+        var y=1;
+        var z=1;
+        for (i=f;i<=A;i++;){
+          x*=i;
+        }
+        for (i=z+1;i<=f-1;i++;){
+          y*=i;
+        }
+        for (i=1;i<=500;i++){ //middle statement can be modified for precision
+          z*=(1+1/i)**(f)/(1+f/i);
+        }
+        return exp.conv(x/(f*y)*z);
+      }else{
+        return exp.mult(exp.sqrt(exp.mult(exp.conv(2*Math.PI),a)),exp.pow(exp.div(a,exp.conv(math.E)),a));
+      }
+    },
+    sfac:function(a){
+      if (a[1]){return [NaN,false];}
+      if (!ifFinite(10**a[0])){return [Infinity,false];}
+      var f=exp.conv(1);
+      for (i=1;i<=Math.round(10**a[0]);i++){
+        f=exp.mult(f,exp.fact(exp.conv(i)));
+      }
+      return f;
+    },
+    asfc:function (a){
+      if (a[1]1){return [NaN,false];}
+      return exp.tetr(exp.fact(a),exp.fact(a));
+    },
+    hfac:function (a){
+      if (a[1]){return [NaN,false];}
+      if (a[0]>Math.log10(1.53)+153){return [Infinity,false];}
+      return exp.add(exp.add(exp.conv(1.2824271291),exp.mult(a,exp.div(exp.add(exp.add(exp.mult(exp.conv(6),exp.pow(a,exp.conv(2))),exp.mult(exp.conv(6),a)),exp.conv(1)),exp.conv(12)))),exp.mult(exp.conv(Math.E),exp.mult(exp.conv(-1),exp.div(exp.pow(a,exp.conv(2)),4))));
+    },
     tetr:function (a,b){
       if (a[1]){return [NaN,false];}
       if (b[0]>2){return [Infinity,false];}
