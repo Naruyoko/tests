@@ -23,7 +23,7 @@ exp=(function (){
     cbrt:function (a){return exp.root(a,exp.conv(3));},
     root:function (a,b){return exp.pow(a,[-b[0],b[1]]);},
     log:function (a,b){
-      if (a[1]||b[1]||(b[0]=0)){
+      if (a[1]||b[1]||(b[0]==0)){
         return [NaN,false];
       }else{
         return [Math.log10(Math.abs(a[0]/b[0])),(a[0]<0)&&(b[0]>0)||(a[0]>0)&&(b[0]<0)];
