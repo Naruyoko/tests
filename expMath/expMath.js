@@ -126,7 +126,7 @@ exp=(function (){
       var n="";
       if (a[1]){n="-";}
       if (isFinite(a[0])){
-        return n+String(Math.pow(10,Math.abs(a[0]-Math.floor(a[0]))))+m+String(Math.floor(a[0]));
+        return n+String(Math.pow(10,a[0]-Math.ceil(a[0])+1))+m+String(Math.floor(a[0]));
       }else{
         return n+"NaN"+m+"Infinity";
       }
