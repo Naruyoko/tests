@@ -90,7 +90,7 @@ exp=(function (){
       return f;
     },
     slog:function (a,b){
-      if (b[1]){return [NaN,false];}
+      if (a[1]||b[1]){return [NaN,false];}
       var z=a;
       var f=[0,false];
       while ((z[0]<=0)&&!z[1]){
@@ -101,10 +101,18 @@ exp=(function (){
         f=exp.sub(f,[0,false]);
         z=exp.pow(b,z);
       }
-      f=exp.add(f,exp.conv(-1-(2*a)/(1+a)*z+(1-a)/(1+a)*Math.pow(z,2)));
+      f=exp.add(f,exp.conv(-1-(2*a[0])/(1+a[0])*Math.pow(10,z[0])*Math.pow(-1,z[1])+(1-a[0])/(1+a[0])*Math.pow(Math.pow(10,z[0]),2)));
       return f;
     },
     conv:function (a){return [Math.log10(Math.abs(a)),a<0];},
-    text:function (a,m){return String(Math.pow(10,Math.abs(a-Math.floor(a))))+m+String(Math.floor(a));}
+    text:function (a,m){
+      var n="";
+      if (a[1]){n="-";}
+      if (isFinite(a[0]){
+        return n+String(Math.pow(10,Math.abs(a[0]-Math.floor(a[0]))))+m+String(Math.floor(a[0]));
+      }else{
+        return n+"NaN"+m+"Infinity";
+      }
+    }
   };
 }());
