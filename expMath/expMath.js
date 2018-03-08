@@ -52,7 +52,7 @@ exp=(function (){
         return exp.mult(exp.sqrt(exp.mult(exp.conv(2*Math.PI),a)),exp.pow(exp.div(a,exp.conv(math.E)),a));
       }
     },
-    sfac:function(a){
+    sfc1:function(a){
       if (a[1]){return [NaN,false];}
       if (!ifFinite(Math.pow(10,a[0]))){return [Infinity,false];}
       var f=exp.conv(1);
@@ -61,9 +61,26 @@ exp=(function (){
       }
       return f;
     },
-    asfc:function (a){
+    sfc2:function (a){
       if (a[1]){return [NaN,false];}
       return exp.tetr(exp.fact(a),exp.fact(a));
+    },
+    sfc3:function (a){
+      if (a[1]){return [NaN,false];}
+      if (a[0]>3){return [Infinity,false];}
+      var A=Math.round(Math.pow(10,a[0]));
+      var r=[0,false];
+      var i;
+      var j;
+      var f;
+      for (i=1;i<=A;i++){
+        f=exp.mult(exp.sub([i,false],1),exp.conv(A/9));
+        for (j=1;j<=A-i;j++){
+          f=exp.fact(f);
+        }
+        r=exp.mult(r,f);
+      }
+      return r;
     },
     hfac:function (a){
       if (a[1]){return [NaN,false];}
