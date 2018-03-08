@@ -132,6 +132,7 @@ exp=(function (){
           return n+"NaN"+m+"Infinity";
         }else{
           return n+"0";
+        }
       }
     }
   };
