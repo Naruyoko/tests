@@ -9,14 +9,14 @@
     if (document.getElementById("nega").checked){var1[1]=true;}
     if (document.getElementById("negb").checked){var2[1]=true;}
     var out;
-    if (isFinite(var1[0])&&(isFinite(var2[0])||ope==16)){
-      var expr=["exp.add(var1,var2)","exp.sub(var1,var2)","exp.mult(var1,var2)","exp.div(var1,var2)","exp.pow(var1,var2)","exp.sqrt(var1)","exp.cbrt(var1)","exp.root(var1,var2)","exp.log(var1,var2)","exp.fact(var1)","exp.sfac(var1)","exp.asfc(var1)","exp.hfac(var1)","exp.tetr(var1,var2)","exp.slog(var1,var2)","exp.conv(var1)","exp.text(var1,document.input.varb.value)"];
+    if (isFinite(var1[0])&&(isFinite(var2[0])||ope==17)){
+      var expr=["exp.add(var1,var2)","exp.sub(var1,var2)","exp.mult(var1,var2)","exp.div(var1,var2)","exp.pow(var1,var2)","exp.sqrt(var1)","exp.cbrt(var1)","exp.root(var1,var2)","exp.log(var1,var2)","exp.fact(var1)","exp.sfc1(var1)","exp.sfc2(var1)","exp.sfc3(var1)","exp.hfac(var1)","exp.tetr(var1,var2)","exp.slog(var1,var2)","exp.conv(var1)","exp.text(var1,document.input.varb.value)"];
       out=eval(expr[ope]);
     }else{
       out="Inputs must be number if not outputing as text";
     }
     document.getElementById("output").textContent=out;
-    if (outsci&&!(ope==16)){document.getElementById("scioutput").textContent=exp.text(Number(out),"*10^");}
+    if (outsci&&!(ope==17)){document.getElementById("scioutput").textContent=exp.text(Number(out),"*10^");}
   }
   function change(){
     if (document.input.operations.selectedIndex==6){
@@ -65,13 +65,14 @@
     <option><sup>b</sup>√a</option>
     <option>log<sub>b</sub> a</option>
     <option>a!</option>
-    <option>sf(a) Neil Sloane and Simon Plouffe's superfactorial</option>
-    <option>a$ Clifford Pickover's superfactorial</option>
-    <option>hs(a) hyperfactorial</option>
+    <option>Neil J.A. Sloane and<br> Simon Plouffe's superfactorial</option>
+    <option>Clifford A. Pickover's<br> superfactorial</option>
+    <option>Daniel Corrêa's superfactorial
+    <option>hyperfactorial</option>
     <option>a^^b</option>
     <option>slog<sub>b</sub> a</option>
     <option>convert to the custom format</option>
-    <option>output as text</option>
+    <option>output as sci. notation</option>
   <input type="button" value="->" onclick="calc()"><br>
 </form>
 <span id="output"></span><br>
