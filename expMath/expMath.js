@@ -49,7 +49,7 @@ exp=(function (){
         }
         return exp.conv(x/(f*y)*z);
       }else{
-        return exp.mult(exp.sqrt(exp.mult(exp.conv(2*Math.PI),a)),exp.pow(exp.div(a,exp.conv(math.E)),a));
+        return exp.mult(exp.sqrt(exp.mult(exp.conv(2*Math.PI),a)),exp.pow(exp.div(a,exp.conv(Math.E)),a));
       }
     },
     sfc1:function(a){
