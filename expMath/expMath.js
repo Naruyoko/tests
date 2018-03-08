@@ -128,7 +128,10 @@ exp=(function (){
       if (isFinite(a[0])){
         return n+String(Math.pow(10,a[0]-Math.ceil(a[0])+1))+m+String(Math.floor(a[0]));
       }else{
-        return n+"NaN"+m+"Infinity";
+        if (a[0]>0){
+          return n+"NaN"+m+"Infinity";
+        }else{
+          return n+"0";
       }
     }
   };
