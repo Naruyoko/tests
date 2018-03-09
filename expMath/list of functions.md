@@ -13,6 +13,7 @@
 * sfc2(a) - Clifford A. Pickover’s superfactorial
 * sfc3(a) - Daniel Corrêa’s superfactorial
 * hfac(a) - hyperfactorial
+* exfc(a) - exponential factorial
 * tetr(a) - tetration
 * slog(a,b) - superlogarithm base b of a
 * conv(a) - convert decimals to expMath format
