@@ -34,7 +34,7 @@ exp=(function (){
       var A=Math.pow(10,a[0]);
       if (A<=30){
         var f=parseFloat("0."+(String(A)).split(".")[1]);
-        if (isNaN(f)){f=0;}
+        if (isNaN(f)||(f==0)){f=1;}
         var x=1;
         var y=1;
         var z=1;
