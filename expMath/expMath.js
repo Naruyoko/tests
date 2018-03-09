@@ -57,6 +57,7 @@ exp=(function (){
       if (a[1]){return [NaN,false];}
       if (!isFinite(Math.pow(10,a[0]))){return [Infinity,false];}
       var f=exp.conv(1);
+      var i;
       for (i=1;i<=Math.round(Math.pow(10,a[0]));i++){
         f=exp.mult(f,exp.fact(exp.conv(i)));
       }
