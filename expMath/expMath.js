@@ -86,7 +86,7 @@ exp=(function (){
     hfac:function (a){
       if (a[1]){return [NaN,false];}
       if (a[0]>Math.log10(1.53)+153){return [Infinity,false];}
-      return exp.add(exp.add(exp.conv(1.2824271291),exp.mult(a,exp.div(exp.add(exp.add(exp.mult(exp.conv(6),exp.pow(a,exp.conv(2))),exp.mult(exp.conv(6),a)),exp.conv(1)),exp.conv(12)))),exp.mult(exp.conv(Math.E),exp.mult(exp.conv(-1),exp.div(exp.pow(a,exp.conv(2)),4))));
+      return exp.add(exp.add(exp.conv(1.2824271291),exp.mult(exp.conv(Math.floor(a[0])),exp.div(exp.add(exp.add(exp.mult(exp.conv(6),exp.pow(exp.conv(Math.floor(a[0])),exp.conv(2))),exp.mult(exp.conv(6),exp.conv(Math.floor(a[0])))),exp.conv(1)),exp.conv(12)))),exp.mult(exp.conv(Math.E),exp.mult(exp.conv(-1),exp.div(exp.pow(a,exp.conv(2)),4))));
     },
     tetr:function (a,b){
       if (a[1]){return [NaN,false];}
