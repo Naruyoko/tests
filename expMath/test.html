@@ -9,17 +9,17 @@
     if (document.getElementById("nega").checked){var1[1]=true;}
     if (document.getElementById("negb").checked){var2[1]=true;}
     var out;
-    if (isFinite(var1[0])&&(isFinite(var2[0])||ope==17)){
-      var expr=["exp.add(var1,var2)","exp.sub(var1,var2)","exp.mult(var1,var2)","exp.div(var1,var2)","exp.pow(var1,var2)","exp.sqrt(var1)","exp.cbrt(var1)","exp.root(var1,var2)","exp.log(var1,var2)","exp.fact(var1)","exp.sfc1(var1)","exp.sfc2(var1)","exp.sfc3(var1)","exp.hfac(var1)","exp.tetr(var1,var2)","exp.slog(var1,var2)","exp.conv(parseFloat(document.input.vara.value))","exp.text(var1,document.input.varb.value)"];
+    if (isFinite(var1[0])&&(isFinite(var2[0])||ope==18)){
+      var expr=["exp.add(var1,var2)","exp.sub(var1,var2)","exp.mult(var1,var2)","exp.div(var1,var2)","exp.pow(var1,var2)","exp.sqrt(var1)","exp.cbrt(var1)","exp.root(var1,var2)","exp.log(var1,var2)","exp.fact(var1)","exp.sfc1(var1)","exp.sfc2(var1)","exp.sfc3(var1)","exp.hfac(var1)","exp.exfc(var1)","exp.tetr(var1,var2)","exp.slog(var1,var2)","exp.conv(parseFloat(document.input.vara.value))","exp.text(var1,document.input.varb.value)"];
       out=eval(expr[ope]);
     }else{
       out="Inputs must be number if not outputing as scientific notation";
     }
     document.getElementById("output").textContent=out;
-    if (outsci&&!(ope==17)){document.getElementById("scioutput").textContent=exp.text(out,"*10^");}
+    if (outsci&&!(ope==18)){document.getElementById("scioutput").textContent=exp.text(out,"*10^");}
   }
   function change(){
-    if (document.input.operations.selectedIndex==17){
+    if (document.input.operations.selectedIndex==18){
       document.getElementById("instruction").textContent="input text to insert in the middle";
     }else{
       document.getElementById("instruction").textContent=" ";
