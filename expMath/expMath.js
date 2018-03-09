@@ -55,7 +55,7 @@ exp=(function (){
     },
     sfc1:function(a){
       if (a[1]){return [NaN,false];}
-      if (!ifFinite(Math.pow(10,a[0]))){return [Infinity,false];}
+      if (!isFinite(Math.pow(10,a[0]))){return [Infinity,false];}
       var f=exp.conv(1);
       for (i=1;i<=Math.round(Math.pow(10,a[0]));i++){
         f=exp.mult(f,exp.fact(exp.conv(i)));
@@ -75,7 +75,7 @@ exp=(function (){
       var j;
       var f;
       for (i=1;i<=A;i++){
-        f=exp.mult(exp.sub([i,false],1),exp.conv(A/9));
+        f=exp.mult(exp.sub([i,false],exp.conv(1)),exp.conv(A/9));
         for (j=1;j<=A-i;j++){
           f=exp.fact(f);
         }
