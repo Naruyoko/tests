@@ -4,7 +4,7 @@ function run(){
     alert("For safety, you need to make\ndelay at least 50 ms!\nYou have: "+document.input.delay.value+" ms");
     return;
   }
-  interval=setInterval(increment,Number(document.input.delay.value));
+  var interval=setInterval(increment,Number(document.input.delay.value));
 }
 function increment(){
   step++;
