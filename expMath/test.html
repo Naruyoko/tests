@@ -2,25 +2,24 @@
 <script>
   function calc(){
     var ope=document.input.operations.selectedIndex;
-    var var1=parseFloat(document.input.vara.value);
-    var var2=parseFloat(document.input.varb.value);
+    var var1=[parseFloat(document.input.vara.value),false];
+    var var2=[parseFloat(document.input.varb.value),false];
+    if (document.getElementById("deca").checked){var1=exp.conv(var1[0]);}
+    if (document.getElementById("decb").checked){var2=exp.conv(var2[0]);}
+    if (document.getElementById("nega").checked){var1[1]=true;}
+    if (document.getElementById("negb").checked){var2[1]=true;}
     var out;
-    if (isFinite(var1)&&(isFinite(var2)||ope==6)){
-      if (ope==0){out=exp.add(var1,var2);}
-      if (ope==1){out=exp.sub(var1,var2);}
-      if (ope==2){out=exp.mult(var1,var2);}
-      if (ope==3){out=exp.div(var1,var2);}
-      if (ope==4){out=exp.pow(var1,var2);}
-      if (ope==5){out=exp.root(var1,var2);}
-      if (ope==6){out=exp.text(var1,document.input.varb.value);}
+    if (isFinite(var1[0])&&(isFinite(var2[0])||ope==18)){
+      var expr=["exp.add(var1,var2)","exp.sub(var1,var2)","exp.mult(var1,var2)","exp.div(var1,var2)","exp.pow(var1,var2)","exp.sqrt(var1)","exp.cbrt(var1)","exp.root(var1,var2)","exp.log(var1,var2)","exp.fact(var1)","exp.sfc1(var1)","exp.sfc2(var1)","exp.sfc3(var1)","exp.hfac(var1)","exp.exfc(var1)","exp.tetr(var1,var2)","exp.slog(var1,var2)","exp.conv(parseFloat(document.input.vara.value))","exp.text(var1,document.input.varb.value)"];
+      out=eval(expr[ope]);
     }else{
-      out="Inputs must be number if not outputing as text"
+      out="Inputs must be number if not outputing as scientific notation";
     }
     document.getElementById("output").textContent=out;
-    if (outsci&&!(ope==6)){document.getElementById("scioutput").textContent=exp.text(Number(out),"*10^");}
+    if (outsci&&!(ope==18)){document.getElementById("scioutput").textContent=exp.text(out,"*10^");}
   }
   function change(){
-    if (document.input.operations.selectedIndex==6){
+    if (document.input.operations.selectedIndex==18){
       document.getElementById("instruction").textContent="input text to insert in the middle";
     }else{
       document.getElementById("instruction").textContent=" ";
@@ -35,20 +34,58 @@
       document.input.toggle.value= "Output with equivalent number OFF";
     }
   }
+  function del1(){
+    document.getElementById("nega").checked=false;
+    document.getElementById("deca").checked=false;
+  }
+  function del2(){
+    document.getElementById("negb").checked=false;
+    document.getElementById("decb").checked=false;
+  }
+  var isauto=false;
+  var autorun;
+  function auto(){
+    isauto=!isauto;
+    if (auto){
+      autorun=setInterval(calc,500);
+    }else{
+      clearInterval(autorun);
+    }
+  }
 </script>
 <form name="input">
-  a：<input type="text" name="vara" value=""><br>
+  a：<input type="text" name="vara" value="">
+  Is negative: <input type="radio" id="nega" name="stylea" value="neg">
+  Is decimal: <input type="radio" id="deca" name="stylea" value="dec">
+  <input type="button" value="Neither" onclick="del1()"><br>
   b：<input type="text" name="varb" value="">
+  Is negative: <input type="radio" id="negb" name="styleb" value="neg">
+  Is decimal: <input type="radio" id="decb" name="styleb" value="dec">
+  <input type="button" value="Neither" onclick="del2()">
   <div id="instruction"></div><br>
   <input type="button" name="toggle" value="Output with equivalent number OFF" onclick="togglesci()"><br>
   <select name="operations" onchange="change()">
-    <option>+</option>
-    <option>-</option>
-    <option>*</option>
-    <option>/</option>
-    <option>^</option>
-    <option>root(a,b)</option>
-    <option>output as text</option>
+    <option>a+b</option>
+    <option>a-b</option>
+    <option>a*b</option>
+    <option>a/b</option>
+    <option>a^b</option>
+    <option>√a</option>
+    <option>³√a</pbtion>
+    <option>ᵇ√a</option>
+    <option>logb a</option>
+    <option>a!</option>
+    <option>Neil J.A. Sloane and Simon Plouffe's superfactorial</option>
+    <option>Clifford A. Pickover's superfactorial</option>
+    <option>Daniel Corrêa's superfactorial</option>
+    <option>hyperfactorial</option>
+    <option>exponential factorial</option>
+    <option>a^^b</option>
+    <option>slogb a</option>
+    <option>convert to the custom format</option>
+    <option>output as sci. notation</option>
+  </select><br>
+  <input type="checkbox" onchange="auto()">Auto-calculate
   <input type="button" value="->" onclick="calc()"><br>
 </form>
 <span id="output"></span><br>
