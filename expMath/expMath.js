@@ -1,5 +1,5 @@
 'use strict';
-var exp=exp||{};
+var exp=exp||{}
 exp=(function (){
   return{
     add:function (a,b){
