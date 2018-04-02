@@ -12,8 +12,16 @@
         digitmax+=digits.search(scs.charAt(i));
       }
       if (pointervalue==digitmax){
-        scs=scs.substr(0,scs.length-1)+"0"+scs.substr(pointer+1,scs.length-pointer-1);
-        countdigitup(pointer-1);
+        if (pointer==0){
+          var len=scs.length;
+          scs="1";
+          for (var i=0;i<len;i++){
+            scs=scs+"0";
+          }
+        }else{
+          scs=scs.substr(0,scs.length-1)+"0"+scs.substr(pointer+1,scs.length-pointer-1);
+          countdigitup(pointer-1);
+        }
       }else{
         scs=scs.substr(0,scs.length-1)+digits.charAt(pointervalue+1)+scs.substr(pointer+1,scs.length-pointer-1);
       }
