@@ -1,0 +1,28 @@
+<script>
+  var decimal=0;
+  var scs="0";
+  const digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  function countup(){
+    decimal++
+    function countdigitup(pointer){
+      var pointerstr=scs.charAt(pointer);
+      var pointervalue=digits.search(pointerstr);
+      var digitmax=0;
+      for (i=0;i<pointer;1++){
+        digitmax+=digits.search(scs.charAt(i));
+      }
+      if (pointervalue==digitmax){
+        scs=scs.substr(0,scs.length-1)+"0"+scs.substr(pointer+1,scs.length-pointer-1);
+        countdigitiup(pointer-1);
+      }else{
+        scs=scs.substr(0,scs.length-1)+digits.charAt(pointervalue+1)+scs.substr(pointer+1,scs.length-pointer-1);
+      }
+    }
+    countdigitup(scs.length-1);
+    document.getElementById("decimal").textContent=String(decimal);
+    document.getElementById("scs").textContent=scs;
+  }
+</script>
+Decimal: <span id="decimal">0</span><br>
+SCS: <span id="scs">0</span><br>
+<button onclick="countup()" type="button">Count up</button>
