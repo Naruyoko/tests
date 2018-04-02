@@ -8,7 +8,7 @@
       var pointerstr=scs.charAt(pointer);
       var pointervalue=digits.search(pointerstr);
       var digitmax=0;
-      for (i=0;i<pointer;1++){
+      for (var i=0;i<pointer;i++){
         digitmax+=digits.search(scs.charAt(i));
       }
       if (pointervalue==digitmax){
