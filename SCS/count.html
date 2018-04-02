@@ -19,7 +19,7 @@
             scs=scs+"0";
           }
         }else{
-          scs=scs.substr(0,scs.length-1)+"0"+scs.substr(pointer+1,scs.length-pointer-1);
+          scs=scs.substr(0,pointer)+"0"+scs.substr(pointer+1,scs.length-pointer-1);
           countdigitup(pointer-1);
         }
       }else{
