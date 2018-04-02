@@ -2,7 +2,7 @@
   var decimal=0;
   var scs="0";
   const digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  function countup(){
+  function countup(r){
     decimal++
     function countdigitup(pointer){
       var pointerstr=scs.charAt(pointer);
@@ -26,11 +26,15 @@
         scs=scs.substr(0,pointer)+digits.charAt(pointervalue+1)+scs.substr(pointer+1,scs.length-pointer-1);
       }
     }
-    countdigitup(scs.length-1);
+    for (var i=0;i<r;i++){
+      countdigitup(scs.length-1);
+    }
     document.getElementById("decimal").textContent=String(decimal);
     document.getElementById("scs").textContent=scs;
   }
 </script>
 Decimal: <span id="decimal">0</span><br>
 SCS: <span id="scs">0</span><br>
-<button onclick="countup()" type="button">Count up</button>
+<button onclick="countup(1)" type="button">Count up</button>
+<button onclick="countup(10)" type="button">+10</button>
+<button onclick="countup(100)" type="button">+100</button>
