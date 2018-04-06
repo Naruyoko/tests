@@ -2,13 +2,13 @@
   var decimal=0;
   var scs="0";
   var offset=2;
-  donst digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#%&<>:;/-=_,.?";
+  const digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#%&<>:;/-=_,.?";
   function countup(r){
-    decimal+=r
     function countdigitup(pointer){
       var pointerstr=scs.charAt(pointer);
       var pointervalue=digits.search(pointerstr);
       var digitmax=offset;
+      if (pointervalue=digits.length){return false;}
       for (var i=0;i<pointer;i++){
         digitmax+=digits.search(scs.charAt(i));
       }
@@ -26,9 +26,12 @@
       }else{
         scs=scs.substr(0,pointer)+digits.charAt(pointervalue+1)+scs.substr(pointer+1,scs.length-pointer-1);
       }
+      return true;
     }
+    var s;
     for (var i=0;i<r;i++){
-      countdigitup(scs.length-1);
+      s=countdigitup(scs.length-1);
+      if (s){digits++;}
     }
     document.getElementById("decimal").textContent=String(decimal);
     document.getElementById("scs").textContent=scs;
@@ -61,3 +64,4 @@ SCS/<input id="offset" style="width:20px" onfocusout="changeoffset()" value="2">
 <button onclick="countup(10)" type="button">+10</button>
 <button onclick="countup(100)" type="button">+100</button>
 <button onclick="reset()">Reset</button>
+<div>  Digits: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#%&<>:;/-=_,.?</div>
