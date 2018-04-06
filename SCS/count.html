@@ -2,13 +2,13 @@
   var decimal=0;
   var scs="0";
   var offset=2;
-  const digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#%&<>:;/-=_,.";
+  const digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#%&<>:;/-=_,";
   function countup(r){
     function countdigitup(pointer){
       var pointerstr=scs.charAt(pointer);
       var pointervalue=digits.search(pointerstr);
       var digitmax=offset;
-      if (pointervalue+2==digits.length){return false;}
+      if (pointervalue+1==digits.length){return false;}
       for (var i=0;i<pointer;i++){
         digitmax+=digits.search(scs.charAt(i));
       }
