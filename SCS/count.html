@@ -1,13 +1,14 @@
 <script>
   var decimal=0;
   var scs="0";
+  var offset=2;
   const digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   function countup(r){
     decimal+=r
     function countdigitup(pointer){
       var pointerstr=scs.charAt(pointer);
       var pointervalue=digits.search(pointerstr);
-      var digitmax=2;
+      var digitmax=offset;
       for (var i=0;i<pointer;i++){
         digitmax+=digits.search(scs.charAt(i));
       }
@@ -32,9 +33,31 @@
     document.getElementById("decimal").textContent=String(decimal);
     document.getElementById("scs").textContent=scs;
   }
+  function changeoffset(){
+    if (Number(document.getElementById("offset").value)<2){
+      document.getElementById("offset").value="2";
+    }
+    document.getElementById("offset").value=String(Math.floor(Number(document.getElementById("offset").value)));
+    if (Number(document.getElementById("offset").value)!=offset){
+      offset=Number(document.getElementById("offset").value);
+      decimal=0;
+      scs="0";
+      document.title="Summative Carrier System With Offset "+offset+" Calculator";
+      document.getElementById("title").textContent="Decimal to Summative Carrier System With Offset "+offset;
+      countup(0);
+    }
+  }
+  function reset(){
+    decimal=0;
+    scs="0";
+    countup(0);
+  }
 </script>
+<title>Summative Carrier System With Offset 2 Calculator</title>
+<h1 id="title">Decimal to Summative Carrier System With Offset 2</h1>
 Decimal: <span id="decimal">0</span><br>
-SCS: <span id="scs">0</span><br>
+SCS/<input id="offset" style="width:20px" onfocusout="changeoffset()" value="2">: <span id="scs">0</span><br>
 <button onclick="countup(1)" type="button">Count up</button>
 <button onclick="countup(10)" type="button">+10</button>
 <button onclick="countup(100)" type="button">+100</button>
+<button onclick="reset">Reset</button>
