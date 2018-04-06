@@ -1,27 +1,66 @@
+<title>Health Bar Test</title>
 <style>
-  bar {
-      width-min: 0px;
-      width-max: 300px;
-      border: 0px;
-      padding: 0px;
-      margin: 0px;
+  bar{
+      width-min:0px;
+      width-max:300px;
+      border:0px;
+      padding:0px;
+      margin:0px;
   }
 </style>
 <script>
-  var colors=["gray","orange","yellow","green","cyan","blue","purple"];
+  var colors=["gray","orange","yellow","lightgreen","lightskyblue","blue","purple"];
   function input(){
     if (isNaN(Number(document.getElementById("input").value))){return;}
     var val=Number(document.getElementById("input").value);
     var width;
     var layer;
+    var val2=0;
+    var width2=0;
+    var layer2=1;
     if (val<=100){
-      width
-    document.getElementById("sec1").style.width=
+      layer=1;
+      width=val/100;
+    }else{
+      var totalwidth=Math.log(val/100)+1;
+      var subwidth=totalwidth%6;
+      val2=Math.floor(totalwidth/6);
+      layer=Math.floor(subwidth)+1;
+      width=subwidth-Math.floor(subwidth);
+    }
+    if (val2<=10){
+      layer2=1;
+      width2=val2/10;
+    }else if (val2){
+      var totalwidth=Math.log(val2/10)+1;
+      layer2=Math.floor(totalwidth)+1;
+      width2=totalwidth-Math.floor(totalwidth);
+    }
+    document.getElementById("front").style.width=width*300+"px";
+    document.getElementById("front").style.backgroundColor=colors[layer];
+    document.getElementById("back").style.backgroundColor=colors[layer-1];
+    document.getElementById("front2").style.width=width2*300+"px";
+    document.getElementById("front2").style.backgroundColor=colors[layer2];
+    document.getElementById("back2").style.backgroundColor=colors[layer2-1];
+  }
+  function heal(v){
+    document.getElementById("input").value=String(Number(document.getElementById("input").value)+v);
+    input();
+  }
+  function damage(v){
+    document.getElementById("input").value=String(Number(document.getElementById("input").value)-v);
+    input();
+  }
 </script>
-<div id="background" class="bar" style="width:300px;background-color:gray;float:left;">
-<div id="sec1" class="bar" style="width:0px;background-color:orange;"></div>
-<div id="sec2" class="bar" style="width:300px;background-color:gray;">
+<h1>Health Bar Test</h1>
+<div id="back" class="bar" style="width:300px;height:20px;background-color:gray;">
+<div id="front" class="bar" style="width:0px;height:20px;background-color:orange;"><br/></div>
 </div>
+<div id="back2" class="bar" style="width:300px;height:20px;background-color:gray;">
+<div id="front2" class="bar" style="width:0px;height:20px;background-color:orange;"><br/></div>
 </div>
-<input id="input" type="text"></input>
-<button onclick="input()" type="button">go</button>
+<input id="input" type="text">
+<button onclick="input()" type="button">go</button><br>
+<input id="changeinput" type="text">
+<button onclick="heal(Number(document.getElementById('changeinput').value))" type="button">heal</button>
+<button onclick="damage(Number(document.getElementById('changeinput').value))" type="button">damage</button>
