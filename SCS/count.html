@@ -2,7 +2,7 @@
   var decimal=0;
   var scs="0";
   var offset=2;
-  const digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  const digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^%*([{)]}";
   function countup(r){
     decimal+=r
     function countdigitup(pointer){
@@ -60,4 +60,4 @@ SCS/<input id="offset" style="width:20px" onfocusout="changeoffset()" value="2">
 <button onclick="countup(1)" type="button">Count up</button>
 <button onclick="countup(10)" type="button">+10</button>
 <button onclick="countup(100)" type="button">+100</button>
-<button onclick="reset">Reset</button>
+<button onclick="reset()">Reset</button>
