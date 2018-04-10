@@ -26,68 +26,68 @@
     <th>¬Q(t+1)</th>
   </tr>
   <tr>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>1</td>
-    <td></td>
-    <td></td>
+    <td id="t110">0</td>
+    <td id="t111">0</td>
+    <td id="t112">0</td>
+    <td id="t113">1</td>
+    <td id="t114"></td>
+    <td id="t115"></td>
   </tr>
   <tr>
-    <td>0</td>
-    <td>0</td>
-    <td>1</td>
-    <td>0</td>
-    <td></td>
-    <td></td>
+    <td id="t120">0</td>
+    <td id="t121">0</td>
+    <td id="t122">1</td>
+    <td id="t123">0</td>
+    <td id="t124"></td>
+    <td id="t125"></td>
   </tr>
   <tr>
-    <td>0</td>
-    <td>1</td>
-    <td>0</td>
-    <td>1</td>
-    <td></td>
-    <td></td>
+    <td id="t130">0</td>
+    <td id="t131">1</td>
+    <td id="t132">0</td>
+    <td id="t133">1</td>
+    <td id="t134"></td>
+    <td id="t135"></td>
   </tr>
   <tr>
-    <td>0</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td></td>
-    <td></td>
+    <td id="t140">0</td>
+    <td id="t141">1</td>
+    <td id="t142">1</td>
+    <td id="t143">0</td>
+    <td id="t144"></td>
+    <td id="t145"></td>
   </tr>
   <tr>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td>1</td>
-    <td></td>
-    <td></td>
+    <td id="t150">1</td>
+    <td id="t151">0</td>
+    <td id="t152">0</td>
+    <td id="t153">1</td>
+    <td id="t154"></td>
+    <td id="t155"></td>
   </tr>
   <tr>
-    <td>1</td>
-    <td>0</td>
-    <td>1</td>
-    <td>0</td>
-    <td></td>
-    <td></td>
+    <td id="t160">1</td>
+    <td id="t161">0</td>
+    <td id="t162">1</td>
+    <td id="t163">0</td>
+    <td id="t164"></td>
+    <td id="t165"></td>
   </tr>
   <tr>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>1</td>
-    <td></td>
-    <td></td>
+    <td id="t170">1</td>
+    <td id="t171">1</td>
+    <td id="t172">0</td>
+    <td id="t173">1</td>
+    <td id="t174"></td>
+    <td id="t175"></td>
   </tr>
   <tr>
-    <td>1</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td></td>
-    <td></td>
+    <td id="t180">1</td>
+    <td id="t181">1</td>
+    <td id="t182">1</td>
+    <td id="t183">0</td>
+    <td id="t184"></td>
+    <td id="t185"></td>
   </tr>
 </table>
 <table id="table2" style="border:1px black solid">
@@ -99,47 +99,65 @@
   <tr>
     <td>0</td>
     <td>0</td>
-    <td></td>
+    <td id="t21"></td>
   </tr>
   <tr>
     <td>0</td>
     <td>1</td>
-    <td></td>
+    <td id="t22"></td>
   </tr>
   <tr>
     <td>1</td>
     <td>0</td>
-    <td></td>
+    <td id="t23"></td>
   </tr>
   <tr>
     <td>1</td>
     <td>1</td>
-    <td></td>
+    <td id="t24"></td>
   </tr>
 </table>
 <img ref="./diagram.png" style="top:0px;right:0px;">
 <script>
   function go(){
     for (var x=1;x<=8;x++){
-      var results=[[Number(document.getElementById("table1").rows[x][2].innerHTML),Number(document.getElementById("table1").rows[x][3].innerHTML)]];
+      var results=[[Number(document.getElementById("t1"+x+2).innerHTML),Number(document.getElementById("t1"+x+3).innerHTML)],[],[],[],[]];
       for (var i=1;i<=4;i++){
-        if (document.getElementById("A").value="AND"){
-          results[i]=[Number(Number(document.getElementById("table1").rows[x][0].innerHTML)&&results[i][1]),Number(Number(document.getElementById("table1").rows[x][1].innerHTML)&&results[i][0])];
+        if (document.getElementById("A").value=="AND"){
+          results[i][0]=Number(Number(document.getElementById("t1"+x+0).innerHTML)&&results[i-1][1]);
         }
-        if (document.getElementById("A").value="OR"){
-          results[i]=[Number(Number(document.getElementById("table1").rows[x][0].innerHTML)||results[i][1]),Number(Number(document.getElementById("table1").rows[x][1].innerHTML)||results[i][0])];
+        if (document.getElementById("A").value=="OR"){
+          results[i][0]=Number(Number(document.getElementById("t1"+x+0).innerHTML)||results[i-1][1]);
         }
-        if (document.getElementById("A").value="XOR"){
-          results[i]=[Number((Number(document.getElementById("table1").rows[x][0].innerHTML)&&!results[i][1])||(!Number(document.getElementById("table1").rows[x][0].innerHTML)&&!results[i][1])),Number((Number(document.getElementById("table1").rows[x][1].innerHTML)&&!results[i][0])||(!Number(document.getElementById("table1").rows[x][1].innerHTML)&&results[i][0]))];
+        if (document.getElementById("A").value=="XOR"){
+          results[i][0]=Number((Number(document.getElementById("t1"+x+0).innerHTML)&&!results[i-1][1])||(!Number(document.getElementById("t1"+x+0).innerHTML)&&!results[i-1][1]));
         }
-        if (document.getElementById("A").value="NAND"){
-          results[i]=[Number(!(Number(document.getElementById("table1").rows[x][0].innerHTML)&&results[i][1])),Number(!(Number(document.getElementById("table1").rows[x][1].innerHTML)&&results[i][0]))];
+        if (document.getElementById("A").value=="NAND"){
+          results[i][0]=Number(!(Number(document.getElementById("t1"+x+0).innerHTML)&&results[i-1][1]));
         }
-        if (document.getElementById("A").value="NOR"){
-          results[i]=[Number(!(Number(document.getElementById("table1").rows[x][0].innerHTML)||results[i][1])),Number(!(Number(document.getElementById("table1").rows[x][1].innerHTML)||results[i][0]))];
+        if (document.getElementById("A").value=="NOR"){
+          results[i][0]=Number(!(Number(document.getElementById("t1"+x+0).innerHTML)||results[i-1][1]));
         }
-        if (document.getElementById("A").value="XNOR"){
-          results[i]=[Number((Number(document.getElementById("table1").rows[x][0].innerHTML)&&results[i][1])||(Number(!document.getElementById("table1").rows[x][0].innerHTML)&&!results[i][1])),Number((Number(document.getElementById("table1").rows[x][1].innerHTML)&&!results[i][0])||(!Number(document.getElementById("table1").rows[x][1].innerHTML)&&!results[i][0]))];
+        if (document.getElementById("A").value=="XNOR"){
+          results[i][0]=Number((Number(document.getElementById("t1"+x+0).innerHTML)&&results[i-1][1])||(Number(!document.getElementById("t1"+x+0).innerHTML)&&!results[i-1][1]));
+        }
+        if (document.getElementById("B").value=="AND"){
+          results[i][1]=Number(Number(document.getElementById("t1"+x+1).innerHTML)&&results[i-1][0]);
+        }
+        if (document.getElementById("B").value=="OR"){
+          results[i][1]=Number(Number(document.getElementById("t1"+x+1).innerHTML)||results[i-1][0]);
+        }
+        if (document.getElementById("B").value=="XOR"){
+          results[i][1]=Number((Number(document.getElementById("t1"+x+1).innerHTML)&&!results[i-1][0])||(!Number(document.getElementById("t1"+x+0).innerHTML)&&!results[i-1][1]));
+        }
+        if (document.getElementById("B").value=="NAND"){
+          results[i][1]=Number(!(Number(document.getElementById("t1"+x+1).innerHTML)&&results[i-1][0]));
+        }
+        if (document.getElementById("B").value=="NOR"){
+          results[i][1]=Number(!(Number(document.getElementById("t1"+x+1).innerHTML)||results[i-1][0]));
+        }
+        if (document.getElementById("B").value=="XNOR"){
+          results[i][1]=Number((Number(document.getElementById("t1"+x+1).innerHTML)&&results[i-1][0])||(Number(!document.getElementById("t1"+x+0).innerHTML)&&!results[i-1][1]));
         }
       }
       var r;
@@ -149,18 +167,25 @@
           break;
         }
       }
-      if (r==undefined){
-        document.getElementById("table1").rows[x][4].innerHTML="undf";
-        document.getElementById("table1").rows[x][5].innerHTML="undf";
+      if ((r==undefined)||(r[0]==undefined)||(r[1]==undefined)){
+        document.getElementById("t1"+x+4).innerHTML="undf";
+        document.getElementById("t1"+x+5).innerHTML="undf";
+        r=[,,];
       }else{
-        document.getElementById("table1").rows[x][4].innerHTML=r[0];
-        document.getElementById("table1").rows[x][5].innerHTML=r[1];
+        document.getElementById("t1"+x+4).innerHTML=r[0];
+        document.getElementById("t1"+x+5).innerHTML=r[1];
       }
-      if (x%2=0){
-        if ((Number(document.getElementById("table1").rows[x-1][4].innerHTML)==r[0])&&(Number(document.getElementById("table1").rows[x-1][5].innerHTML)==r[1])&&(r[0]!=r[1])){
-          document.getElementById("table2").rows[x/2][2].innerHTML=r[0];
+      if (x%2==0){
+        if ((Number(document.getElementById("t1"+(x-1)+4).innerHTML)===r[0])&&(Number(document.getElementById("t1"+(x-1)+5).innerHTML)===r[1])&&(r[0]!=r[1])){
+          document.getElementById("t2"+(x/2)).innerHTML=r[0];
         }else{
-          document.getElementById("table2").rows[x/2][2].innerHTML="undef";
+          if ((Number(document.getElementById("t1"+(x-1)+4).innerHTML)===0)&&(Number(document.getElementById("t1"+(x-1)+5).innerHTML)===1)&&(r[0]==1&&r[1]==0)){
+            document.getElementById("t2"+(x/2)).innerHTML="Q(t)";
+          }else if ((Number(document.getElementById("t1"+(x-1)+4).innerHTML)===1)&&(Number(document.getElementById("t1"+(x-1)+5).innerHTML)===0)&&(r[0]==0&&r[1]==1)){
+            document.getElementById("t2"+(x/2)).innerHTML="¬Q(t)";
+          }else{
+            document.getElementById("t2"+(x/2)).innerHTML="undf";
+          }
         }
       }
     }
