@@ -1,0 +1,24 @@
+<input id="input" value="0" onchange="run()"><br>
+Your number is denotated as: <span id="output">0</span>.
+<script>
+  function notation(i){
+    if (i<1000){return String(i);}
+    if ((i>=1000)&&(i<1e+6)){
+      var l;
+      var r=Math.floor(i%1000);
+      l=String(r);
+      if (r<10){l="00"+l;}
+      if ((r>=10)&&(r<100)){l="0"+l;}
+      return Math.floor(i/1000)+","+l;}
+    if (i>=1e+15){
+      var e=3*Math.floor(Math.log10(i)/3);
+      return Math.floor(i/Math.pow(10,e)*1000)/1000+"E+"+e;
+    }
+    var numbernames=["million","billion","trillion"]
+    var e=3*Math.floor(Math.log10(i)/3);
+    return Math.floor(i/Math.pow(10,e)*1000)/1000+" "+numbernames[Math.round(e/3)-2];
+  }
+  function run(){
+    document.getElementById("output").innerHTML=notation(Number(document.getElementById("input").value));
+  }
+</script>
