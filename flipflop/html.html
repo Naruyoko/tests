@@ -7,7 +7,7 @@ X: <select id="A" onchange="go()">
   <option>NAND</option>
   <option>NOR</option>
   <option>XNOR</option>
-</select>  
+</select>
 Y: <select id="B" onchange="go()">
   <option>AND</option>
   <option>OR</option>
@@ -119,45 +119,50 @@ Y: <select id="B" onchange="go()">
 </table>
 <img style="position:absolute;top:50px;right:0px;" src="./diagram.png" width="400px">
 <script>
+  function xor(a,b){
+    return (!a&&b)||(a&&!b);
+  }
   function go(){
     for (var x=1;x<=8;x++){
+      var p=Number(document.getElementById("t1"+x+0).innerHTML);
+      var q=Number(document.getElementById("t1"+x+1).innerHTML);
       var results=[[Number(document.getElementById("t1"+x+2).innerHTML),Number(document.getElementById("t1"+x+3).innerHTML)],[],[],[],[]];
       for (var i=1;i<=4;i++){
         if (document.getElementById("A").value=="AND"){
-          results[i][0]=Number(Number(document.getElementById("t1"+x+0).innerHTML)&&results[i-1][1]);
+          results[i][0]=Number(p&&results[i-1][1]);
         }
         if (document.getElementById("A").value=="OR"){
-          results[i][0]=Number(Number(document.getElementById("t1"+x+0).innerHTML)||results[i-1][1]);
+          results[i][0]=Number(p||results[i-1][1]);
         }
         if (document.getElementById("A").value=="XOR"){
-          results[i][0]=Number((Number(document.getElementById("t1"+x+0).innerHTML)&&!results[i-1][1])||(!Number(document.getElementById("t1"+x+0).innerHTML)&&!results[i-1][1]));
+          results[i][0]=Number(xor(p,results[i-1][1]));
         }
         if (document.getElementById("A").value=="NAND"){
-          results[i][0]=Number(!(Number(document.getElementById("t1"+x+0).innerHTML)&&results[i-1][1]));
+          results[i][0]=Number(!(p&&results[i-1][1]));
         }
         if (document.getElementById("A").value=="NOR"){
-          results[i][0]=Number(!(Number(document.getElementById("t1"+x+0).innerHTML)||results[i-1][1]));
+          results[i][0]=Number(!(p||results[i-1][1]));
         }
         if (document.getElementById("A").value=="XNOR"){
-          results[i][0]=Number((Number(document.getElementById("t1"+x+0).innerHTML)&&results[i-1][1])||(Number(!document.getElementById("t1"+x+0).innerHTML)&&!results[i-1][1]));
+          results[i][0]=Number(!xor(p,results[i-1][1]));
         }
         if (document.getElementById("B").value=="AND"){
-          results[i][1]=Number(Number(document.getElementById("t1"+x+1).innerHTML)&&results[i-1][0]);
+          results[i][1]=Number(q&&results[i-1][0]);
         }
         if (document.getElementById("B").value=="OR"){
-          results[i][1]=Number(Number(document.getElementById("t1"+x+1).innerHTML)||results[i-1][0]);
+          results[i][1]=Number(q||results[i-1][0]);
         }
         if (document.getElementById("B").value=="XOR"){
-          results[i][1]=Number((Number(document.getElementById("t1"+x+1).innerHTML)&&!results[i-1][0])||(!Number(document.getElementById("t1"+x+0).innerHTML)&&!results[i-1][1]));
+          results[i][1]=Number(xor(q,results[i-1][0]));
         }
         if (document.getElementById("B").value=="NAND"){
-          results[i][1]=Number(!(Number(document.getElementById("t1"+x+1).innerHTML)&&results[i-1][0]));
+          results[i][1]=Number(!(q&&results[i-1][0]));
         }
         if (document.getElementById("B").value=="NOR"){
-          results[i][1]=Number(!(Number(document.getElementById("t1"+x+1).innerHTML)||results[i-1][0]));
+          results[i][1]=Number(!(q||results[i-1][0]));
         }
         if (document.getElementById("B").value=="XNOR"){
-          results[i][1]=Number((Number(document.getElementById("t1"+x+1).innerHTML)&&results[i-1][0])||(Number(!document.getElementById("t1"+x+0).innerHTML)&&!results[i-1][1]));
+          results[i][1]=Number(!xor(q,[i-1][0]));
         }
       }
       var r;
