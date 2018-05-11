@@ -57,13 +57,13 @@
   a：<input type="text" name="vara" value="" onchange="changed()">
   Is negative: <input type="radio" id="nega" name="stylea" value="neg" onchange="changed()">
   Is decimal: <input type="radio" id="deca" name="stylea" value="dec" onchange="changed()">
-  <input type="button" value="Neither" onclick="del1()" onchange="changed()"><br>
+  <input type="button" value="Neither" onclick="del1();changed();"><br>
   b：<input type="text" name="varb" value="" onchange="changed()">
   Is negative: <input type="radio" id="negb" name="styleb" value="neg" onchange="changed()">
   Is decimal: <input type="radio" id="decb" name="styleb" value="dec" onchange="changed()">
-  <input type="button" value="Neither" onclick="del2()" onchange="changed()">
+  <input type="button" value="Neither" onclick="del2();changed();">
   <div id="instruction"></div><br>
-  <input type="button" name="toggle" value="Output with equivalent number OFF" onclick="togglesci()"><br>
+  <input type="button" name="toggle" value="Output with equivalent number OFF" onclick="togglesci();changed();"><br>
   <select name="operations" onchange="change();changed();">
     <option>a+b</option>
     <option>a-b</option>
@@ -85,7 +85,7 @@
     <option>convert to the custom format</option>
     <option>output as sci. notation</option>
   </select><br>
-  <input type="checkbox" onchange="auto()">Auto-calculate
+  <input type="checkbox" onchange="auto();changed();">Auto-calculate
   <input type="button" value="->" onclick="calc()"><br>
 </form>
 <span id="output"></span><br>
