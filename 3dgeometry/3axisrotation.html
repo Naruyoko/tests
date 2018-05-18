@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+  <src "./script.js"/>
+  <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body style="background-color:lightgray">
+  <p>
+    With thin lines: <input id="thinoption" type="checkbox"><br>
+    <span style="color:darkred">x:</span> <input id="slider.x" type="range" min="-180" max="180" step="1"/> <span id="deg.x">0</span> deg<br>
+    <span style="color:darkgreen">y:</span> <input id="slider.y" type="range" min="-180" max="180" step="1"/> <span id="deg.y">0</span> deg<br>
+    <span style="color:darkblue">z:</span> <input id="slider.z" type="range" min="-180" max="180" step="1"/> <span id="deg.z">0</span> deg
+    <table style="position:absolute;left:250px;top:5px;">
+      <tr>
+        <th class="key">Q<div style="color:blue">+Z</div></th>
+        <th class="key">W<div style="color:green">+Y</div></th>
+        <th class="key">E<div style="color:blue">-Z</div></th>
+        <th class="key">R<div style="color:darkcyan;font-size:12px">Reset</div></th>
+      </tr>
+      <tr>
+        <th class="key">A<div style="color:red">-X</div></th>
+        <th class="key">S<div style="color:green">-Y</div></th>
+        <th class="key">D<div style="color:red">+X</div></th>
+        <th class="key">F<div style="color:darkmagenta;font-size:12px">Toggle</div></th>
+      </tr>
+    </table>
+  </p>
+  <canvas id="canvas" width="640" height="480" style="background-color:white;border:darkgray solid 1px;"></canvas>
+</body>
