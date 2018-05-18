@@ -234,7 +234,7 @@ window.onblur=function (){
 function iskey(code){
 	return keyinput[code];
 };
-setInterval(function (){
+setTimeout(function (){setInterval(function (){
 	if (iskey(68)){
 	  document.getElementById("slider.x").value=resolveang(Number(document.getElementById("slider.x").value)+1);
 	}
@@ -254,4 +254,4 @@ setInterval(function (){
 	  document.getElementById("slider.z").value=resolveang(Number(document.getElementById("slider.z").value)-1);
 	}
 	draw();
-},1000/30);
+},1000/30);},1000);
