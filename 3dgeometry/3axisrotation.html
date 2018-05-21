@@ -263,7 +263,7 @@
   };
   </script>
 </head>
-<body style="background-color:lightgray" onload="onload()">
+<body style="background-color:lightgray">
   <p>
     With thin lines: <input id="thinoption" type="checkbox"><br>
     <span style="color:darkred">x:</span> <input id="slider.x" type="range" min="-180" max="180" step="1"/> <span id="deg.x">0</span> deg<br>
@@ -284,5 +284,5 @@
       </tr>
     </table>
   </p>
-  <canvas id="canvas" width="640" height="480" style="background-color:white;border:darkgray solid 1px;"></canvas>
+  <canvas id="canvas" width="640" height="480" style="background-color:white;border:darkgray solid 1px;" onload="onload()"></canvas>
 </body>
