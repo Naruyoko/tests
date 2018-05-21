@@ -165,51 +165,66 @@
     ctx.lineWidth=1;
     ctx.strokeText("+Z",lz[0]*210+320,lz[1]*210+240);
     ctx.strokeText("-Z",lz[0]*-210+320,lz[1]*-210+240);
-    if (!document.getElementById("thinoption").checked){return;}
-    for (i=-4;i<=4;i++){
-      ctx.beginPath();
-      ctx.moveTo(lx[0]*-160+320+ly[0]*i*40,lx[1]*-160+240+ly[1]*i*40);
-      ctx.lineTo(lx[0]*160+320+ly[0]*i*40,lx[1]*160+240+ly[1]*i*40);
-      ctx.lineWidth=1;
-      ctx.strokeStyle="#FF0000";
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(lx[0]*-160+320+lz[0]*i*40,lx[1]*-160+240+lz[1]*i*40);
-      ctx.lineTo(lx[0]*160+320+lz[0]*i*40,lx[1]*160+240+lz[1]*i*40);
-      ctx.lineWidth=1;
-      ctx.strokeStyle="#FF0000";
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(ly[0]*160+320+lx[0]*i*40,ly[1]*160+240+lx[1]*i*40);
-      ctx.lineTo(ly[0]*-160+320+lx[0]*i*40,ly[1]*-160+240+lx[1]*i*40);
-      ctx.lineWidth=1;
-      ctx.strokeStyle="#00FF00";
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(ly[0]*160+320+lz[0]*i*40,ly[1]*160+240+lz[1]*i*40);
-      ctx.lineTo(ly[0]*-160+320+lz[0]*i*40,ly[1]*-160+240+lz[1]*i*40);
-      ctx.lineWidth=1;
-      ctx.strokeStyle="#00FF00";
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(lz[0]*-160+320+lx[0]*i*40,lz[1]*-160+240+lx[1]*i*40);
-      ctx.lineTo(lz[0]*160+320+lx[0]*i*40,lz[1]*160+240+lx[1]*i*40);
-      ctx.lineWidth=1;
-      ctx.strokeStyle="#0000FF";
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(lz[0]*-160+320+ly[0]*i*40,lz[1]*-160+240+ly[1]*i*40);
-      ctx.lineTo(lz[0]*160+320+ly[0]*i*40,lz[1]*160+240+ly[1]*i*40);
-      ctx.lineWidth=1;
-      ctx.strokeStyle="#0000FF";
-      ctx.stroke();
+    if (document.getElementById("thinoption").checked){
+      for (i=-4;i<=4;i++){
+        ctx.beginPath();
+        ctx.moveTo(lx[0]*-160+320+ly[0]*i*40,lx[1]*-160+240+ly[1]*i*40);
+        ctx.lineTo(lx[0]*160+320+ly[0]*i*40,lx[1]*160+240+ly[1]*i*40);
+        ctx.lineWidth=1;
+        ctx.strokeStyle="#FF0000";
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(lx[0]*-160+320+lz[0]*i*40,lx[1]*-160+240+lz[1]*i*40);
+        ctx.lineTo(lx[0]*160+320+lz[0]*i*40,lx[1]*160+240+lz[1]*i*40);
+        ctx.lineWidth=1;
+        ctx.strokeStyle="#FF0000";
+        ctx.stroke();
+  
+        ctx.beginPath();
+        ctx.moveTo(ly[0]*160+320+lx[0]*i*40,ly[1]*160+240+lx[1]*i*40);
+        ctx.lineTo(ly[0]*-160+320+lx[0]*i*40,ly[1]*-160+240+lx[1]*i*40);
+        ctx.lineWidth=1;
+        ctx.strokeStyle="#00FF00";
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(ly[0]*160+320+lz[0]*i*40,ly[1]*160+240+lz[1]*i*40);
+        ctx.lineTo(ly[0]*-160+320+lz[0]*i*40,ly[1]*-160+240+lz[1]*i*40);
+        ctx.lineWidth=1;
+        ctx.strokeStyle="#00FF00";
+        ctx.stroke();
+  
+        ctx.beginPath();
+        ctx.moveTo(lz[0]*-160+320+lx[0]*i*40,lz[1]*-160+240+lx[1]*i*40);
+        ctx.lineTo(lz[0]*160+320+lx[0]*i*40,lz[1]*160+240+lx[1]*i*40);
+        ctx.lineWidth=1;
+        ctx.strokeStyle="#0000FF";
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(lz[0]*-160+320+ly[0]*i*40,lz[1]*-160+240+ly[1]*i*40);
+        ctx.lineTo(lz[0]*160+320+ly[0]*i*40,lz[1]*160+240+ly[1]*i*40);
+        ctx.lineWidth=1;
+        ctx.strokeStyle="#0000FF";
+        ctx.stroke();
+      }
     }
     
     var pos=[Number(document.getElementById("pos.x").value),Number(document.getElementById("pos.y").value),Number(document.getElementById("pos.z").value)];
-    ctx.fillStyle="#FFFFFF";
-    ctx.fillRect((lx[0]*pos[0]+ly[0]*pos[1]+lz[0]*pos[2])*40+319,(lx[1]*pos[0]+ly[1]*pos[1]+lz[1]*pos[2])*40+239,3,3);
+    //console.log(pos);
+    var posprojx=cx[0]*pos[0]+cy[0]*pos[1]+cz[0]*pos[2];
+    var t=Number(posprojx>=0)+Number(posprojx>=3);
+    if (t==2){
+      ctx.fillStyle="#000000";
+    }else if (t==1){
+      ctx.fillStyle="#404040";
+    }else{
+      ctx.fillStyle="#606060";                                                                              
+    }
+    ctx.fillRect((lx[0]*pos[0]+ly[0]*pos[1]+lz[0]*pos[2])*40+318-t,(lx[1]*pos[0]+ly[1]*pos[1]+lz[1]*pos[2])*40+238-t,4+2*t,4+2*t);
+    if (document.getElementById("depthoption").checked){
+      ctx.lineWidth=1;
+      ctx.strokeStyle="#808080";
+      ctx.strokeText(Math.round(posprojx*100)/100,(lx[0]*pos[0]+ly[0]*pos[1]+lz[0]*pos[2])*40+325,(lx[1]*pos[0]+ly[1]*pos[1]+lz[1]*pos[2])*40+235);
+    }
   }
   function resolveang(x){
     if (x>180){return x-360;}
@@ -221,6 +236,9 @@
     if (!e){e=window.event;}
     if ((e.keyCode==70)&&!keyinput[70]){
       document.getElementById("thinoption").checked=!document.getElementById("thinoption").checked;
+    }
+    if ((e.keyCode==67)&&!keyinput[67]){
+      document.getElementById("depthoption").checked=!document.getElementById("depthoption").checked;
     }
     if ((e.keyCode==82)&&!keyinput[82]){
       document.getElementById("slider.x").value=0;
@@ -264,6 +282,7 @@
         document.getElementById("slider.z").value=resolveang(Number(document.getElementById("slider.z").value)-1);
       }
       draw();
+      //console.log("frame");
     },1000/30);
     console.log("loaded");
   };
@@ -275,13 +294,14 @@
     <span style="color:darkred">x:</span> <input id="slider.x" type="range" min="-180" max="180" step="1"/> <span id="deg.x">0</span> deg<br>
     <span style="color:darkgreen">y:</span> <input id="slider.y" type="range" min="-180" max="180" step="1"/> <span id="deg.y">0</span> deg<br>
     <span style="color:darkblue">z:</span> <input id="slider.z" type="range" min="-180" max="180" step="1"/> <span id="deg.z">0</span> deg
-    <div style="position:absolute;left:250px;top:0;">
-      Coordinates:<br>
+    <div style="position:absolute;left:230px;top:20px;">
+      <span style="font-size:18px">Coordinates:</span><br>
       <span style="color:darkred">x:</span> <input id="pos.x" type="text" style="width:20px" value="0"/><br>
       <span style="color:darkgreen">y:</span> <input id="pos.y" type="text" style="width:20px" value="0"/><br>
-      <span style="color:darkblue">z:</span> <input id="pos.z" type="text" style="width:20px" value="0"/>
+      <span style="color:darkblue">z:</span> <input id="pos.z" type="text" style="width:20px" value="0"/><br>
+      <span style="font-size:14px;">Display depth:<input id="depthoption" type="checkbox"></span>
     </div>
-    <table style="position:absolute;left:300px;top:5px;">
+    <table style="position:absolute;left:350px;top:5px;">
       <tr>
         <th class="key">Q<div style="color:blue">+Z</div></th>
         <th class="key">W<div style="color:green">+Y</div></th>
@@ -292,7 +312,12 @@
         <th class="key">A<div style="color:red">-X</div></th>
         <th class="key">S<div style="color:green">-Y</div></th>
         <th class="key">D<div style="color:red">+X</div></th>
-        <th class="key">F<div style="color:darkmagenta;font-size:12px">Toggle</div></th>
+        <th class="key">F<div style="color:darkmagenta;font-size:10px">Toggle lines</div></th>
+      </tr>
+      <tr>
+        <th></th>
+        <th></th>
+        <th class="key">C<div style="color:darkolivegreen;font-size:10px">Toggle depth</div></th>
       </tr>
     </table>
   </p>
