@@ -235,7 +235,7 @@
   function iskey(code){
     return keyinput[code];
   };
-  document.body.onload=function (){
+  function onload(){
     var c=document.getElementById("canvas");
     var ctx=c.getContext("2d");
     setInterval(function (){
@@ -262,7 +262,7 @@
   };
   </script>
 </head>
-<body style="background-color:lightgray">
+<body style="background-color:lightgray" onload="onload()">
   <p>
     With thin lines: <input id="thinoption" type="checkbox"><br>
     <span style="color:darkred">x:</span> <input id="slider.x" type="range" min="-180" max="180" step="1"/> <span id="deg.x">0</span> deg<br>
