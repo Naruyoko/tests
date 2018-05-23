@@ -1,0 +1,76 @@
+<script type="text/javascript" src="./expMath.js"></script>
+<script>
+  function notation(i,t){
+    var inum=Number(exp.text(i,"e"));
+    if (isNaN(inum)){return "NaN";}
+    if (!isFinite(inum)){return "Infinity";}
+    if (inum<1000){return String(inum);}
+    if (inum>=1000)&&(i<1e+6)){
+      var h=inum;
+      var l;
+      var r=Math.floor(h%1000);
+      l=String(r);
+      if (r<10){l="00"+l;}
+      if ((r>=10)&&(r<100)){l="0"+l;}
+      return Math.floor(h/1000)+","+l;
+    }
+    if ((i.gte(Decimal(10).pow(1e+27)))||(t==0)){
+      var e=3*Math.floor(Number(Decimal.log10(i))/3);
+      return Math.floor(Number(i.div(Decimal("1e+"+e)))*1000)/1000+"E+"+e;
+    }
+    var numbernames=["thousand","million","billion","trillion","quadrillion","quintillion","sextillion","septillion","octillion","nonillion","decillion","undecillion","duodecillion","tredecillion","quattuordecillion","quindecillion","sexdecillion","septendecillion","octodecillion","novemdecillion"];
+    var namefragments=[["","un","duo","tre","quattuor","quinqua","se","septe","outo","nove"],["","deci","viginti","triginta","quadraginta","quinquaginta","sexaginta","septuaginta","octoginta","nonaginta"],["","centi","ducenti","trecenti","quadringenti","quingenti","sesgenti","septingenti","octingenti","nongenti"],["","milli","micri","nani","pici","femti","atti","zepti","yocti"]];
+    var e=3*Math.floor(Number(Decimal.log10(i))/3);
+    var l=Math.floor(e/3)-1;
+    console.log(l);
+    if (l<=19){
+      return  Math.floor(Number(i.div(Decimal("1e+"+e)))*1000)/1000+" "+numbernames[l];
+    }else{
+      var r="";
+      var s;
+      var mu;
+      for (var g=Math.floor(Math.log10(l)/3);g>=0;g--){
+        var mu=Math.floor(l/Math.pow(1000,g))%1000;
+        s="";
+        var d=[mu%10,Math.floor(mu%100/10),Math.floor(mu/100)];
+        s=namefragments[0][d[0]];
+        if ([3,6].includes(d[0])&&(((d[1]!=0)&&[2,3,4,5].includes(d[1]))||((d[1]==0)&&[3,4].includes(d[2]==3)))){
+          s+="s";
+        }
+        if ((d[0]==6)&&(((d[1]!=0)&&(d[1]==8))||((d[1]==0)&&(d[2]==8)))){
+          s+="x";
+        }
+        if ([7,9].includes(d[0])&&(((d[1]!=0)&&[1,3,4,5,6,7].includes(d[1]))||((d[1]==0)&&[2,3,4,5,6,7].includes(d[2])))){
+          s+="n";
+        }
+        if ([7,9].includes(d[0])&&(((d[1]!=0)&&((d[1]==2)||(d[1]==8)))||((d[1]==0)&&(d[2]==8)))){
+          s+="m";
+        }
+        s+=namefragments[1][d[1]]+namefragments[2][d[2]]+namefragments[3][g];
+        r+=s;
+      }
+      var w=r.charAt(r.length-1);
+      if ((w=="a")||(w=="i")){
+        r=r.substr(0,r.length-1);
+      }
+      r+="illion";
+      return Math.floor(Number(i.div(Decimal("1e+"+e)))*1000)/1000+" "+r;
+    }
+  }
+  function run(){
+    var v=document.getElementById("input").value;
+    if (ifFinite(Number(v))){
+      v=exp.conv(v);
+    }else{
+      var expn=v.search("e");
+      if (expn=-1){document.getElementById("output").innerHTML="*Please use scientific notation for numbers larger than 1.8e308!";return;}
+      v=[v.substr(0,expn-1),v.substr(expn+1)]
+      if (!isFinite(Number(v[1]))){document.getElementById("output").innerHTML="<span style=\"color:red;font-size:20px;\"><b>Infinityplex</b></span>";}
+      if (v[0]===""){v[0]="1";}
+      v=[Number(v[1])+Math.log10(Number(v[0])),false];
+    }
+    document.getElementById("output").innerHTML=notation(v);
+  }
+</script>
+<input id="input" value="0" onchange="run()"><br>
+Your number is denotated as: <span id="output">0</span>.
