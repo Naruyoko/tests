@@ -32,7 +32,11 @@ This is also prefix notation instead of infix. Even more strangely, this module 
 
 ## Specific numbers
 Max positive number - [1.7976931348623157E+308,false]=1e+(1.7976931348623157e+308)
+
 Largest positive number with precision of at least 1 - ~[14.51,false]=3.235936569296281e+14
+
 Min positive number - [5e-324,false]=1e+(5e-324)
+
 +0 - [-Infinity,false]
+
 -0 - [-Infinity,true]
