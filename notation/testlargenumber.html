@@ -14,7 +14,7 @@
       if ((r>=10)&&(r<100)){l="0"+l;}
       return Math.floor(h/1000)+","+l;
     }
-    if ((i[0]>=1e27)&&!op){
+    if ((i[0]>=3e27+3)&&!op){
       var e=3*Math.floor(i[0]/3);
       return Math.floor(Number(exp.text(exp.div(i,[e,false]),"e"))*1000)/1000+"E+"+e;
     }
