@@ -51,10 +51,9 @@
       disp.innerHTML=instr;
     }
   }
-  function eveluate(i){
+  function evaluate(i){
     var inarr=[];
     
-    var inarr=i.split(/\x2f|\x42|\x44|\x43/g);
   }
   function exptoarr(i,a){
     var nextoperator=i.search(/\x2f|\x42|\x44|\x43/);
@@ -62,8 +61,8 @@
     if (nextoperator==-1){
       return a;
     }else{
-      
-      return a.push(exptoarr(
+      return a.push(i.charAt(nextoperator)).push(exptoarr(i.substr(nextoperator+1)));
+    }
   function findparse(i){//first character must be paranthesis
     var pars=0;
     for (var index=0;(index===0)||(pars!==0);index++){
