@@ -1,0 +1,79 @@
+<div style="border:2px solid black">
+  <div id="display" style="font-size:24px;border:1px solid gray;background-color:#dddddd;"></div><br>
+  <table>
+    <tr>
+      <td><button onclick="input(\"(\")" type="button">(</button></td>
+      <td><button onclick="input(\")\")" type="button">)</button></td>
+      <td><button onclick="input(\"C\")" type="button">C</button></td>
+      <td><button onclick="input(\"d\")" type="button">d</button></td>
+    </tr>
+    <tr>
+      <td><button onclick="input(\"7\")" type="button">7</button></td>
+      <td><button onclick="input(\"8\")" type="button">8</button></td>
+      <td><button onclick="input(\"9\")" type="button">9</button></td>
+      <td><button onclick="input(\"/\")" type="button">/</button></td>
+    </tr>
+    <tr>
+      <td><button onclick="input(\"4\")" type="button">4</button></td>
+      <td><button onclick="input(\"5\")" type="button">5</button></td>
+      <td><button onclick="input(\"6\")" type="button">6</button></td>
+      <td><button onclick="input(\"*\")" type="button">*</button></td>
+    </tr>
+    <tr>
+      <td><button onclick="input(\"1\")" type="button">1</button></td>
+      <td><button onclick="input(\"2\")" type="button">2</button></td>
+      <td><button onclick="input(\"3\")" type="button">3</button></td>
+      <td><button onclick="input(\"-\")" type="button">-</button></td>
+    </tr>
+    <tr>
+      <td><button onclick="input(\"0\")" type="button">0</button></td>
+      <td><button onclick="input(\".\")" type="button">.</button></td>
+      <td><button onclick="input(\"=\")" type="button">=</button></td>
+      <td><button onclick="input(\"+\")" type="button">+</button></td>
+    </tr>
+  </table>
+</div>
+<script>
+  var instr="";
+  var disp=document.getElementById("display");
+  function input(i){
+    if (i=="="){
+      disp.innerHTML=evaluate(instr);
+      instr="";
+    }else if (i=="d"){
+      instr=instr.substr(0,instr.length-2);
+    }else{
+      if (i=="C"){
+        instr="";
+      }else{
+        instr+=i;
+      }
+      disp.innerHTML=instr;
+    }
+  }
+  function eveluate(i){
+    var inarr=[];
+    
+    var inarr=i.split(/\x2f|\x42|\x44|\x43/g);
+  }
+  function exptoarr(i,a){
+    var nextoperator=i.search(/\x2f|\x42|\x44|\x43/);
+    a.push(i.substr(0,nextoperator-1));
+    if (nextoperator==-1){
+      return a;
+    }else{
+      
+      return a.push(exptoarr(
+  function findparse(i){//first character must be paranthesis
+    var pars=0;
+    for (var index=0;(index===0)||(pars!==0);index++){
+      if (i.charAt(index)=="("){
+        pars++;
+      }else if (i.charAt(index==")"){
+        pars--;
+      }
+      if (pars<0){return NaN;}
+    }
+    return index;
+  }
+</script>
