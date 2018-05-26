@@ -30,7 +30,7 @@
         if (a[index]==""){
           a.splice(index,1);
         }
-        if (typeof a[index]=="array"){
+        if (Array.isArray(a[index])){
           a[index]=calculate(a[index]);
         }else if (!isNaN(Number(a[index]))){
           a[index]=Number(a[index]);
@@ -82,7 +82,8 @@
       console.log("exptoarr(\""+i+"\","+JSON.stringify(a)+")");
       if (i.charAt(0)=="("){
         var p=findparse(i);
-        a.push(exptoarr(i.substr(0,p),[]));
+        a.push(exptoarr(i.substr(1,p-1),[]));
+        console.log(i.substr(1,p-1))
         return exptoarr(i.substr(p+1),a);
       }else{
         var nextoperator=i.search(/\x2f|\x2a|\x2d|\x2b/);
