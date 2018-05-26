@@ -8,9 +8,10 @@
         instr="";
       }else{
         if (i=="d"){
-          instr=instr.substr(0,instr.length-2);
+          instr=instr.substr(0,instr.length-1);
         }else if (i=="C"){
           instr="";
+          console.clear();
         }else{
           instr+=i;
         }
@@ -26,19 +27,24 @@
     function calculate(a){
       console.log("calculate: "+JSON.stringify(a));
       for (var index=0;index<a.length;index++){
+        if (a[index]==""){
+          a.splice(index,1);
+        }
         if (typeof a[index]=="array"){
           a[index]=calculate(a[index]);
         }else if (!isNaN(Number(a[index]))){
           a[index]=Number(a[index]);
         }
       }
+      console.log("formatted exp: "+JSON.stringify(a));
       for (var index=a.length-1;index>0;){
-        if (["string","undefined"].includes(typeof a[index-2])&&(typeof a[index]=="string")){
+        console.log(String(a[index-2])+" "+String(a[index-1])+" "+String(a[index]));
+        if (["string","undefined"].includes(typeof a[index-2])&&(typeof a[index-1]=="string")){
           if (typeof a[index]=="number"){
-            if (a[index]=="-"){
-              a.splice(index,2,-a[index+1]);
-            }else if (a[index]=="+"){
-              a.splice(index,1);
+            if (a[index-1]=="-"){
+              a.splice(index-1,2,-a[index]);
+            }else if (a[index-1]=="+"){
+              a.splice(index-1,1);
             }else{
               return NaN;
             }
@@ -46,7 +52,7 @@
             return NaN;
           }
         }else{
-          index++;
+          index--;
         }
       }
       console.log(JSON.stringify(a));
