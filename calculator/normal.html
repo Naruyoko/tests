@@ -32,6 +32,21 @@
           a[index]=Number(a[index]);
         }
       }
+      for (var index=a.length-1;index>0;){
+        if (["string","undefined"].includes(typeof a[index-2])&&(typeof a[index]=="string")){
+          if (typeof a[index]=="number"){
+            if (a[index]=="-"){
+              a.splice(index,2,-a[index+1]);
+            }else if (a[index]=="+"){
+              a.splice(index,1);
+            }else{
+              return NaN;
+            }
+          }else{
+            return NaN;
+          }
+        }
+      }
       console.log(JSON.stringify(a));
       for (var index=0;index<a.length;){
         if (a[index]=="/"){
