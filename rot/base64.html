@@ -1,0 +1,31 @@
+<!DOCtYPE html>
+<html>
+  <head>
+    <script>
+      function rotbase64(instr,rot){
+        const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        var outstr="";
+        for (var i=0;i<instr.length;i++){
+          if (["+","/"].includes(instr.charAt(i))){
+            var v=chars.search("\\"+instr.charAt(i));
+          }else{
+            var v=chars.search(instr.charAt(i));
+          }
+          if (v!=-1){
+            outstr+=chars.charAt((v+rot)%64);
+          }else{
+            outstr+=instr.charAt(i);
+          }
+        }
+        return outstr;
+      }
+    </script>
+  </head>
+  <body>
+    <input id="input" type="text" style="margin:auto;width:90%;height:150px;"><br>
+    <p style="margin:auto">
+      rot<input id="rot" type="text" style="width:30px"><button onclick="document.getElementById(&quot;output&quot;).value=rotbase64(document.getElementById(&quot;input&quot;).value,Number(document.getElementById(&quot;rot&quot;).value))">Convert</button>
+    </p>
+    <input id="output" type="text" style="margin:auto;width:90%;height:150px;" readonly>
+  </body>
+</html>

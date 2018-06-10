@@ -1,17 +1,69 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="style.css" type="text/css">
+    <!-- <link rel="stylesheet" href="style.css" type="text/css"> -->
     <script>
+      var sprites=[];
+      var sprite={
+        create:(function (posx,posy,velx,vely,accx,accy,alias){
+          sprites.push({position:[posx,posy],velocity:[velx,vely],acceleration:[accx,accy],alias:alias});
+        }),
+        destroyalias:(function (num){
+          if (typeof num=="Array"){
+            for (var i=0;i<sprites.length;i++){
+              if (num.includes(sprites[i].alias)){
+                sprites.splice(i,1);
+                i--;
+              }
+            }
+          }else if (["String","Number"].includes(typeof num)){
+            for (var i=0;i<sprites.length;i++){
+              if (sprites[i].alias==num){
+                sprites.splice(i,1);
+                i--;
+              }
+            }
+          }
+        }),
+        destroyindex:(function (num){
+          sprites.splice(num,1);
+        })
+      };
+      var framecount=0;
+      function frame(){
+        framecount++;
+        ctx.clearRect(0,0,640,480);
+        ctx.fillStyle="black";
+        sprites.forEach(function (element){
+          element.position[0]+=element.velocity[0];
+          element.position[1]+=element.velocity[1];
+          element.velocity[0]+=element.acceleration[0];
+          element.velocity[1]+=element.acceleration[1];
+          ctx.fillRect(element.position[0]-1,element.position[1]-1,2,2);
+        });
+        ctx.strokeText("Frame "+framecount,0,10);
+      }
       var c;
       var ctx;
       function onload(){
         c=document.getElementById("canvas");
         ctx=c.getContext("2d");
+        setInterval(frame,1000/60);
+        console.log("Loaded");
       }
     </script>
   </head>
   <body>
     <canvas id="canvas" width="640" height="480" style="background-color:white;border:darkgray solid 1px;"></canvas>
+    <form name="input">
+      <input name="posx" type="text" value="0"><br>
+      <input name="posy" type="text" value="0"><br>
+      <input name="velx" type="text" value="0"><br>
+      <input name="vely" type="text" value="0"><br>
+      <input name="accx" type="text" value="0"><br>
+      <input name="accy" type="text" value="0"><br>
+      <button type="button" onclick="sprite.create(Number(document.input.posx.value),Number(document.input.posy.value),Number(document.input.velx.value),Number(document.input.vely.value),Number(document.input.accx.value),Number(document.input.accy.value))">Create</button>
+    </form>
+    <div onload="function (){onload();}">L</div>
   </body>
 </html>
