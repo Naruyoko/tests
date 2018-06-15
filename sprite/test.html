@@ -53,17 +53,16 @@
       }
     </script>
   </head>
-  <body>
+  <body onload="onload()">
     <canvas id="canvas" width="640" height="480" style="background-color:white;border:darkgray solid 1px;"></canvas>
     <form name="input">
-      <input name="posx" type="text" value="0"><br>
-      <input name="posy" type="text" value="0"><br>
-      <input name="velx" type="text" value="0"><br>
-      <input name="vely" type="text" value="0"><br>
-      <input name="accx" type="text" value="0"><br>
-      <input name="accy" type="text" value="0"><br>
+      posx:<input name="posx" type="text" value="0"><br>
+      posy:<input name="posy" type="text" value="0"><br>
+      velx:<input name="velx" type="text" value="0"><br>
+      vely:<input name="vely" type="text" value="0"><br>
+      accx:<input name="accx" type="text" value="0"><br>
+      accy:<input name="accy" type="text" value="0"><br>
       <button type="button" onclick="sprite.create(Number(document.input.posx.value),Number(document.input.posy.value),Number(document.input.velx.value),Number(document.input.vely.value),Number(document.input.accx.value),Number(document.input.accy.value))">Create</button>
     </form>
-    <div onload="function (){onload();}">L</div>
   </body>
 </html>
