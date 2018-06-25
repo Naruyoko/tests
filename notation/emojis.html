@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Emojis Notation Calculator</title>
+  <script>
+    function sequence(v){
+      const emojis=["😠","🎂","🎄","💀","🍆","👪","🌈","💯","🍦","🎃","💋","😂","🌙","⛔","🐙","💩","❓","☢","🙈","👍","☂","✌","⚠","❌","😋","⚡"];
+      if (v>26){
+        return sequence(Math.floor((v-1)/26))+emojis[(v-1)%26];
+      }else{
+        return emojis[(v-1)%26];
+      }
+    }
+    function convert(){
+      document.getElementById("output").value=Math.pow(10,Number(document.getElementById("input").value)%3)+" "+sequence(Math.floor(Number(document.getElementById("input").value)/3));
+    }
+  </script>
+  <style>
+    * {font-family:"Verdana",sans-serif;font-size:18px;}
+  </style>
+</head>
+<body>
+  <h1>Emojis Notation Calculator</h1>
+  This is a calculator which converts from powers of 10 to the Emojis notation used in <a href="http://ivark.github.io">Antimatter Dimensions</a>.<br>
+  Input: e<input id="input" type="text" onchange="convert()"><br>
+  <button onclick="convert()">Calculate!</button><br>
+  Output: <input id="output" type="text" readonly>
