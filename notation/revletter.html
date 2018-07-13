@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Letter Notation Reverse Calculator</title>
+    <script>
+      function sequence(v){
+        const letters="abcdefghijklmnopqrstuvwxyz";
+        if (v.length==0){
+          return 0;
+        }else if (v.length>=2){
+          return 26*sequence(v.substr(0,v.length-1))+letters.search(v.charAt(0))+1;
+        }else{
+          return letters.search(v.charAt(0))+1;
+        }
+      }
+      function convert(){
+        document.getElementById("output").value=3*sequence(document.getElementById("input").value);
+      }
+    </script>
+    <style>
+      * {font-family:"Verdana",sans-serif;font-size:18px;}
+    </style>
+  </head>
+  <body>
+    <h1>Letter Notation Reverse Calculator</h1>
+    This is a calculator which converts from notation which uses letter in index order to power of ten.<br>
+    Input: 1 <input id="input" type="text" onchange="convert()"><br>
+    <button onclick="convert()">Calculate!</button><br>
+    Output: e<input id="output" type="text" readonly>
+  </body>
+</html>

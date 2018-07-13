@@ -3,7 +3,12 @@
 
 You can use/modify/fork (totally not copied from other stuff) this.
 
-This is very primative large number handler. The number is represented by an two element array.
+To include this straight from this repository, copy this into your HTML file.
+```html
+<script src="https://naruyoko.github.io/tests/expMath/expMath.js"></script>
+```
+
+This is very primitive large number handler. The number is represented by an two element array.
 
 Unlike MikeMcl's [Decimal.js](https://github.com/MikeMcl/decimal.js), Patashu's [break_infinity.js](https://github.com/Patashu/break_infinity.js) and more, this is stored as [log10 of the absolute value of the number, sign].
 
