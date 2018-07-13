@@ -121,8 +121,8 @@ exp={
   slog:function (a,b){
     if (a[1]||b[1]){return [NaN,false];}
     var z=a;
-    var f=[0,false];
-    while ((z[0]<=0)&&!z[1]){
+    var f=[-Infinity,false];
+    while ((z[0]>=0)&&!z[1]){
       f=exp.add(f,[0,false]);
       z=exp.log(z,b);
     }
@@ -130,7 +130,7 @@ exp={
       f=exp.sub(f,[0,false]);
       z=exp.pow(b,z);
     }
-    f=exp.add(f,exp.conv(-1-(2*a[0])/(1+a[0])*Math.pow(10,z[0])*Math.pow(-1,z[1])+(1-a[0])/(1+a[0])*Math.pow(Math.pow(10,z[0]),2)));
+    f=exp.add(f,exp.add(exp.add([0,true],exp.mult(exp.div(exp.mult(exp.conv(2),exp.log(b,exp.conv(Math.E))),exp.add([0,false],exp.log(b,exp.conv(Math.E)))),z)),exp.mult(exp.div(exp.sub([0,false],exp.log(b,exp.conv(Math.E))),exp.add([0,false],exp.log(b,exp.conv(Math.E)))),exp.pow(z,exp.conv(2)))));
     return f;
   },
   conv:function (a){return [Math.log10(Math.abs(a)),a<0];},
