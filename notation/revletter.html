@@ -14,7 +14,13 @@
         }
       }
       function convert(){
-        document.getElementById("output").value=3*sequence(document.getElementById("input").value);
+        var r=3*sequence(document.getElementById("input").value);
+        document.getElementById("output").value=r;
+        if (r<=Number.MAX_SAFE_INTEGER){
+          document.getElementById("warn").style.display="none";
+        }else{
+          document.getElementById("warn").style.display="";
+        }
       }
     </script>
     <style>
@@ -27,5 +33,6 @@
     Input: 1 <input id="input" type="text" onchange="convert()"><br>
     <button onclick="convert()">Calculate!</button><br>
     Output: e<input id="output" type="text" readonly>
+    <div id="warn" style="display:none;color:red;">Warning: The result may have lost precision!</div>
   </body>
 </html>

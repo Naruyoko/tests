@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Emojis Notation Calculator</title>
+    <title>Letters Notation Calculator</title>
     <script>
       function sequence(v){
-        const emojis=["😠","🎂","🎄","💀","🍆","👪","🌈","💯","🍦","🎃","💋","😂","🌙","⛔","🐙","💩","❓","☢","🙈","👍","☂","✌","⚠","❌","😋","⚡"];
+        const letters="abcdefghijklmnopqrstuvwxyz";
         if (v>26){
-          return sequence(Math.floor((v-1)/26))+emojis[(v-1)%26];
+          return sequence(Math.floor((v-1)/26))+letters.charAt((v-1)%26);
         }else{
-          return emojis[(v-1)%26];
+          return letters.charAt((v-1)%26);
         }
       }
       function convert(){
@@ -25,8 +25,8 @@
     </style>
   </head>
   <body>
-    <h1>Emojis Notation Calculator</h1>
-    This is a calculator which converts from powers of 10 to the Emojis notation used in <a href="http://ivark.github.io">Antimatter Dimensions</a>.<br>
+    <h1>Letters Notation Calculator</h1>
+    This is a calculator which converts from powers of 10 to the notation which uses letter in index order.<br>
     Input: e<input id="input" type="text" onchange="convert()"><br>
     <button onclick="convert()">Calculate!</button><br>
     Output: <input id="output" type="text" readonly>
