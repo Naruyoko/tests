@@ -8,9 +8,9 @@
         if (v.length==0){
           return 0;
         }else if (v.length>=2){
-          return 26*sequence(v.substr(0,v.length-1))+letters.search(v.charAt(0))+1;
+          return 26*sequence(v.substr(0,v.length-1))+letters.search(v.charAt(v.length-1))+1;
         }else{
-          return letters.search(v.charAt(0))+1;
+          return letters.search(v.charAt(v-length-1))+1;
         }
       }
       function convert(){
