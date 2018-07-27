@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Weak Goodstein Function Calculator</title>
+    <script>
+      function weakgoodstein(x){
+        console.log(x+">");
+        if (x===0){return 2;}
+        if (x<0){return undefined;}
+        var c=[];
+        while (x!==0){
+          c.push(x%2);
+          x=Math.floor(x/2);
+        }
+        console.log("2:"+JSON.stringify(c));
+        var b=2;
+        while (c.length!==0){
+          b++;
+          c[0]--;
+          var i=0;
+          while (c[i]<0){
+            c[i]+=b;
+            c[i+1]--;
+            i++;
+          }
+          if (c[c.length-1]===0){
+            c.pop();
+          }
+          console.log(b+":"+JSON.stringify(c));
+        }
+        console.log("<");
+        return b;
+      }
+    </script>
+    <style>
+      * {font-family:"Verdana",sans-serif;}
+    </style>
+  </head>
+  <body>
+    <h1>Weak Goodstein Function Calculator</h1>
+    Input: <input type="text" id="input" value="0"><br>
+    <button onclick="document.getElementById('output').value=weakgoodstein(Number(document.getElementById('input').value))">Calculate</button><br>
+    Output: <input type="text" id="output" readonly>
+  </body>
+</html>
