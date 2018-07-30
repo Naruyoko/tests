@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chinese/Japanese Number Names Calculator</title>
+    <script src="./break_break_infinity.js"></script>
+    <script>
+      var limit=true;
+      function toggle(){
+        limit=!limit;
+        if (limit){
+          document.getElementById("option").innerHTML="Up to 9999.999...無量大数";
+        }else{
+          document.getElementById("option").innerHTML="Unlimited";
+        }
+        run();
+      }
+      function notation(value){
+        var numbernames=["","万","億","兆","京","垓","𥝱","穣","溝","澗","正","載","極","恒河沙","阿僧祇","那由多","不可思議","無量大数"];
+        var HIGHEST_UNIT=new Decimal(1e68);
+        if (limit&&value.gte(HIGHEST_UNIT.mul(1e+4))){
+          return "Number exceeded the limit of normal form";
+        }
+        return new Decimal(value.mantissa).mul(Decimal.pow10(value.exponent.toNumber()%4)).toFixed(2)+" "+numbernames[Math.floor((value.exponent.toNumber()%HIGHEST_UNIT.exponent.toNumber())/4)]+"無量大数".repeat(Math.floor(value.exponent.toNumber()/HIGHEST_UNIT.exponent.toNumber()));
+      }
+      function run(){
+        document.getElementById("output").innerHTML=notation(new Decimal(document.getElementById("input").value));
+      }
+    </script>
+    <style>
+      * {font-family:"Verdana",sans-serif;font-size:18px;}
+    </style>
+  </head>
+  <body>
+    <h1>Chinese/Japanese Number Names Calculator</h1>
+    <input id="input" value="0" onchange="run()"><br>
+    <button id="option" onclick="toggle()">Up to 9999.999...無量大数</button><br>
+    Your number is denotated as: <span id="output">0</span>.
+  </body>
+</html>
