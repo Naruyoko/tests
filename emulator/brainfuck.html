@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Brainfuck Emulator</title>
+    <script>
+      var runinterval;
+      function run(){
+        var memory=[0];
+        var programpointer=0;
+        var datapointer=0;
+        var pointerchar="";
+        var looppointer=[];
+        var steps=0;
+        document.getElementById("output").value="";
+        document.getElementById("tape").rows[0].innerHTML="<td style=\"background-color:#ffe0e0\">0</td>";
+        document.getElementById("compiled").innerHTML=document.getElementById("program").value;
+        document.getElementById("compiled").style.display="";
+        document.getElementById("program").style.display="none";
+        function step(){
+          steps++;
+          pointerchar=document.getElementById("program").value.charAt(programpointer);
+          document.getElementById("compiled").innerHTML=document.getElementById("program").value.substring(0,programpointer)+"<span style=\"background-color:black;color:white;\">"+pointerchar+"</span>"+document.getElementById("program").value.substr(programpointer+1,document.getElementById("program").value.length-1);
+          console.log(steps+":"+pointerchar);
+          if (pointerchar==">"){
+            document.getElementById("tape").rows[0].cells[datapointer].style.backgroundColor="";
+            datapointer++;
+            if (datapointer==memory.length){
+              memory.push(0);
+              document.getElementById("tape").rows[0].innerHTML+="<td>0</td>";
+            }
+            document.getElementById("tape").rows[0].cells[datapointer].style.backgroundColor="#ffe0e0";
+          }else if (pointerchar=="<"){
+            document.getElementById("tape").rows[0].cells[datapointer].style.backgroundColor="";
+            datapointer--;
+            if (datapointer<0){
+              output("Error");
+            }
+            document.getElementById("tape").rows[0].cells[datapointer].style.backgroundColor="#ffe0e0";
+          }else if (pointerchar=="+"){
+            memory[datapointer]++;
+            if (!document.getElementById("extendvalue").checked){
+              memory[datapointer]=memory[datapointer]%256;
+            }
+            document.getElementById("tape").rows[0].cells[datapointer].innerHTML=memory[datapointer];
+          }else if (pointerchar=="-"){
+            memory[datapointer]--;
+            if (!document.getElementById("extendvalue").checked){
+              memory[datapointer]=(memory[datapointer]+256)%256;
+            }
+            document.getElementById("tape").rows[0].cells[datapointer].innerHTML=memory[datapointer];
+          }else if (pointerchar=="."){
+            output(memory[datapointer]);
+          }else if (pointerchar==","){
+            memory[datapointer]=prompt(">");
+          }else if (pointerchar=="["){
+            if (memory[datapointer]){
+              looppointer.push(programpointer);
+            }else{
+              programpointer++;
+              for (var i=1;(programpointer<=document.getElementById("program").value.length)&&(i>0);programpointer++){
+                if (document.getElementById("program").value.charAt(programpointer)=="["){
+                  i++;
+                }else if (document.getElementById("program").value.charAt(programpointer)=="]"){
+                  i--;
+                }
+              }
+              programpointer--;
+              if (programpointer>=document.getElementById("program").value.length){
+                output("Error");
+              }
+            }
+          }else if (pointerchar=="]"){
+            if (!looppointer.length){
+              output("Error");
+            }else if (memory[datapointer]){
+              programpointer=looppointer[looppointer.length-1];
+            }else{
+              looppointer.pop();
+            }
+          }
+          programpointer++;
+          if ((document.getElementById("output").value=="")&&(programpointer>=document.getElementById("program").value.length)){
+            output(null);
+          }
+        }
+        runinterval=setInterval(step,Number(document.getElementById("delay").value));
+      }
+      function output(val){
+        document.getElementById("output").value=String(val);
+        document.getElementById("program").style.display="";
+        document.getElementById("compiled").style.display="none";
+        clearInterval(runinterval);
+      }
+    </script>
+    <style>
+      * {font-family:"Verdana",sans-serif;}
+      td {border-collapse:collapse;background-color:#e0e0e0;border:1px #a0a0a0 solid;width:16px;height:16px;font-size:14px;text-align:center;}
+    </style>
+  </head>
+  <body>
+    <h1 style="font-size:22px">Brainfuck Emulator</h1>
+    <table id="tape" style="position:relative;left:20px;">
+      <tr>
+        <td>0</td>
+      </tr>
+    </table>
+    <button onclick="run()">Run</button><div style="width:30px;display:inline-block;"></div>
+    Extended data values: <input id="extendvalue" type="checkbox"><div style="width:30px;display:inline-block;"></div>
+    Delay: <input id="delay" type="number" style="width:60px" step="10" value="1000" max="10000" min="10">ms<div style="width:30px;display:inline-block;"></div>
+    Result: <input id="output" style="width:40px" readonly><br>
+    <textarea id="program" style="margin:auto;width:95%;height:400px;font-size:16px;background-color:#e0e0e0;border:1px #a0a0a0 solid;padding:2px;resize:none;"></textarea><br>
+    <div id="compiled" style="margin:auto;width:95%;height:400px;font-size:16px;background-color:#e0e0e0;border:1px #a0a0a0 solid;padding:2px;display:none;"></div>
+    <p>
+      Brainfuck is a small programming language by Urban Müller. It consists of eight commands. The only difference is . command, which because this can hold larger value than byte, the program will terminate instead of allowing multi-byte output.
+    </p>
+  </body>
+</html>
