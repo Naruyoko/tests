@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>#weird-game at Incremental Unlimited Simulator v2</title>
+    <style>
+      * {
+        font-family:"Verdana",sans-serif;
+      }
+    </style>
+    <script src="break_break_infinity.js"></script>
+    <script>
+      var progress=new Decimal(1);
+      var messages=new Decimal(0);
+      var value=new Decimal(0);
+      var lv={level:new Decimal(0),xp:{cur:new Decimal(0),req:new Decimal(0),total:new Decimal(0)}};
+      function notation(n,d=4,m=false){
+        return m?(new Decimal(n).toFixed(d)):(new Decimal(n).toPrecision(d));
+      }
+      function notval(n){
+        return [notation(n[0],0,true),notation(n[1],0,true),notation(n[2],0,true)];
+      }
+      function lvreq(lv){return Decimal.round(lv.pow(2).times(20).plus(lv.times(50)).plus(100));}
+      function acculvreq(lv){return Decimal.round(lv.pow(3).times(20/3).plus(lv.pow(2).times(35)).plus(lv.times(385/3)).plus(100));}// (n^3+3n^2+n)/6*20+(n^2+n)/2*50+100n+100
+      function rev(a){
+        var b=a;
+        return b.reverse();
+      }
+      function valarr(n){
+        if (n.lt(150000)){
+          return [n.minus(n.div(30).floor().times(30)),n.minus(n.div(1500).floor().times(1500)).div(30).floor(),n.div(1500).floor()];
+        }else{
+          var w=n.minus(150000).times(2).plus(0.25).sqrt().minus(0.5).floor().plus(100);
+          return [n.minus(n.div(30).floor().times(30)),n.minus(1500000).minus(w.minus(100).pow(2).plus(w).div(2)),w];
+        }
+      }
+      function count(i){
+        messages+=i;
+        gainxp(i);
+        for (;i>1;i--){
+          increment(progress);
+        }
+        document.getElementById("curinc").innerHTML=progress.toString();
+        increment(progress);
+        document.getElementById("curstage").innerHTML=rev(value);
+        document.getElementById("curorder").innerHTML=messages+(messages%10==1?"st":(messages%10==2?"nd":(messages%10==3?"rd":"th")));
+        document.getElementById("nextinc").innerHTML=rev(inc(progress));
+        document.getElementById("level").innerHTML=lv.level+" LV, "+lv.xp.cur+"/"+lv.xp.req;
+        document.getElementById("totalxp").innerHTML=lv.xp.total+"/"+acculvreq(lv.level);
+        return value;
+      }
+      function increment(n){
+        value=value.plus(n);
+        var a=valarr(n)
+        progress=value.div(1500).floor().times(5).plus(value.minus().gte(25)?5:(value[1].gte(10)?2:0))+1;
+      }
+      function gainxp(i){
+        var a=0;
+        for (var j=0;j<Math.max(i-1,1000);j++){
+          a+=Math.round(50+50*Math.random());
+        }
+        a*=Math.min((i-1)/1000,1);
+        lv.xp.total=lv.xp.total.plus(Math.floor(a));
+        lv.xp.cur=lv.xp.cur.plus(Math.floor(a));
+        var a=Math.round(50+50*Math.random());
+        lv.xp.total=lv.xp.total.plus(a);
+        lv.xp.cur=lv.xp.cur.plus(a);
+        document.getElementById("xpinc").innerHTML=a;
+        while (lv.xp.cur.gte(lvreq(lv.level))){
+          lv.xp.cur=lv.xp.cur.minus(lvreq(lv.level));
+          lv.level=lv.level.plus(1);
+        }
+        lv.xp.req=lvreq(lv.level);
+      }
+    </script>
+  </head>
+  <body>
+    <h1><u>#weird-game at <i>Incremental Unlimited</i></u> v2</h1>
+    <p>
+      Play the original <a href="https://discord.gg/sueAZQ">here</a>. Be sure to look into the pinned message for rules.<br>
+      <i>Incremental Unlimited</i> by marath007.<br>
+      The original game by <span title="MrGerman#5241">MrGerman</span>.<br>
+      v2 by Naruyoko.
+    </p>
+    <p>
+      Current Stage: <span id="curstage">0,0,0</span>. - <span id="curorder">0th</span> (+<span id="curinc">0,0,0</span>.)<br>
+      Next Increase: <span id="nextinc">0,0,1</span>.<br>
+      XP: <span id="level">0 LV, 0/100</span> XP - <span id="totalxp">0/100</span> XP (+<span id="xpinc">0</span> XP)<br>
+      <button onclick="count(1)">+1</button>
+      <!--<button onclick="count(10)">+10</button>
+      <button onclick="count(100)">+100</button>
+      <button onclick="count(1000)">+1000</button>
+      <button onclick="count(Math.floor(document.getElementById(&quot;input&quot;).value))">+</button><input id="input" style="width:100px" type="number" value="1" min="1" step="1">-->
+    </p>
+  </body>
+</html>
