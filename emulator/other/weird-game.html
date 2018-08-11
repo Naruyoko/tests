@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Emulators/Simulators - #weird-game at Incremental Unlimited Simulator</title>
+    <style>
+      * {
+        font-family:"Verdana",sans-serif;
+      }
+    </style>
+    <script>
+      var progress=1;
+      var messages=0;
+      var value=[0,0,0];
+      function inc(n){return [n%30,Math.floor(n/30)%50,Math.floor(n/1500)];}
+      function rev(a){return [a[2],a[1],a[0]];}
+      function count(i){
+        messages+=i;
+        for (;i>1;i--){
+          increment(progress);
+        }
+        document.getElementById("curinc").innerHTML=rev(inc(progress));
+        increment(progress);
+        document.getElementById("curstage").innerHTML=rev(value);
+        document.getElementById("curorder").innerHTML=messages+(messages%10==1?"st":(messages%10==2?"nd":(messages%10==3?"rd":"th")));
+        document.getElementById("nextinc").innerHTML=rev(inc(progress));
+        return value;
+      }
+      function increment(n){
+        for (var i=0;i<3;i++){
+          value[i]+=inc(n)[i];
+        }
+        if (value[0]>=30){
+          value[0]-=30;
+          value[1]++;
+        }
+        while (value[1]>=50){
+          value[1]-=50;
+          value[2]++;
+        }
+        progress=5*value[2]+(value[1]>=25?5:(value[1]>=10?2:0))+1;
+      }
+    </script>
+  </head>
+  <body>
+    <h1><u>#weird-game at <i>Incremental Unlimited</i></u> Simulator</h1>
+    <p>
+      Play it <a href="https://discord.gg/sueAZQ">here</a>. Be sure to look into the pinned message for rules.
+      <i>Incremental Unlimited</i> by marath007.<br>
+      The game by <span title="MrGerman#5241">MrGerman</span>.
+    </p>
+    <p>
+      Current Stage: <span id="curstage">0,0,0</span>. - <span id="curorder">0th</span> (+<span id="curinc">0,0,0</span>.)<br>
+      Next Increase: <span id="nextinc">0,0,1</span>.<br>
+      <button onclick="count(1)">+1</button>
+      <button onclick="count(10)">+10</button>
+      <button onclick="count(100)">+100</button>
+      <button onclick="count(1000)">+1000</button>
+      <button onclick="count(Math.floor(document.getElementById(&quot;input&quot;).value))">+</button><input id="input" style="width:50px" type="number" value="1" min="1" step="1">
+  </body>
+</html>
