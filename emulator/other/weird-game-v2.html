@@ -38,7 +38,7 @@
           return [n.minus(n.div(30).floor().times(30)),n.minus(n.div(1500).floor().times(1500)).div(30).floor(),n.div(1500).floor()];
         }else{
           var w=n.div(30).floor().times(2).minus(29799/4).sqrt().plus(99/2).floor();
-          return [n.minus(n.div(30).floor().times(30)),n.minus(w.pow(2).div(2).minus(n.times(99/2)).plus(4950)),w];
+          return [n.minus(n.div(30).floor().times(30)),n.minus(w.minus(100).pow(2).plus(w.minus(100)).plus(w.times(50))),w];
         }
       }
       function updatestage(){
