@@ -9,15 +9,62 @@
     </style>
     <script src="break_break_infinity.js"></script>
     <script>
-      var progress;
-      var messages;
-      var value;
-      var lv=
-      {level:new Decimal(0),xp:{cur:new Decimal(0),req:new Decimal(0),total:new Decimal(0)}};
-      var wins=0;
-      var upgrades={xpmult:0,xpskip:false};
+      var player={
+        progress:null,
+        messages:null,
+        value:null,
+        lv:
+        {level:new Decimal(0),xp:{cur:new Decimal(0),req:new Decimal(0),total:new Decimal(0)}},
+        wins:0,
+        upgrades:{xpmult:0,xpskip:false}
+      }
       function onload(){
         resetstage();
+      }
+      function save(){
+        var a=Math.floor(Math.random()*64);
+        localStorage.setItem("save",rotbase64(btoa(JSON.stringify(player)),a)+":"+String.fromCharCode(a+64));
+        document.getElementById("saved").style.display="";
+        setTimeout(function (){document.getElementById("saved").style.display="none";},3000);
+        return true;
+      }
+      function load(){
+        var a=localStorage.getItem("save");
+        if (!a||(a.charAt(a.length-2)!=":")){
+          document.getElementById("loadfailed").style.display="";
+          setTimeout(function (){document.getElementById("loadfailed").style.display="none";},3000);
+          return false;
+        }
+        try{
+          atob(rotbase64(a.substr(0,a.length-2),-1*(a.charCodeAt(a.length-1))+128));
+        }catch(e){
+          document.getElementById("loadfailed").style.display="";
+          setTimeout(function (){document.getElementById("loadfailed").style.display="none";},3000);
+          return false;
+        }
+        player=Object.assign(player,atob(rotbase64(a.substr(0,a.length-2),-1*a.charCodeAt(a.length-1)+128)));
+        updatestage();
+        updatelv();
+        document.getElementById("loaded").style.display="";
+        setTimeout(function (){document.getElementById("loaded").style.display="none";},3000);
+        return true;
+      }
+      function rotbase64(instr,rot){
+        const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        var outstr="";
+        for (var i=0;i<instr.length;i++){
+          if (["+","/"].includes(instr.charAt(i))){
+            var v=chars.search("\\"+instr.charAt(i));
+          }else{
+            var v=chars.search(instr.charAt(i));
+          }
+          if (v!=-1){
+            outstr+=chars.charAt((v+rot)%64);
+          }else{
+            outstr+=instr.charAt(i);
+          }
+        }
+        return outstr;
       }
       function notation(n,d=4,m=false){
         return m?(new Decimal(n).toFixed(d)):(new Decimal(n).toPrecision(d));
@@ -42,92 +89,92 @@
         }
       }
       function updatestage(){
-        document.getElementById("curstage").innerHTML=notval(value);
-        document.getElementById("curorder").innerHTML=messages+(messages%10==1?"st":(messages%10==2?"nd":(messages%10==3?"rd":"th")));
-        document.getElementById("nextinc").innerHTML=progress.toString();
-        document.getElementById("wins").innerHTML=wins;
+        document.getElementById("curstage").innerHTML=notval(player.value);
+        document.getElementById("curorder").innerHTML=player.messages+(player.messages%10==1?"st":(player.messages%10==2?"nd":(player.messages%10==3?"rd":"th")));
+        document.getElementById("nextinc").innerHTML=player.progress.toString();
+        document.getElementById("wins").innerHTML=player.wins;
       }
       function updatelv(){
-        lv.xp.cur=lv.xp.total;
-        lv.level=new Decimal(0);
-        while (lv.xp.cur.gte(lvreq(lv.level))){
-          lv.xp.cur=lv.xp.cur.minus(lvreq(lv.level));
-          lv.level=lv.level.plus(1);
+        player.lv.xp.cur=player.lv.xp.total;
+        player.lv.level=new Decimal(0);
+        while (player.lv.xp.cur.gte(lvreq(player.lv.level))){
+          player.lv.xp.cur=player.lv.xp.cur.minus(lvreq(player.lv.level));
+          player.lv.level=player.lv.level.plus(1);
         }
-        lv.xp.req=lvreq(lv.level);
-        document.getElementById("level").innerHTML=lv.level.toString()+" LV, "+lv.xp.cur.toString()+"/"+lv.xp.req.toString();
-        document.getElementById("totalxp").innerHTML=lv.xp.total.toString()+"/"+acculvreq(lv.level);
+        player.lv.xp.req=lvreq(player.lv.level);
+        document.getElementById("level").innerHTML=player.lv.level.toString()+" LV, "+player.lv.xp.cur.toString()+"/"+player.lv.xp.req.toString();
+        document.getElementById("totalxp").innerHTML=player.lv.xp.total.toString()+"/"+acculvreq(player.lv.level);
       }
       function count(i){
-        messages=messages.plus(i);
+        player.messages=player.messages.plus(i);
         gainxp(i);
         for (;i>1;i--){
-          increment(progress);
+          increment(player.progress);
         }
-        document.getElementById("curinc").innerHTML=progress.toString();
-        increment(progress);
+        document.getElementById("curinc").innerHTML=player.progress.toString();
+        increment(player.progress);
         updatestage();
-        document.getElementById("level").innerHTML=lv.level.toString()+" LV, "+lv.xp.cur.toString()+"/"+lv.xp.req.toString();
-        document.getElementById("totalxp").innerHTML=lv.xp.total.toString()+"/"+acculvreq(lv.level);
-        if (lv.level.gte(10)){
+        document.getElementById("level").innerHTML=player.lv.level.toString()+" LV, "+player.lv.xp.cur.toString()+"/"+player.lv.xp.req.toString();
+        document.getElementById("totalxp").innerHTML=player.lv.xp.total.toString()+"/"+acculvreq(player.lv.level);
+        if (player.lv.level.gte(10)){
           document.getElementById("xpmultbtn").style.display="";
         }
-        if (valarr(value)[2].gte(10)){
+        if (valarr(player.value)[2].gte(10)){
           document.getElementById("winbtn").style.display="";
         }
-        if (valarr(value)[2].gte(500)){
+        if (valarr(player.value)[2].gte(500)){
           document.getElementById("xpskipbtn").style.display="";
         }
-        return value;
+        return player.value;
       }
       function increment(n){
-        value=value.plus(n);
-        var a=valarr(value)
-        progress=a[2].times(5).plus(a[1].gte(a[2].minus(50).max(50).div(2))?5:(a[1].gte(a[2].minus(50).max(50).div(5))?2:0)).plus(1);
+        player.value=player.value.plus(n);
+        var a=valarr(player.value)
+        player.progress=a[2].times(5).plus(a[1].gte(a[2].minus(50).max(50).div(2))?5:(a[1].gte(a[2].minus(50).max(50).div(5))?2:0)).plus(1);
       }
       function gainxp(i){
         var a=0;
-        var k=upgrades.xpskip?Decimal.mul(i,valarr(value)[2].sqrt().floor()):new Decimal(i);
+        var k=player.upgrades.xpskip?Decimal.mul(i,player.progress.sqrt().floor()):new Decimal(i);
         for (var j=0;j<Math.min(k.toNumber()-1,1000);j++){
           a+=Math.round(50+50*Math.random());
         }
-        a=Decimal.mul(a,k.minus(1).div(1000).min(1)).mul(Decimal.pow(2,upgrades.xpmult)).floor();
-        lv.xp.total=lv.xp.total.plus(a);
-        lv.xp.cur=lv.xp.cur.plus(a);
-        var a=Decimal.round(Decimal.mul(50+50*Math.random(),Decimal.pow(2,upgrades.xpmult)));
-        lv.xp.total=lv.xp.total.plus(a);
-        lv.xp.cur=lv.xp.cur.plus(a);
+        a=Decimal.mul(a,k.minus(1).div(1000).min(1)).mul(Decimal.pow(2,player.upgrades.xpmult)).floor();
+        player.lv.xp.total=player.lv.xp.total.plus(a);
+        player.lv.xp.cur=player.lv.xp.cur.plus(a);
+        var a=Decimal.round(Decimal.mul(50+50*Math.random(),Decimal.pow(2,player.upgrades.xpmult)));
+        player.lv.xp.total=player.lv.xp.total.plus(a);
+        player.lv.xp.cur=player.lv.xp.cur.plus(a);
         document.getElementById("xpinc").innerHTML=a.toString();
-        while (lv.xp.cur.gte(lvreq(lv.level))){
-          lv.xp.cur=lv.xp.cur.minus(lvreq(lv.level));
-          lv.level=lv.level.plus(1);
+        while (player.lv.xp.cur.gte(lvreq(player.lv.level))){
+          player.lv.xp.cur=player.lv.xp.cur.minus(lvreq(player.lv.level));
+          player.lv.level=player.lv.level.plus(1);
         }
-        lv.xp.req=lvreq(lv.level);
+        player.lv.xp.req=lvreq(player.lv.level);
       }
       function buyxpmult(){
-        if (lv.level.gte(Decimal.pow(2,upgrades.xpmult).times(10))){
-          lv.xp.total=acculvreq(lv.level.minus(Decimal.pow(2,upgrades.xpmult).times(10)).minus(1)).plus(lv.xp.cur.div(lvreq(lv.level)).times(lvreq(lv.level.minus(Decimal.pow(2,upgrades.xpmult).times(10)).minus(1))).floor());
+        if (player.lv.level.gte(Decimal.pow(2,player.upgrades.xpmult).times(10))){
+          player.lv.xp.total=acculvreq(player.lv.level.minus(Decimal.pow(2,player.upgrades.xpmult).times(10)).minus(1)).plus(player.lv.xp.cur.div(lvreq(player.lv.level)).times(lvreq(player.lv.level.minus(Decimal.pow(2,player.upgrades.xpmult).times(10)).minus(1))).floor());
           updatelv();
-          upgrades.xpmult++;
-          document.getElementById("xpmultbtn").innerHTML="Double XP gain - "+Decimal.pow(2,upgrades.xpmult).times(10).toString()+" LV";
+          player.upgrades.xpmult++;
+          document.getElementById("xpmultbtn").innerHTML="Double XP gain - "+Decimal.pow(2,player.upgrades.xpmult).times(10).toString()+" LV";
         }
       }
       function buyxpskip(){
-        if (valarr(value)[2].gte(1000)&&!upgrades.xpskip){
+        if (valarr(player.value)[2].gte(1000)&&!player.upgrades.xpskip){
           resetstage();
-          upgrades.skip=true;
+          player.upgrades.skip=true;
           document.getElementById("xpskipbtn").innerHTML="Stage Skip affects XP gain with reduced effect. - Bought";
         }
       }
       function resetstage(upg=false){
-        progress=new Decimal(1);
-        if (!upg) messages=new Decimal(0);
-        value=new Decimal(0);
+        player.progress=new Decimal(1);
+        if (!upg) player.messages=new Decimal(0);
+        player.value=new Decimal(0);
         updatestage();
       }
       function win(){
-        if (valarr(value)[2].gte(10)){
-          wins++;
+        if (valarr(player.value)[2].gte(10)){
+          player.wins++;
           resetstage();
           updatestage();
           document.getElementById("windisp").style.display="";
@@ -158,6 +205,9 @@
     <p>
       <button id="xpmultbtn" onclick="buyxpmult()" style="display:none">Double XP gain - 10 LV</button>
       <button id="xpskipbtn" onclick="buyxpskip()" style="display:none">Stage Skip affects XP gain with reduced effect. - Reset more than 1000 Worlds</button>
+    </p>
+    <p>
+      <button onclick="save()">Save</button> <button onclick="load()">Load</button> <span id="saved" style="display:none">Saved</span><span id="loaded" style="display:none">Loaded</span><span id="loadfailed" style="display:none">Loading Failed</span>
     </p>
   </body>
 </html>
