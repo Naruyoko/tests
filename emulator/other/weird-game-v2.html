@@ -9,15 +9,20 @@
     </style>
     <script src="break_break_infinity.js"></script>
     <script>
-      var progress=new Decimal(1);
-      var messages=new Decimal(0);
-      var value=new Decimal(0);
-      var lv={level:new Decimal(0),xp:{cur:new Decimal(0),req:new Decimal(0),total:new Decimal(0)}};
+      var progress;
+      var messages;
+      var value;
+      resetstage();
+      var lv=
+      {level:new Decimal(0),xp:{cur:new Decimal(0),req:new Decimal(0),total:new Decimal(0)}};
+      var xpmultupg=0;
+      var wins=0;
       function notation(n,d=4,m=false){
         return m?(new Decimal(n).toFixed(d)):(new Decimal(n).toPrecision(d));
       }
       function notval(n){
-        return [notation(n[0],0,true),notation(n[1],0,true),notation(n[2],0,true)];
+        var a=valarr(n).reverse();
+        return [notation(a[0],0,true),notation(a[1],0,true),notation(a[2],0,true)];
       }
       function lvreq(lv){return Decimal.round(lv.pow(2).times(20).plus(lv.times(50)).plus(100));}
       function acculvreq(lv){return Decimal.round(lv.pow(3).times(20/3).plus(lv.pow(2).times(35)).plus(lv.times(385/3)).plus(100));}// (n^3+3n^2+n)/6*20+(n^2+n)/2*50+100n+100
@@ -26,32 +31,54 @@
         return b.reverse();
       }
       function valarr(n){
+        n=new Decimal(n);
         if (n.lt(150000)){
           return [n.minus(n.div(30).floor().times(30)),n.minus(n.div(1500).floor().times(1500)).div(30).floor(),n.div(1500).floor()];
         }else{
-          var w=n.minus(150000).times(2).plus(0.25).sqrt().minus(0.5).floor().plus(100);
-          return [n.minus(n.div(30).floor().times(30)),n.minus(1500000).minus(w.minus(100).pow(2).plus(w).div(2)),w];
+          var w=n.minus(148725).times(2).plus(0.25).sqrt().minus(0.5).floor().plus(50);
+          return [n.minus(n.div(30).floor().times(30)),n.minus(148725).minus(w.minus(50).pow(2).plus(w).div(2)),w];
         }
       }
+      function updatestage(){
+        document.getElementById("curstage").innerHTML=notval(value);
+        document.getElementById("curorder").innerHTML=messages+(messages%10==1?"st":(messages%10==2?"nd":(messages%10==3?"rd":"th")));
+        document.getElementById("nextinc").innerHTML=progress.toString();
+        document.getElementById("wins").innerHTML=wins;
+      }
+      function updatelv(){
+        lv.xp.cur=lv.xp.total;
+        lv.level=new Decimal(0);
+        while (lv.xp.cur.gte(lvreq(lv.level))){
+          lv.xp.cur=lv.xp.cur.minus(lvreq(lv.level));
+          lv.level=lv.level.plus(1);
+        }
+        lv.xp.req=lvreq(lv.level);
+        document.getElementById("level").innerHTML=lv.level.toString()+" LV, "+lv.xp.cur.toString()+"/"+lv.xp.req.toString();
+        document.getElementById("totalxp").innerHTML=lv.xp.total.toString()+"/"+acculvreq(lv.level);
+      }
       function count(i){
-        messages+=i;
+        messages=messages.plus(i);
         gainxp(i);
         for (;i>1;i--){
           increment(progress);
         }
         document.getElementById("curinc").innerHTML=progress.toString();
         increment(progress);
-        document.getElementById("curstage").innerHTML=rev(value);
-        document.getElementById("curorder").innerHTML=messages+(messages%10==1?"st":(messages%10==2?"nd":(messages%10==3?"rd":"th")));
-        document.getElementById("nextinc").innerHTML=rev(inc(progress));
-        document.getElementById("level").innerHTML=lv.level+" LV, "+lv.xp.cur+"/"+lv.xp.req;
-        document.getElementById("totalxp").innerHTML=lv.xp.total+"/"+acculvreq(lv.level);
+        updatestage();
+        document.getElementById("level").innerHTML=lv.level.toString()+" LV, "+lv.xp.cur.toString()+"/"+lv.xp.req.toString();
+        document.getElementById("totalxp").innerHTML=lv.xp.total.toString()+"/"+acculvreq(lv.level);
+        if (lv.level.gte(10)){
+          document.getElementById("xpmultupgbtn").style.display="";
+        }
+        if (valarr(value)[2].gte(10)){
+          document.getElementById("winbtn").style.display="";
+        }
         return value;
       }
       function increment(n){
         value=value.plus(n);
-        var a=valarr(n)
-        progress=value.div(1500).floor().times(5).plus(value.minus().gte(25)?5:(value[1].gte(10)?2:0))+1;
+        var a=valarr(value)
+        progress=a[2].times(5).plus(a[1].gte(a[2].minus(50).max(50).div(2))?5:(a[1].gte(a[2].minus(50).max(50).div(5))?2:0)).plus(1);
       }
       function gainxp(i){
         var a=0;
@@ -59,17 +86,40 @@
           a+=Math.round(50+50*Math.random());
         }
         a*=Math.min((i-1)/1000,1);
+        a=Decimal.mul(a,Decimal.pow(2,xpmultupg)).floor();
         lv.xp.total=lv.xp.total.plus(Math.floor(a));
         lv.xp.cur=lv.xp.cur.plus(Math.floor(a));
-        var a=Math.round(50+50*Math.random());
+        var a=Decimal.round(Decimal.mul(50+50*Math.random(),Decimal.pow(2,xpmultupg)));
         lv.xp.total=lv.xp.total.plus(a);
         lv.xp.cur=lv.xp.cur.plus(a);
-        document.getElementById("xpinc").innerHTML=a;
+        document.getElementById("xpinc").innerHTML=a.toString();
         while (lv.xp.cur.gte(lvreq(lv.level))){
           lv.xp.cur=lv.xp.cur.minus(lvreq(lv.level));
           lv.level=lv.level.plus(1);
         }
         lv.xp.req=lvreq(lv.level);
+      }
+      function buyxpmultupg(){
+        if (lv.level.gte(Decimal.pow(2,xpmultupg).times(10))){
+          lv.xp.total=acculvreq(lv.level.minus(Decimal.pow(2,xpmultupg).times(10)).minus(1)).plus(lv.xp.cur);
+          updatelv();
+          xpmultupg++;
+          document.getElementById("xpmultupgbtn").innerHTML="Double XP gain - "+Decimal.pow(2,xpmultupg).times(10).toString()+" LV";
+        }
+      }
+      function resetstage(){
+        progress=new Decimal(1);
+        messages=new Decimal(0);
+        value=new Decimal(0);
+      }
+      function win(){
+        if (valarr(value)[2].gte(10)){
+          wins++;
+          resetstage();
+          updatestage();
+          document.getElementById("windisp").style.display="";
+          document.getElementById("winbtn").style.display="none";
+        }
       }
     </script>
   </head>
@@ -82,14 +132,18 @@
       v2 by Naruyoko.
     </p>
     <p>
-      Current Stage: <span id="curstage">0,0,0</span>. - <span id="curorder">0th</span> (+<span id="curinc">0,0,0</span>.)<br>
-      Next Increase: <span id="nextinc">0,0,1</span>.<br>
+      Current Stage: <span id="curstage">0,0,0</span>. - <span id="curorder">0th</span> (+<span id="curinc">0</span>.) <button id="winbtn" onclick="win()" style="display:none">Win!</button><br>
+      Next Increase: <span id="nextinc">1</span>.<br>
       XP: <span id="level">0 LV, 0/100</span> XP - <span id="totalxp">0/100</span> XP (+<span id="xpinc">0</span> XP)<br>
+      <div id="windisp" style="display:none">Wins: <span id="wins">0</span></div>
       <button onclick="count(1)">+1</button>
       <!--<button onclick="count(10)">+10</button>
       <button onclick="count(100)">+100</button>
       <button onclick="count(1000)">+1000</button>
       <button onclick="count(Math.floor(document.getElementById(&quot;input&quot;).value))">+</button><input id="input" style="width:100px" type="number" value="1" min="1" step="1">-->
+    </p>
+    <p>
+      <button id="xpmultupgbtn" onclick="buyxpmultupg()" style="display:none">Double XP gain - 10 LV</button>
     </p>
   </body>
 </html>
