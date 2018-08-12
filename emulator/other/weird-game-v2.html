@@ -12,11 +12,13 @@
       var progress;
       var messages;
       var value;
-      resetstage();
       var lv=
       {level:new Decimal(0),xp:{cur:new Decimal(0),req:new Decimal(0),total:new Decimal(0)}};
-      var xpmultupg=0;
       var wins=0;
+      var upgrades={xpmult:0,xpskip:false};
+      function onload(){
+        resetstage();
+      }
       function notation(n,d=4,m=false){
         return m?(new Decimal(n).toFixed(d)):(new Decimal(n).toPrecision(d));
       }
@@ -35,8 +37,8 @@
         if (n.lt(150000)){
           return [n.minus(n.div(30).floor().times(30)),n.minus(n.div(1500).floor().times(1500)).div(30).floor(),n.div(1500).floor()];
         }else{
-          var w=n.minus(148725).times(2).plus(0.25).sqrt().minus(0.5).floor().plus(50);
-          return [n.minus(n.div(30).floor().times(30)),n.minus(148725).minus(w.minus(50).pow(2).plus(w).div(2)),w];
+          var w=n.div(30).floor().times(2).minus(29799/4).sqrt().plus(99/2).floor();
+          return [n.minus(n.div(30).floor().times(30)),n.minus(w.pow(2).div(2).minus(n.times(99/2)).plus(4950)),w];
         }
       }
       function updatestage(){
@@ -68,10 +70,13 @@
         document.getElementById("level").innerHTML=lv.level.toString()+" LV, "+lv.xp.cur.toString()+"/"+lv.xp.req.toString();
         document.getElementById("totalxp").innerHTML=lv.xp.total.toString()+"/"+acculvreq(lv.level);
         if (lv.level.gte(10)){
-          document.getElementById("xpmultupgbtn").style.display="";
+          document.getElementById("xpmultbtn").style.display="";
         }
         if (valarr(value)[2].gte(10)){
           document.getElementById("winbtn").style.display="";
+        }
+        if (valarr(value)[2].gte(500)){
+          document.getElementById("xpskipbtn").style.display="";
         }
         return value;
       }
@@ -82,14 +87,14 @@
       }
       function gainxp(i){
         var a=0;
-        for (var j=0;j<Math.max(i-1,1000);j++){
+        var k=upgrades.xpskip?Decimal.mul(i,valarr(value)[2].sqrt().floor()):new Decimal(i);
+        for (var j=0;j<Math.min(k.toNumber()-1,1000);j++){
           a+=Math.round(50+50*Math.random());
         }
-        a*=Math.min((i-1)/1000,1);
-        a=Decimal.mul(a,Decimal.pow(2,xpmultupg)).floor();
-        lv.xp.total=lv.xp.total.plus(Math.floor(a));
-        lv.xp.cur=lv.xp.cur.plus(Math.floor(a));
-        var a=Decimal.round(Decimal.mul(50+50*Math.random(),Decimal.pow(2,xpmultupg)));
+        a=Decimal.mul(a,k.minus(1).div(1000).min(1)).mul(Decimal.pow(2,upgrades.xpmult)).floor();
+        lv.xp.total=lv.xp.total.plus(a);
+        lv.xp.cur=lv.xp.cur.plus(a);
+        var a=Decimal.round(Decimal.mul(50+50*Math.random(),Decimal.pow(2,upgrades.xpmult)));
         lv.xp.total=lv.xp.total.plus(a);
         lv.xp.cur=lv.xp.cur.plus(a);
         document.getElementById("xpinc").innerHTML=a.toString();
@@ -99,18 +104,26 @@
         }
         lv.xp.req=lvreq(lv.level);
       }
-      function buyxpmultupg(){
-        if (lv.level.gte(Decimal.pow(2,xpmultupg).times(10))){
-          lv.xp.total=acculvreq(lv.level.minus(Decimal.pow(2,xpmultupg).times(10)).minus(1)).plus(lv.xp.cur);
+      function buyxpmult(){
+        if (lv.level.gte(Decimal.pow(2,upgrades.xpmult).times(10))){
+          lv.xp.total=acculvreq(lv.level.minus(Decimal.pow(2,upgrades.xpmult).times(10)).minus(1)).plus(lv.xp.cur.div(lvreq(lv.level)).times(lvreq(lv.level.minus(Decimal.pow(2,upgrades.xpmult).times(10)).minus(1))).floor());
           updatelv();
-          xpmultupg++;
-          document.getElementById("xpmultupgbtn").innerHTML="Double XP gain - "+Decimal.pow(2,xpmultupg).times(10).toString()+" LV";
+          upgrades.xpmult++;
+          document.getElementById("xpmultbtn").innerHTML="Double XP gain - "+Decimal.pow(2,upgrades.xpmult).times(10).toString()+" LV";
         }
       }
-      function resetstage(){
+      function buyxpskip(){
+        if (valarr(value)[2].gte(1000)&&!upgrades.xpskip){
+          resetstage();
+          upgrades.skip=true;
+          document.getElementById("xpskipbtn").innerHTML="Stage Skip affects XP gain with reduced effect. - Bought";
+        }
+      }
+      function resetstage(upg=false){
         progress=new Decimal(1);
-        messages=new Decimal(0);
+        if (!upg) messages=new Decimal(0);
         value=new Decimal(0);
+        updatestage();
       }
       function win(){
         if (valarr(value)[2].gte(10)){
@@ -123,7 +136,7 @@
       }
     </script>
   </head>
-  <body>
+  <body onload="onload()">
     <h1><u>#weird-game at <i>Incremental Unlimited</i></u> v2</h1>
     <p>
       Play the original <a href="https://discord.gg/sueAZQ">here</a>. Be sure to look into the pinned message for rules.<br>
@@ -143,7 +156,8 @@
       <button onclick="count(Math.floor(document.getElementById(&quot;input&quot;).value))">+</button><input id="input" style="width:100px" type="number" value="1" min="1" step="1">-->
     </p>
     <p>
-      <button id="xpmultupgbtn" onclick="buyxpmultupg()" style="display:none">Double XP gain - 10 LV</button>
+      <button id="xpmultbtn" onclick="buyxpmult()" style="display:none">Double XP gain - 10 LV</button>
+      <button id="xpskipbtn" onclick="buyxpskip()" style="display:none">Stage Skip affects XP gain with reduced effect. - Reset more than 1000 Worlds</button>
     </p>
   </body>
 </html>
