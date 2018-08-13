@@ -42,7 +42,26 @@
           setTimeout(function (){document.getElementById("loadfailed").style.display="none";},3000);
           return false;
         }
-        player=Object.assign(player,atob(rotbase64(a.substr(0,a.length-2),-1*a.charCodeAt(a.length-1)+128)));
+        var decodedsave=atob(rotbase64(a.substr(0,a.length-2),-1*a.charCodeAt(a.length-1)+128));
+        /*var regex=/"/g;
+        var quotepositions=[];
+        while ((match=regex.exec(decodedsave))!=null){
+          if (decodedsave.charAt(match.index-1)!="\\") quotepositions.push(match.index);
+        }
+        while (quotepositions.length>1){
+          if (!isNaN(Number(decodedsave.substring(quotepositions[0],quotepositions[1])))){
+            decodedsave=decodedsave.substr(0,quotepositions[0])+"new Decimal("+decodedsave.substring(quotepositions[0],quotepositions[1])+")"+decodedsave.substring(quotepositions[1]+1,decodedsave.length-1);
+            quotepositions.forEach(function (i){i+=13;});
+            quotepositions.shift();
+          }
+          quotepositions.shift();
+        }*/
+        decodedsave=JSON.parse(decodedsave);
+        decodedsave.progress=decodedsave.progress&&new Decimal(decodedsave.progress);
+        decodedsave.messages=decodedsave.messages&&new Decimal(decodedsave.messages);
+        decodedsave.value=decodedsave.value&&new Decimal(decodedsave.value);
+        decodedsave.lv.xp.total=decodedsave.lv.xp.total&&new Decimal(decodedsave.lv.xp.total);
+        player=Object.assign(player,decodedsave);
         updatestage();
         updatelv();
         document.getElementById("loaded").style.display="";
