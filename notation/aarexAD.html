@@ -17,7 +17,7 @@
         var v=new Decimal(document.getElementById("input").value);
         for (var i=0;i<notations.length;i++){
           player.options.notation=notations[i];
-          document.getElementById(String(i)).innerHTML=formatValue(player.options.notation,v,3,3)
+          document.getElementById(String(i)).innerHTML=player.options.notation+": "+formatValue(player.options.notation,v,3,3)
         }
       }
       function onload(){
