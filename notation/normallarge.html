@@ -3,7 +3,7 @@
   function notation(i,op){
     var inum=Number(exp.text(i,"e"));
     if (isNaN(i[0])){return "NaN";}
-    if (!isFinite(i[0])){return "Infinity";}
+    if (!isFinite(i[0])){return i[0]>0?((i[1]?"-":"")+"Infinity"):"0";}
     if (inum<1000){return String(inum);}
     if ((inum>=1000)&&(inum<1e+6)){
       var h=inum;
