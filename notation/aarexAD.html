@@ -9,13 +9,50 @@
     </style>
     <script src="./aarexformat.js"></script>
     <script src="./logarithmica_numerus_lite.js"></script>
+    <script>
+      var player={options:{notation:"",commas:""}}
+      var notations=["Scientific","Engineering","Letters","Standard","Cancer","Mixed scientific","Mixed engineering","Logarithm","Brackets","Infinity","Greek","Game parcentages","Hexadecimal","Tetration","Hyperscientific","Psi","Morse code","AF5LN"];
+      function go(){
+        player.options.commas=document.getElementById("commas").value
+        var v=new Decimal(document.getElementById("input").value);
+        for (var i=0;i<notations.length;i++){
+          player.options.notation=notations[i];
+          document.getElementById(String(i)).innerHTML=formatValue(player.options.notation,v,3,3)
+        }
+      }
+      function onload(){
+        for (var i=0;i<notations.length;i++){
+          var option=document.createElement("option");
+          option.text=notations[i];
+          document.getElementById("commas").add(option);
+        }
+        go();
+      }
+    </script>
   </head>
-  <body>
+  <body onload="onload()">
     <h1>Aarex's AD notations</h1>
     <h2>Calculates all Aarex's AD's notations.</h2>
-    Input: <input id="input" type="text" value="1"><input id="commas" type="checkbox"><button onclick="go()">GO</button><br>
+    Input: <input id="input" type="text" onchange="go()" value="1"><select id="commas" onchange="go()"><option value="Commas">Commas</option><option value="Same notation">Same notation</option></select><button onclick="go()">GO</button><br>
     <ul>
-      <li></li>
+      <li id="0"></li>
+      <li id="1"></li>
+      <li id="2"></li>
+      <li id="3"></li>
+      <li id="4"></li>
+      <li id="5"></li>
+      <li id="6"></li>
+      <li id="7"></li>
+      <li id="8"></li>
+      <li id="9"></li>
+      <li id="10"></li>
+      <li id="11"></li>
+      <li id="12"></li>
+      <li id="13"></li>
+      <li id="14"></li>
+      <li id="15"></li>
+      <li id="16"></li>
+      <li id="17"></li>
     </ul>
   </body>
 </html>
