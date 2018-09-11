@@ -1,0 +1,13 @@
+<!DOCtYPE html>
+<html>
+  <head>
+    <script src="./script.js"></script>
+  </head>
+  <body>
+    <input id="input" type="text" style="margin:auto;width:90%;height:150px;"><br>
+    <p style="margin:auto">
+      rot<input id="rot" type="text" style="width:30px"><button onclick="document.getElementById(&quot;output&quot;).value=rotbase64(document.getElementById(&quot;input&quot;).value,Number(document.getElementById(&quot;rot&quot;).value))">Convert</button>
+    </p>
+    <input id="output" type="text" style="margin:auto;width:90%;height:150px;" readonly>
+  </body>
+</html>
