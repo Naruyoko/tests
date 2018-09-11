@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Encode - RotCode</title>
+    <style>
+      * {
+        font-family:"Verdana",sans-serif;
+      }
+    </style>
+    <script src="/tests/rot/base64/script.js"></script>
+    <script>
+      function encodedata(data){
+        var a=Math.floor(Math.random()*64);
+        var encodeddata=rotbase64(btoa(encodeURIComponent(data)),a)+":"+String.fromCharCode(a+64);
+        return encodeddata;
+      }
+      function decodedata(data){
+        if (!data||(data.charAt(data.length-2)!=":")){
+          throw "Invalid data";
+          return false;
+        }
+        try{
+          atob(decodeURIComponent(rotbase64(data.substr(0,data.length-2),-1*data.charCodeAt(data.length-1)+128)));
+        }catch(e){
+          throw "Invalid data";
+          return false;
+        }
+        return decodeddata=atob(decodeURIComponent(rotbase64(data.substr(0,data.length-2),-1*data.charCodeAt(data.length-1)+128)));
+      }
+    </script>
+  </head>
+  <body onload="onload()">
+    <h1>Encode - RotCode</h1>
+    <p>
+      <input id="input" type="text" style="margin:auto;width:90%;height:150px;"><br>
+      <button onclick="document.getElementById(&quot;output&quot;).value=encodedata(document.getElementById(&quot;input&quot;).value)">Encode</button>
+      <button onclick="document.getElementById(&quot;output&quot;).value=decodedata(document.getElementById(&quot;input&quot;).value)">Decode</button><br>
+      <input id="output" type="text" style="margin:auto;width:90%;height:150px;" readonly>
+    </p>
+  </body>
+</html>
