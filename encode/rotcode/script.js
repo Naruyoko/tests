@@ -9,10 +9,10 @@ function decodedata(data){
     return false;
   }
   try{
-    atob(decodeURIComponent(rotbase64(data.substr(0,data.length-2),-1*data.charCodeAt(data.length-1)+128)));
+    decodeURIComponent(atob(rotbase64(data.substr(0,data.length-2),-1*data.charCodeAt(data.length-1)+128)));
   }catch(e){
     throw "Invalid data";
     return false;
   }
-  return decodeddata=atob(decodeURIComponent(rotbase64(data.substr(0,data.length-2),-1*data.charCodeAt(data.length-1)+128)));
+  return decodeddata=decodeURIComponent(atob(rotbase64(data.substr(0,data.length-2),-1*data.charCodeAt(data.length-1)+128)));
 }
