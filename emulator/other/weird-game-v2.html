@@ -7,9 +7,9 @@
         font-family:"Verdana",sans-serif;
       }
     </style>
-    <script src="./package/break_break_infinity.js"></script>
-    <script src="/tests/encode/rotcode/rotcode.js"></script>
-    <script src="/tests/rot/base64/base64rot.js"></script>
+    <script src="https://naruyoko.github.io/tests/package/break_break_infinity.js"></script>
+    <script src="https://naruyoko.github.io/tests/encode/rotcode/rotcode.js"></script>
+    <script src="https://naruyoko.github.io/tests/rot/base64/base64rot.js"></script>
     <script>
       var player={
         progress:null,
@@ -24,40 +24,20 @@
         resetstage();
       }
       function save(){
-        var a=Math.floor(Math.random()*64);
-        localStorage.setItem("save",rotbase64(btoa(JSON.stringify(player)),a)+":"+String.fromCharCode(a+64));
+        localStorage.setItem("weird_game_v2.save",encodedata(JSON.stringify(player)));
         document.getElementById("saved").style.display="";
         setTimeout(function (){document.getElementById("saved").style.display="none";},3000);
         return true;
       }
       function load(){
-        var a=localStorage.getItem("save");
-        if (!a||(a.charAt(a.length-2)!=":")){
-          document.getElementById("loadfailed").style.display="";
-          setTimeout(function (){document.getElementById("loadfailed").style.display="none";},3000);
-          return false;
-        }
+        var a=localStorage.getItem("weird_game_v2.save");
+        if (!a) return false;
         try{
-          atob(rotbase64(a.substr(0,a.length-2),-1*(a.charCodeAt(a.length-1))+128));
+          var decodedsave=decodedata(a);
         }catch(e){
-          document.getElementById("loadfailed").style.display="";
-          setTimeout(function (){document.getElementById("loadfailed").style.display="none";},3000);
+          alert("Invalid save!");
           return false;
         }
-        var decodedsave=atob(rotbase64(a.substr(0,a.length-2),-1*a.charCodeAt(a.length-1)+128));
-        /*var regex=/"/g;
-        var quotepositions=[];
-        while ((match=regex.exec(decodedsave))!=null){
-          if (decodedsave.charAt(match.index-1)!="\\") quotepositions.push(match.index);
-        }
-        while (quotepositions.length>1){
-          if (!isNaN(Number(decodedsave.substring(quotepositions[0],quotepositions[1])))){
-            decodedsave=decodedsave.substr(0,quotepositions[0])+"new Decimal("+decodedsave.substring(quotepositions[0],quotepositions[1])+")"+decodedsave.substring(quotepositions[1]+1,decodedsave.length-1);
-            quotepositions.forEach(function (i){i+=13;});
-            quotepositions.shift();
-          }
-          quotepositions.shift();
-        }*/
         decodedsave=JSON.parse(decodedsave);
         decodedsave.progress=decodedsave.progress&&new Decimal(decodedsave.progress);
         decodedsave.messages=decodedsave.messages&&new Decimal(decodedsave.messages);
@@ -69,23 +49,6 @@
         document.getElementById("loaded").style.display="";
         setTimeout(function (){document.getElementById("loaded").style.display="none";},3000);
         return true;
-      }
-      function rotbase64(instr,rot){
-        const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        var outstr="";
-        for (var i=0;i<instr.length;i++){
-          if (["+","/"].includes(instr.charAt(i))){
-            var v=chars.search("\\"+instr.charAt(i));
-          }else{
-            var v=chars.search(instr.charAt(i));
-          }
-          if (v!=-1){
-            outstr+=chars.charAt((v+rot)%64);
-          }else{
-            outstr+=instr.charAt(i);
-          }
-        }
-        return outstr;
       }
       function notation(n,d=4,m=false){
         return m?(new Decimal(n).toFixed(d)):(new Decimal(n).toPrecision(d));
