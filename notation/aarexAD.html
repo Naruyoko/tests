@@ -7,17 +7,49 @@
         font-family:"Verdana",sans-serif;
       }
     </style>
-    <script src="https://naruyoko.github.io/tests/package/aarexformat.js"></script>
+    <script src="C:\Users\就海\Documents\Git Repositories\tests\package\aarexformat.js"></script>
     <script src="https://naruyoko.github.io/tests/package/logarithmica_numerus_lite.js"></script>
     <script>
-      var player={options:{notation:"",commas:""}}
-      var notations=["Scientific","Engineering","Letters","Standard","Emojis","Mixed scientific","Mixed engineering","Logarithm","Brackets","Infinity","Greek","Game percentages","Hexadecimal","Tetration","Hyperscientific","Psi","Morse code","AF5LN"];
+      var player={
+        options:{
+          notation:"",
+          commas:"",
+          spazzy:{
+            subNotation:"Scientific"
+          },
+          scientific:{
+            significantDigits:4
+          },
+          logarithm:{
+            base:10
+          },
+          tetration:{
+            base:2
+          },
+          psi:{
+            chars:17,
+            precision:12,
+            letter:[],
+            forceNumbers:false,
+            args:Infinity,
+            side:"r",
+            maxletters:1
+          }
+        }
+      };
+      var notations=["Scientific","Engineering","Letters","Standard","Emojis","Mixed scientific","Mixed engineering","Logarithm","Brackets","Infinity","Greek","Game percentages","Hexadecimal","Tetration","Hyperscientific","Psi","Morse code","Spazzy","Country Codes","AF5LN"];
       function go(){
-        player.options.commas=document.getElementById("commas").value
+        player.options.commas=document.getElementById("commas").value;
+        if (notations.includes(document.getElementById("spazzy").value)) player.options.spazzy.subNotation=document.getElementById("spazzy").value;
+        if ([0,1,2,3,4,5,6,7,8,9,10].includes(Number(document.getElementById("scientific.sigfig").value))) player.options.scientific.significantDigits=document.getElementById("scientific.sigfig").value==0?undefined:document.getElementById("scientific.sigfig").value;
+        if (((Number(document.getElementById("logarithm").value))>1)&&(Number(document.getElementById("logarithm").value)<=Number.MAX_VALUE)) player.options.logarithm.base=Number(document.getElementById("logarithm").value);
+        if (((Number(document.getElementById("tetration").value))>=1.6)&&(Number(document.getElementById("tetration").value)<=Number.MAX_VALUE)) player.options.tetration.base=Number(document.getElementById("tetration").value);
+        if ([2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].includes(Number(document.getElementById("psi.maxchar").value))) player.options.psi.chars=document.getElementById("psi.maxchar").value;
+        if ([1,2,3,4,5].includes(Number(document.getElementById("psi.maxargs").value))) player.options.psi.args=document.getElementById("psi.maxargs").value;
         var v=new Decimal(document.getElementById("input").value);
         for (var i=0;i<notations.length;i++){
           player.options.notation=notations[i];
-          document.getElementById(String(i)).innerHTML=player.options.notation+": "+formatValue(player.options.notation,v,3,3)
+          document.getElementById(String(i)).innerHTML=player.options.notation+": "+formatValue(player.options.notation,v,3,3);
         }
       }
       function onload(){
@@ -25,15 +57,37 @@
           var option=document.createElement("option");
           option.text=notations[i];
           document.getElementById("commas").add(option);
+          document.getElementById("spazzy").add(option);
         }
         go();
+      }
+      function toggleoptions(){
+        if (document.getElementById("options").style.display=="none"){
+          document.getElementById("options").style.display="";
+          document.getElementById("toggleoptions").innerHTML="Hide advanced options";
+        }else{
+          document.getElementById("options").style.display="none"
+          document.getElementById("toggleoptions").innerHTML="Show advanced options";
+        }
       }
     </script>
   </head>
   <body onload="onload()">
     <h1>Aarex's AD notations</h1>
     <h2>Calculates all Aarex's AD's notations.</h2>
-    Input: <input id="input" type="text" onchange="go()" value="1"><select id="commas" onchange="go()"><option value="Commas">Commas</option><option value="Same notation">Same notation</option></select><button onclick="go()">GO</button><br>
+    Input: <input id="input" type="text" onchange="go()" value="1">
+    <button onclick="go()">GO</button><br>
+    <button id="toggleoptions" onclick="toggleoptions()">Show advanced options</button><br>
+    <p id="options" style="display:none">
+      Commas: <select id="commas" onchange="go()"><option value="Commas">Commas</option><option value="Same notation">Same notation</option></select><br>
+      Spazzy: Sub notation: <select id="spazzy" onchange="go()"></select><br>
+      Scientific: Significant digits (1-10, 0 for variable): <input id="scientific.sigfig" type="Number" min=0 max=10 value=4 step=1 onchange="go()"><br>
+      Logarithm notation: Base (1-Infinity): <input id="logarithm" type="text" value="10" onchange="go()"><br>
+      Tetration notation: Base (1.6-Infinity): <input id="tetration" type="text" value="2" onchange="go()"><br>
+      Psi notation:<br>
+      - Max characters (2-20): <input id="psi.maxchar" type="Number" min=2 max=20 value=17 step=1 onchange="go()"><br>
+      - Max arguments (1-5): <input id="psi.maxargs" type="Number" min=1 max=5 value=4 step=1 onchange="go()"><br>
+    </p>
     <ul>
       <li id="0"></li>
       <li id="1"></li>
@@ -53,6 +107,8 @@
       <li id="15"></li>
       <li id="16"></li>
       <li id="17"></li>
+      <li id="18"></li>
+      <li id="19"></li>
     </ul>
   </body>
 </html>
