@@ -1,6 +1,6 @@
 <script src="https://naruyoko.github.io/tests/expMath/expMath.js"></script>
 <script>
-  function notation(i,op){
+  function notation(i){
     var inum=Number(exp.text(i,"e"));
     if (isNaN(i[0])){return "NaN";}
     if (!isFinite(i[0])){return i[0]>0?((i[1]?"-":"")+"Infinity"):"0";}
@@ -14,15 +14,11 @@
       if ((r>=10)&&(r<100)){l="0"+l;}
       return Math.floor(h/1000)+","+l;
     }
-    if ((i[0]>=3e27+3)&&!op){
-      var e=3*Math.floor(i[0]/3);
-      return Math.floor(Number(exp.text(exp.div(i,[e,false]),"e"))*1000)/1000+"E+"+e;
-    }
     var numbernames=["thousand","million","billion","trillion","quadrillion","quintillion","sextillion","septillion","octillion","nonillion","decillion","undecillion","duodecillion","tredecillion","quattuordecillion","quindecillion","sexdecillion","septendecillion","octodecillion","novemdecillion"];
-    var namefragments=[["","un","duo","tre","quattuor","quinqua","se","septe","outo","nove"],["","deci","viginti","triginta","quadraginta","quinquaginta","sexaginta","septuaginta","octoginta","nonaginta"],["","centi","ducenti","trecenti","quadringenti","quingenti","sesgenti","septingenti","octingenti","nongenti"],["","milli","micro","nano","pico","femto","atto","zepto","yocto"],["","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"],["twenty","thirty","fourty","fifty","sixty","seventy","eighty","ninety","onehundred"]];
+    var namefragments=[["","un","duo","tre","quattuor","quinqua","se","septe","outo","nove"],["","deci","viginti","triginta","quadraginta","quinquaginta","sexaginta","septuaginta","octoginta","nonaginta"],["","centi","ducenti","trecenti","quadringenti","quingenti","sesgenti","septingenti","octingenti","nongenti"],["","milli","micro","nano","pico","femto","atto","zepto","yocto","xon","vec","mec","duec","trec","tetrec","pentec","hexec","heptec","octec","ennec"],["","mono","di","tri","tetra","penta","hexa","hepta","octa","nona"],["","vec","icosa","triaconta","tetraconta","pentaconta","hexaconta","heptaconta","octaconta","ennaconta","hecto"]];
     var e=3*Math.floor(i[0]/3);
     var l=Math.floor(e/3)-1;
-    console.log(l);
+    //console.log(l);
     if (l<=19){
       return  Math.floor(Number(exp.text(exp.div(i,[e,false]),"e"))*1000)/1000+" "+numbernames[l];
     }else{
@@ -54,19 +50,15 @@
           s+=namefragments[1][d[1]]+namefragments[2][d[2]];
         }
         if (mu!==0){
-          if (op){
-            if (g<=19){
-              r+=s+namefragments[4][g];
-            }else{
-              r+=s+namefragments[5][Math.floor(g/10)-2]+namefragments[4][g%10];
-            }
-          }else{
+          if (g<=19){
             r+=s+namefragments[3][g];
+          }else{
+            r+=s+namefragments[4][g%10]+namefragments[5][Math.floor(g/10)];
           }
         }
       }
       var w=r.charAt(r.length-1);
-      if ((w=="a")||(w=="i")){
+      if (["a","i","o"].includes(w)){
         r=r.substr(0,r.length-1);
       }
       r+="illion";
@@ -85,9 +77,8 @@
       if (v[0]===""){v[0]="1";}
       v=[Number(v[1])+Math.log10(Number(v[0])),false];
     }
-    document.getElementById("output").innerHTML=notation(v,document.getElementById("altername").checked);
+    document.getElementById("output").innerHTML=notation(v);
   }
 </script>
 <input id="input" value="0" onchange="run()"><br>
-Alternative name(original): <input id="altername" type="checkbox" onchange="run()"><br>
 Your number is denotated as: <span id="output">0</span>.
