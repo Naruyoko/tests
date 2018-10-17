@@ -80,6 +80,7 @@ function getShortAbbreviation(e) {
 const inflog = Math.log10(Number.MAX_VALUE)
 function formatValue(notation, value, places, placesUnder1000) {
     if (notation === "Same notation") notation = player.options.notation
+    if (notation === 'Iroha') return iroha(value, 5)
     if (Decimal.eq(value, 1/0)) return "Infinite"
     if (Decimal.gte(value,0)) {
         if (notation === "Hexadecimal") {
@@ -267,7 +268,7 @@ function formatValue(notation, value, places, placesUnder1000) {
             value = new Decimal(value).log(base)
             count++;
           }
-          return prefix + "⇈" + (Decimal.toNumber(value) + count).toFixed(Math.max(places, 0, Math.min(count-1, 4)));
+          return prefix + "⇈" + new Decimal(value + count).toFixed(Math.max(places, 0, Math.min(count-1, 4)));
         }
 
         matissa = (matissa * Decimal.pow(10, power % 3)).toFixed(places)
@@ -422,7 +423,9 @@ function formatPsi(mantissa,power){
     	return letters.map(letter).join("")
     }
     if(player.options.psi.side=="l"){
-    	return numbers.slice(2).join("").slice(0,player.options.psi.chars).replace(/[-$]$/,"")+letters.map(letter).join("")+numbers[0]
+		var formattedValue=numbers[0]
+		if (player.options.psi.letter[0]==1) if (numbers[0]>=1e12) formattedValue=formatValue("Standard",numbers[0],2,2)
+    	return numbers.slice(2).join("").slice(0,player.options.psi.chars).replace(/[-$]$/,"")+letters.map(letter).join("")+formattedValue
     }
     if(numbers.length==1&&numbers[0]=="1"&&!player.options.psi.forceNumbers){
     	return letters.map(letter).join("")
@@ -462,6 +465,62 @@ function convTo(notation, num) {
 	return result+rest
 }
 
+//Iroha code
+function bin_log (n) {
+  if (n.lt(1)) {
+    return bin_log(bin_inv(n)).negate();
+  }
+  let r = Math.floor(n.log(2));
+  let x = Decimal_BI.pow(2, r);
+  return Decimal_BI.plus(r, n.div(x).sub(1));
+}
+
+function bin_inv (n) {
+  let x = Decimal_BI.pow(2, Math.ceil(n.log(2)));
+  let diff = x.sub(n);
+  return Decimal_BI.div(1, x).plus(diff.div(x.pow(2)).times(2));
+}
+
+let iroha_zero = '日';
+
+let iroha_one = '山';
+
+let iroha_negate = function (x) {return '見' + x}
+
+let iroha_invert = function (x) {return '世' + x}
+
+let iroha_special = 'いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせアイウエオカキクケコ';
+
+function iroha (n, depth) {
+  if (n instanceof Decimal) n = n.toString()
+  n = new Decimal_BI(n);
+  if (isNaN(n.e)) {
+    return '今';
+  }
+  if (depth === 0) {
+    return '';
+  }
+  if (n.eq(0)) {
+    return iroha_zero;
+  }
+  if (n.eq(1)) {
+    return iroha_one;
+  }
+  if (n.lt(0)) {
+    return iroha_negate(iroha(n.negate(), depth));
+  }
+  if (n.lt(1)) {
+    return iroha_invert(iroha(bin_inv(n), depth));
+  }
+  let log = bin_log(bin_log(n));
+  let prefix = (log.lt(0)) ? ((x) => x + 27) : ((x) => x);
+  log = log.abs();
+  let num = Math.round(log.floor().toNumber());
+  let rem = log.sub(num);
+  let rec = bin_inv(Decimal_BI.sub(1, rem));
+  return iroha_special[prefix(num)] + (rec.eq(1) ? '' : iroha(rec, depth - 1));
+}
+
 function getFullExpansion(num) {
 	if (typeof(num)=="number"&&isNaN(num)) return "NaN"
 	else if (typeof(num)!="number"&&isNaN(break_infinity_js?num:num.logarithm)) return "NaN"
@@ -479,6 +538,7 @@ shortenCosts = function (money) {
 };
 
 shortenPreInfCosts = function (money) {
+    if (money.exponent<0) return Math.round(money.mantissa) + " / " + formatValue(player.options.notation, Decimal.pow(10, -money.exponent), 0, 0)
 	return formatValue(player.options.notation, money, (money.mantissa>1&&money.exponent>308)?2:0, 0);
 };
 
