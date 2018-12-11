@@ -1,5 +1,6 @@
 var notations=notations||{};
 notations.normalsmall=(function (i){
+  if (i<0) return "-"+notations.normalsmal(Math.abs(i));
   if (isNaN(i)) return "NaN";
   if (!isFinite(i)) return "Infinity";
   if (i<1000) return String(i);

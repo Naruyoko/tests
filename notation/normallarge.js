@@ -1,6 +1,7 @@
 var notations=notations||{};
 notations.normallarge=(function (i){
   var inum=Number(exp.text(i,"e"));
+  if (i[1]) return "-"+notations.normallarge(exp.sub([-Infinity,false],i));
   if (isNaN(i[0])) return "NaN";
   if (!isFinite(i[0])) return i[0]>0?((i[1]?"-":"")+"Infinity"):"0";
   if (inum<1000) return String(inum);

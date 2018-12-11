@@ -1,5 +1,6 @@
 var notations=notations||{};
 notations.normalbig=(function (i){
+  if (i.lt(0)) return "-"+notations.normalbig(Decimal.abs(i));
   if (i.isNaN()) return "NaN";
   if (!(i.isFinite())) return "Infinity";
   if (i.lt(1000)) return i.toString();
