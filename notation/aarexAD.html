@@ -38,7 +38,7 @@
           }
         }
       };
-      var notations=["Scientific","Engineering","Letters","Standard","Emojis","Mixed scientific","Mixed engineering","Logarithm","Brackets","Infinity","Greek","Game percentages","Hexadecimal","Tetration","Hyperscientific","Psi","Morse code","Spazzy","Country Codes",,"Iroha","AF5LN"];
+      var notations=["Scientific","Engineering","Letters","Standard","Emojis","Mixed scientific","Mixed engineering","Logarithm","Brackets","Infinity","Greek","Game percentages","Hexadecimal","Tetration","Hyperscientific","Psi","Morse code","Spazzy","Country Codes","Iroha","AF5LN"];
       function go(){
         player.options.commas=document.getElementById("commas").value;
         if (notations.includes(document.getElementById("spazzy").value)) player.options.spazzy.subNotation=document.getElementById("spazzy").value;
@@ -61,6 +61,8 @@
           var option=document.createElement("option");
           option.text=notations[i];
           document.getElementById("commas").add(option);
+          var option=document.createElement("option");
+          option.text=notations[i];
           document.getElementById("spazzy").add(option);
           var item=document.createElement("li");
           item.setAttribute("id",String(i));
@@ -92,7 +94,7 @@
       Logarithm notation: Base (1-Infinity): <input id="logarithm" type="text" value="10" onchange="go()"><br>
       Tetration notation: Base (1.6-Infinity): <input id="tetration" type="text" value="2" onchange="go()"><br>
       Psi notation:<br>
-      - Max characters (2-20): <input id="psi.maxchar" type="Number" min=2 max=20 value=17 step=1 onchange="go()"><br>
+      - Max characters (2-30): <input id="psi.maxchar" type="Number" min=2 max=30 value=17 step=1 onchange="go()"><br>
       - Max arguments (1-6): <input id="psi.maxargs" type="Number" min=1 max=6 value=4 step=1 onchange="go()"><br>
       - Max letters (1-4): <input id="psi.maxletters" type="Number" min=1 max=4 value=1 step=1 onchange="go()"><br>
       - Non-first arguments on: <select id="psi.side" onchange="go()"><option value="l">Left</option><option value="r" selected="selected">Right</option></select><br>
