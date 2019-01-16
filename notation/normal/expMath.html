@@ -1,5 +1,5 @@
 <script src="https://naruyoko.github.io/tests/expMath/expMath.js"></script>
-<script src="./normallarge.js"></script>
+<script src="./expMath.js"></script>
 <script>
   function run(){
     var v=document.getElementById("input").value;
@@ -13,7 +13,7 @@
       if (v[0]===""){v[0]="1";}
       v=[Number(v[1])+Math.log10(Number(v[0])),false];
     }
-    document.getElementById("output").innerHTML=notations.normallarge(v);
+    document.getElementById("output").innerHTML=notations.normal.expMath(v);
   }
 </script>
 <input id="input" value="0" onchange="run()"><br>

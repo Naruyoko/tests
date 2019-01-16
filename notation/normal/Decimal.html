@@ -1,9 +1,9 @@
 <script type="text/javascript" src="https://naruyoko.github.io/tests/package/decimal.js"></script>
-<script src="./normalbig.js"></script>
+<script src="./Decimal.js"></script>
 <script>
   function run(){
     var v=Decimal(document.getElementById("input").value);
-    document.getElementById("output").innerHTML=notations.normalbig(v);
+    document.getElementById("output").innerHTML=notations.normal.Decimal(v);
   }
 </script>
 <input id="input" value="0" onchange="run()"><br>
