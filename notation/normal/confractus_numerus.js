@@ -24,7 +24,7 @@ notations.normal.confractus_numerus=(function (i){
     var s;
     var mu;
     var u=Math.floor(l.log10()/3);
-    for (var g=u;g>u-6;g--){
+    for (var g=u;g>=Math.max(u-5,0);g--){
       var mu=Math.round(Number(l.div(Decimal.pow(1000,g)).floor().mod(1000)));
       s="";
       if ((mu===1)&&(g!==0)){
@@ -68,6 +68,6 @@ notations.normal.confractus_numerus=(function (i){
     var w=r.charAt(r.length-1);
     if (["a","i","o"].includes(w)) r=r.substr(0,r.length-1);
     r+="illion";
-    return Math.floor(Number(i.div(new Decimal("1e+"+e)))*1000)/1000+" "+r;
+    return Math.floor(Number(i.div(new Decimal("1e+"+e.toString())))*1000)/1000+" "+r;
   }
 });
