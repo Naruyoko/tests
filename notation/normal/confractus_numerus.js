@@ -48,6 +48,7 @@ notations.normal.confractus_numerus=(function (i){
           for (var y=Math.floor(Math.log10(g)/3);y>=0;y--){
             var z=Math.floor(g/Math.pow(1000,y))%1000;
             if (z<1) continue;
+            if ((z==1)&&(y===0)) x+="un";
             if (z>1){
               if (z<=19){
                 x+=namefragments[4][z];
