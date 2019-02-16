@@ -74,7 +74,7 @@
             r=m.substring(0,m.length-1)+m;
             s=String(n-1);
           }else{
-            r=m.substring(0,m.length-1);
+            r="";
             s=String(Math.pow(10,n));
           }
         }else if (m.charAt(m.length-1)=="f"){
@@ -84,7 +84,7 @@
             r=m.substring(0,m.length-1)+"e"+m;
             s=String(n-1);
           }else{
-            r=m.substring(0,m.length-1)+"e";
+            r="";
             s=String(Math.pow(10,n));
           }
         }else if (m.charAt(m.length-1)=="g"){
@@ -94,7 +94,7 @@
             r=m.substring(0,m.length-1)+"f"+m;
             s=String(n-1);
           }else{
-            r=m.substring(0,m.length-1)+"f";
+            r="";
             s=String(Math.pow(10,n));
           }
         }else if (m.charAt(m.length-1)=="h"){
@@ -104,7 +104,7 @@
             r=m.substring(0,m.length-1)+"g"+m;
             s=String(n-1);
           }else{
-            r=m.substring(0,m.length-1)+"g";
+            r="";
             s=String(Math.pow(10,n));
           }
         }else if (m=="J"){
@@ -167,7 +167,7 @@
             r=m.substring(0,m.length-1)+"j"+m;
             s=String(n-1);
           }else{
-            r=m.substring(0,m.length-1)+"j";
+            r="";
             s=String(Math.pow(10,n));
           }
         }else if (m.charAt(m.length-1)=="l"){
@@ -177,7 +177,7 @@
             r=m.substring(0,m.length-1)+"k"+m;
             s=String(n-1);
           }else{
-            r=m.substring(0,m.length-1)+"k";
+            r="";
             s=String(Math.pow(10,n));
           }
         }else if (m=="N"){
@@ -218,10 +218,10 @@
       }
 
       function trail1(n){
-        return n>1?(n>=4?"h".repeat(n/4):"")+["","e","f","g"][n%4]:"";
+        return n>=1?(n>=4?"h".repeat(n/4):"")+["","e","f","g"][n%4]:"";
       }
       function trail2(n){
-        return n>1?(n>=2?"m".repeat(n/2):"")+["","l"][n%2]:"";
+        return n>=1?(n>=2?"m".repeat(n/2):"")+["","l"][n%2]:"";
       }
       function standarize(s){
         return s.replace("ee","f").replace("fe","g").replace("ge","h").replace("je","k").replace("ke","l").replace("jf","l").replace("jj","m");
