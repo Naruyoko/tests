@@ -206,7 +206,54 @@
         console.log(5);
         console.log(document.getElementById("n").textContent="e,q,n,x,m,r,s:"+e+","+q+","+n+","+x+","+m+","+r+","+s);
         document.getElementById("space").textContent=e.substring(0,x)+r+s;
+        if (document.getElementById("collapseRealTime").checked) collapse();
         return true;
+      }
+      function collapse(){
+        var e=document.getElementById("space").textContent;
+        var q=e.search(/[0-9]/);
+        console.log(0);
+        var functionArray=[];
+        for (var i=0;i<q;i++){
+          var c=e.charAt(i);
+          if (!functionArray.length||(c==c.toUpperCase())) functionArray.push(c);
+          else functionArray[functionArray.length-1]+=c;
+        }
+        console.log(1);
+        var collapsedArray=[];
+        for (var i=0;i<functionArray.length;i++){
+          var a=functionArray[i];
+          if (!collapsedArray.length||(a!=collapsedArray[collapsedArray.length-1][0])) collapsedArray.push([a,1]);
+          else collapsedArray[collapsedArray.length-1][1]++;
+        }
+        console.log(2);
+        for (var i=0;i<collapsedArray.length;i++){
+          var f=collapsedArray[i][0];
+          if (document.getElementById("collapseLittleLetters").checked){
+            var letterArray=[];
+            for (var j=0;j<f.length;j++){
+              var c=f.charAt(j);
+              if (!letterArray.length||(c!=letterArray[letterArray.length-1][0])) letterArray.push([c,1]);
+              else letterArray[letterArray.length-1][1]++;
+            }
+            for (var j=0;j<letterArray.length;j++){
+              var s=letterArray[j];
+              if (s[1]==1) s=s[0];
+              else s=s[0]+"<sub>"+s[1]+"</sub>";
+              letterArray[j]=s;
+            }
+            f=letterArray.join("");
+          }
+          if (collapsedArray[i][1]!=1){
+            if (f.length!=1) f="("+f+")";
+            f=f+"<sub>"+collapsedArray[i][1]+"</sub>";
+          }
+          collapsedArray[i]=f;
+        }
+        console.log(3);
+        var s=collapsedArray.join("")+e.substring(q);
+        document.getElementById("collapsed").innerHTML=s;
+        document.getElementById("collapsedHTML").textContent=s;
       }
       function full(){
         console.log("full");
@@ -214,7 +261,7 @@
       }
       var k;
       function progression(){
-        if (!k) k=setInterval(()=>{if(!step()){clearInterval(k);k=0}},100);
+        if (!k) k=setInterval(()=>{if(!step()){clearInterval(k);k=0;}},100);
       }
 
       function trail1(n){
@@ -230,10 +277,16 @@
   </head>
   <body>
     <h1>PsiCubed2's Letter Notation - Single Letter to Letter Only</h1>
-    <div id="space" style="resize:none;display:block;overflow:auto;background-color:white;border:darkgray solid 1px;" contentEditable>F5.1928383828</div><br>
+    <div id="space" on="if(document.getElementById(&quot;collapseRealTime&quot;).checked)collapse();" style="resize:none;display:block;overflow:auto;background-color:white;border:darkgray solid 1px;" contentEditable>F5.1928383828</div>
+    <div id="collapsed" onchange="collapse()" style="resize:none;display:block;overflow:auto;background-color:white;border:darkgray solid 1px;">Collapsion here</div>
+    <div id="collapsedHTML" onchange="collapse()" style="resize:none;display:block;overflow:auto;background-color:white;border:darkgray solid 1px;" contentEditable>HTML here</div>
     <button onclick="step()">Step</button>
     <button onclick="full()">Full</button>
     <button onclick="progression()">Progression</button>
-    <div id="n">K</div>
+    <button onclick="collapse()">Collapse</button>
+    <input id="collapseRealTime" onchange="collapse()" type="checkbox">
+    <input id="collapseLittleLetters" onchange="collapse()" type="checkbox">
+    <input id="arglim" onchange="ARGLIM=document.getElementById(&quot;arglim&quot;).value" type="number" value=10 min=1 max=100><br>
+    <div id="n">Info here</div>
   </body>
 </html>
