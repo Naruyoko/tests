@@ -278,6 +278,7 @@
           var z=n.indexOf("*10^");
           s=n.substring(0,digitsOnEnd+5-n.length+z)+n.substring(z);
         }
+        if (s.charAt(s.length-1)==".") s=s.substring(0,s.length-1);
         document.getElementById("space").textContent=e.substring(0,q)+s;
         collapse();
       }
