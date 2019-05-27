@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>華厳経 Number Names Calculator</title>
+    <script src="https://naruyoko.github.io/tests/package/break_break_infinity.js"></script>
+    <script>
+      function notation(value){
+        if (value.gte("1e+74436767763955288882613195375699296256")) return "Too big!";
+        var names=["倶胝","阿庾多","那由他","頻波羅","矜羯羅","阿伽羅","最勝","摩婆羅","阿婆羅","多婆羅","界分","普摩","禰摩","阿婆鈐","弥伽婆","毘攞伽","毘伽婆","僧羯邏摩","毘薩羅","毘贍婆","毘盛伽","毘素陀","毘婆訶","毘薄底","毘佉擔","称量","一持","異路","顛倒","三末耶","毘覩羅","奚婆羅","伺察","周広","高出","最妙","泥羅婆","訶理婆","一動","訶理蒲","訶理三","奚魯伽","達攞歩陀","訶魯那","摩魯陀","懺慕陀","瑿攞陀","摩魯摩","調伏","離憍慢","不動","極量","阿麼怛羅","勃麼怛羅","伽麼怛羅","那麼怛羅","奚麼怛羅","鞞麼怛羅","鉢羅麼怛羅","尸婆麼怛羅","翳羅","薜羅","諦羅","偈羅","窣歩羅","泥羅","計羅","細羅","睥羅","謎羅","娑攞荼","謎魯陀","契魯陀","摩覩羅","娑母羅","阿野娑","伽麼羅","摩伽婆","阿怛羅","醯魯耶","薜魯婆","羯羅婆","訶婆婆","毘婆羅","那婆羅","摩攞羅","娑婆羅","迷攞普","者麼羅","馱麼羅","鉢攞麼陀","毘伽摩","烏波跋多","演説","無尽","出生","無我","阿畔多","青蓮華","鉢頭摩","僧祇","趣","至","阿僧祇","阿僧祇転","無量","無量転","無辺","無辺転","無等","無等転","不可数","不可数転","不可称","不可称転","不可思","不可思転","不可量","不可量転","不可説","不可説転","不可説不可説","不可説不可説転"];
+        var s="";
+        var m=value.mantissa;
+        var e=+value.exponent;
+        var r=m*Math.pow(10,e%7);
+        if (r>=1e5) s+=Math.floor(r/1e5)+"洛叉";
+        var t=(r%1e5).toFixed(Math.max(3-Math.floor(Math.log10(r)),0));
+        if (!s||+t) s+=t;
+        var f=Math.floor(e/7);
+        for (var i=0;f>=1&&i<=122;i++,f/=2){
+          if (f&1){
+            s+=names[i];
+            if (i==119&&f&2) s+="/"; //for 不可説/不可説転
+          }
+        }
+        return s;
+      }
+      function run(){
+        document.getElementById("output").innerHTML=notation(new Decimal(document.getElementById("input").value));
+      }
+    </script>
+    <style>
+      * {font-family:"Verdana",sans-serif;font-size:18px;}
+    </style>
+  </head>
+  <body>
+    <h1>華厳経 Number Names Calculator</h1>
+    <input id="input" value="0" onchange="run()"><br>
+    Your number is denotated as: <span id="output">0</span>.
+  </body>
+</html>
