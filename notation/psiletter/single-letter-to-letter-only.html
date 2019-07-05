@@ -188,7 +188,7 @@
           }else if (n>=2){
             r=standarize(trail2(Math.floor(n))+trail1(Math.ceil(n*10)%10));
             r=r.charAt(0).toUpperCase()+r.substring(1);
-            s=String(Decimal.mul(2,Decimal.pow(5,Decimal.floor(n.times(10)).minus(n.times(10)).plus(1))));
+            s=String(Decimal.mul(2,Decimal.pow(5,n.times(10).minus(Decimal.ceil(n.times(10))).plus(1))));
           }else{
             r="Me";
             s=String(n);
