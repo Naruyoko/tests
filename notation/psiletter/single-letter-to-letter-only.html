@@ -186,9 +186,9 @@
           if (n>=ARGLIM){
             return false;
           }else if (n>=2){
-            r=standarize(trail2(Math.floor(n))+trail1(n.toFixed(1).charAt(2)));
+            r=standarize(trail2(Math.floor(n))+trail1(Math.ceil(n*10)%10));
             r=r.charAt(0).toUpperCase()+r.substring(1);
-            s=String(Decimal.mul(2,Decimal.pow(5,n.times(100).minus(Decimal.floor(n.times(100))))));
+            s=String(Decimal.mul(2,Decimal.pow(5,Decimal.floor(n.times(10)).minus(n.times(10)).plus(1))));
           }else{
             r="Me";
             s=String(n);
