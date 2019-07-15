@@ -16,7 +16,7 @@ notations.normal.expMath=(function (i){
     return Math.floor(h/1000)+","+l;
   }
   var numbernames=["thousand","million","billion","trillion","quadrillion","quintillion","sextillion","septillion","octillion","nonillion","decillion","undecillion","duodecillion","tredecillion","quattuordecillion","quindecillion","sexdecillion","septendecillion","octodecillion","novemdecillion"];
-  var namefragments=[["","un","duo","tre","quattuor","quinqua","se","septe","outo","nove"],["","deci","viginti","triginta","quadraginta","quinquaginta","sexaginta","septuaginta","octoginta","nonaginta"],["","centi","ducenti","trecenti","quadringenti","quingenti","sesgenti","septingenti","octingenti","nongenti"],["","milli","micro","nano","pico","femto","atto","zepto","yocto","xon","vec","mec","duec","trec","tetrec","pentec","hexec","heptec","octec","ennec"],["","mono","di","tri","tetra","penta","hexa","hepta","octa","nona"],["","vec","icosa","triaconta","tetraconta","pentaconta","hexaconta","heptaconta","octaconta","ennaconta","hecto"]];
+  var namefragments=[["","un","duo","tre","quattuor","quinqua","se","septe","octo","nove"],["","deci","viginti","triginta","quadraginta","quinquaginta","sexaginta","septuaginta","octoginta","nonaginta"],["","centi","ducenti","trecenti","quadringenti","quingenti","sesgenti","septingenti","octingenti","nongenti"],["","milli","micro","nano","pico","femto","atto","zepto","yocto","xon","vec","mec","duec","trec","tetrec","pentec","hexec","heptec","octec","ennec"],["","mono","di","tri","tetra","penta","hexa","hepta","octa","nona"],["","vec","icosa","triaconta","tetraconta","pentaconta","hexaconta","heptaconta","octaconta","ennaconta","hecto"]];
   var e=3*Math.floor(i[0]/3);
   var l=Math.floor(e/3)-1;
   //console.log(l);
