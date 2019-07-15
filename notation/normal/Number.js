@@ -14,7 +14,7 @@ notations.normal.Number=(function (i){
     return Math.floor(i/1000)+","+l;
   }
   var numbernames=["thousand","million","billion","trillion","quadrillion","quintillion","sextillion","septillion","octillion","nonillion","decillion","undecillion","duodecillion","tredecillion","quattuordecillion","quindecillion","sexdecillion","septendecillion","octodecillion","novemdecillion"];
-  var namefragments=[["","un","duo","tre","quattuor","quinqua","se","septe","outo","nove"],["","deci","viginti","triginta","quadraginta","quinquaginta","sexaginta","septuaginta","octoginta","nonaginta"],["","centi"]];
+  var namefragments=[["","un","duo","tre","quattuor","quinqua","se","septe","octo","nove"],["","deci","viginti","triginta","quadraginta","quinquaginta","sexaginta","septuaginta","octoginta","nonaginta"],["","centi"]];
   var e=3*Math.floor(Math.log10(i)/3);
   var l=Math.floor(e/3)-1;
   if (l<=19){
