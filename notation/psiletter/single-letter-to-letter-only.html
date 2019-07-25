@@ -186,9 +186,11 @@
           if (n>=ARGLIM){
             return false;
           }else if (n>=2){
-            r=standarize(trail2(Math.floor(n))+trail1(Math.ceil(n*10)%10));
+            var y=Math.floor(n);
+            var z=Decimal.mul(10,n.minus(Decimal.floor(n)));
+            r=trail2(y,Math.floor(z)+1);
             r=r.charAt(0).toUpperCase()+r.substring(1);
-            s=String(Decimal.mul(2,Decimal.pow(5,n.times(10).minus(Decimal.ceil(n.times(10))).plus(1))));
+            s=String(Decimal.mul(2,Decimal.pow(5,z.minus(Decimal.floor(z)))));
           }else{
             r="Me";
             s=String(n);
@@ -286,8 +288,8 @@
       function trail1(n){
         return n>=1?(n>=4?"h".repeat(n/4):"")+["","e","f","g"][n%4]:"";
       }
-      function trail2(n){
-        return n>=1?(n>=2?"m".repeat(n/2):"")+["","l"][n%2]:"";
+      function trail2(a,b){
+        return a>=1?(a>=2?"m".repeat(a/2):"")+(a%2?["j","k","l"][Math.min(b,2)]+trail1(b-2):trail1(b)):"";
       }
       function standarize(s){
         return s.replace("ee","f").replace("fe","g").replace("ge","h").replace("je","k").replace("ke","l").replace("jf","l").replace("jj","m");
