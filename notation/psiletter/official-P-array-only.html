@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Notations - PsiCubed2's Letter Notation - Official P array onlyy</title>
+    <style>
+      * {
+        font-family:"Verdana",sans-serif;
+      }
+    </style>
+    <script type="text/javascript" src="https://naruyoko.github.io/tests/package/decimal.js"></script>
+    <script>
+      var ARGLIM=10;
+      var digitsOnEnd=12;
+      function step(){
+        var e=document.getElementById("space").textContent;
+        console.log(0);
+        var q=Math.max(e.lastIndexOf("|"),e.lastIndexOf("P"))+1;
+        if (q==-1) return false;
+        console.log(1);
+        var n=e.substring(q);
+        if ((n.search(/[0-9]/))||(n.indexOf("*10^")!=-1)) return false;
+        console.log(2);
+        n=Decimal(n);
+        var x;
+        if (e[q-1]=="P"){
+          x=q-1;
+        }else{
+          x=e.lastIndexOf("(");
+        }
+        if (x<0) return false;
+        console.log(3);
+        var m=e.substring(x,q);
+        var a=parseArray(m);
+        var r;
+        var s;
+        var k=0;
+        var b=a.slice(0);
+        if (a.length==1&&a[0].eq(0)){
+          if (n.lt(1e13)){
+            r="";
+            s=String(Decimal.pow(10,n)).replace("e+","*10^");
+          }
+          if (s.indexOf(".")>12){
+            s=s.charAt(0)+"."+s.substring(1).replace(".","")+"*10^"+(s.indexOf(".")-1);
+          }
+        }else if (n<=1){
+          r="";
+          s=String(Decimal.pow(10,n));
+        }else if (e[x]=="P"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n.gte(2)){
+            var t=[Decimal.pow(10,n.minus(Decimal.floor(n)))];
+            for (var i=0;i<Math.floor(n);i++){
+              t.push(0);
+            }
+            r=buildArray(t);
+            s="10";
+          }else{
+            r="(1,0,1)|";
+            s=String(n);
+          }
+        }else if (a.length>1&&a[0].eq(0)){
+          r=buildArray(a.slice(1,a.length));
+          s=String(n);
+        }else if (a[a.length-1].eq(0)){
+          do{
+            k++;
+          }while(a[a.length-k-1].eq(0));
+          if (n.eq(10)){
+            b[a.length-k]=b[a.length-k-1].minus(Decimal.floor(b[a.length-k-1])).mul(10);
+            b[a.length-k-1]=Decimal.floor(b[a.length-k-1]);
+            r=buildArray(b);
+            s="10";
+          }else if (n.gte(2)){
+            b[a.length-k]=n;
+            b[a.length-k-1]=b[a.length-k-1].minus(1);
+            r=buildArray(b);
+            s="10";
+          }else{
+            b[a.length-k]="2";
+            b[a.length-k-1]=b[a.length-k-1].minus(1);
+            r=buildArray(b);
+            s=Decimal.pow(10,n.minus(1));
+          }
+        }else{
+          if (a[a.length-1].gt(Decimal.floor(a[a.length-1]))){
+            b[a.length-1]=Decimal.floor(b[a.length-1].plus(1));
+            r=buildArray(b);
+            s=String(Decimal.mul(2,Decimal.pow(5,a[a.length-1].minus(Decimal.floor(a[a.length-1])))));
+          }else if (n>=ARGLIM){
+            return false;
+          }else{
+            b[a.length-1]=b[a.length-1].minus(1);
+            r=buildArray(b).repeat(Math.floor(n));
+            s=String(Decimal.pow(10,n.minus(Decimal.floor(n))));
+          }
+        }
+
+
+/*
+        if (m=="E"){
+          if (n.lt(1e13)){
+            r="";
+            s=String(Decimal.pow(10,n)).replace("e+","*10^");
+          }
+          if (s.indexOf(".")>12){
+            s=s.charAt(0)+"."+s.substring(1).replace(".","")+"*10^"+(s.indexOf(".")-1);
+          }
+        }else if (m=="F"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=1){
+            r="EF";
+            s=String(n.minus(1));
+          }else{
+            r="";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m=="G"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=1){
+            r="FG";
+            s=String(n.minus(1));
+          }else{
+            r="";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m=="H"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=1){
+            r="GH";
+            s=String(n.minus(1));
+          }else{
+            r="";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m.charAt(m.length-1)=="e"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=1){
+            r=m.substring(0,m.length-1)+m;
+            s=String(n.minus(1));
+          }else{
+            r="";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m.charAt(m.length-1)=="f"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=1){
+            r=m.substring(0,m.length-1)+"e"+m;
+            s=String(n.minus(1));
+          }else{
+            r="";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m.charAt(m.length-1)=="g"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=1){
+            r=m.substring(0,m.length-1)+"f"+m;
+            s=String(n.minus(1));
+          }else{
+            r="";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m.charAt(m.length-1)=="h"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=1){
+            r=m.substring(0,m.length-1)+"g"+m;
+            s=String(n.minus(1));
+          }else{
+            r="";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m=="J"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=2){
+            var h=Math.floor(n)+1;
+            r=["E","F","G","H"][Math.min(h-1,3)]+trail1(h-4);
+            s=String(Decimal.mul(2,Decimal.pow(5,n.minus(Decimal.floor(n)))));
+          }else{
+            r="G";
+            s=String(n);
+          }
+        }else if (m=="K"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=1){
+            r="JK";
+            s=String(n.minus(1));
+          }else{
+            r="";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m=="L"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=1){
+            r="KL";
+            s=String(n.minus(1));
+          }else{
+            r="";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m=="M"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=2){
+            var h=Math.floor(n)+1;
+            r=["J","K","L"][Math.min(h,2)]+trail1(h-2);
+            s=String(Decimal.mul(2,Decimal.pow(5,n.minus(Math.floor(n)))));
+          }else{
+            r="Le";
+            s=String(n);
+          }
+        }else if (m.charAt(m.length-1)=="j"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=2){
+            var h=Math.floor(n)+1;
+            r=m.substring(0,m.length-1)+trail1(h);
+            s=String(Decimal.mul(2,Decimal.pow(5,n.minus(Decimal.floor(n)))));
+          }else{
+            r=m.substring(0,m.length-1)+"g";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m.charAt(m.length-1)=="k"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=1){
+            r=m.substring(0,m.length-1)+"j"+m;
+            s=String(n.minus(1));
+          }else{
+            r="";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m.charAt(m.length-1)=="l"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=1){
+            r=m.substring(0,m.length-1)+"k"+m;
+            s=String(n.minus(1));
+          }else{
+            r="";
+            s=String(Decimal.pow(10,n));
+          }
+        }else if (m=="N"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=2){
+            var y=Math.floor(n);
+            var z=Decimal.mul(10,n.minus(Decimal.floor(n)));
+            r=trail2(y,Math.floor(z)+1);
+            r=r.charAt(0).toUpperCase()+r.substring(1);
+            s=String(Decimal.mul(2,Decimal.pow(5,z.minus(Decimal.floor(z)))));
+          }else{
+            r="Me";
+            s=String(n);
+          }
+        }else if (m.charAt(m.length-1)=="m"){
+          if (n>=ARGLIM){
+            return false;
+          }else if (n>=2){
+            var h=Math.floor(n)+1;
+            r=m.substring(0,m.length-1)+["J","K","L"][Math.min(h,2)]+trail1(h-2);
+            s=String(Decimal.mul(2,Decimal.pow(5,n.minus(Decimal.floor(n)))));
+          }else{
+            r=m.substring(0,m.length-1)+"le";
+            s=String(Decimal.pow(10,n));
+          }
+        }else return false;
+*/
+        console.log(5);
+        console.log(document.getElementById("n").textContent="e,q,n,x,m,a,r,s:"+e+","+q+","+n+","+x+","+m+","+a+","+r+","+s);
+        document.getElementById("space").textContent=e.substring(0,x)+r+s;
+        if (document.getElementById("collapseRealTime").checked) collapse();
+        return true;
+      }
+      function collapse(){
+        var e=document.getElementById("space").textContent;
+        var q=Math.max(e.lastIndexOf("|"),e.lastIndexOf("P"))+1;
+        console.log(0);
+        var functionArray=[];
+        for (var i=0;i<q;i++){
+          var c=e.charAt(i);
+          if (!functionArray.length||["(","P"].includes(c)) functionArray.push(c);
+          else functionArray[functionArray.length-1]+=c;
+        }
+        console.log(1);
+        var collapsedArray=[];
+        for (var i=0;i<functionArray.length;i++){
+          var a=functionArray[i];
+          if (!collapsedArray.length||(a!=collapsedArray[collapsedArray.length-1][0])) collapsedArray.push([a,1]);
+          else collapsedArray[collapsedArray.length-1][1]++;
+        }
+        console.log(2);
+        for (var i=0;i<collapsedArray.length;i++){
+          var f=collapsedArray[i][0];
+          if (collapsedArray[i][1]!=1) f=f+"<sub>"+collapsedArray[i][1]+"</sub>";
+          collapsedArray[i]=f;
+        }
+        console.log(3);
+        var s=collapsedArray.join("")+e.substring(q);
+        document.getElementById("collapsed").innerHTML=s;
+        document.getElementById("collapsedHTML").textContent=s;
+      }
+      function full(){
+        console.log("full");
+        while(step()) continue;
+        if (document.getElementById("roundOnEnd").checked) shaveOff();
+      }
+      var k;
+      function progression(){
+        if (!k) k=setInterval(()=>{if(!step()){clearInterval(k);k=0;if(document.getElementById("roundOnEnd").checked)shaveOff();}},100);
+      }
+      function shaveOff(){
+        console.log("shave");
+        var e=document.getElementById("space").textContent;
+        var q=Math.max(e.lastIndexOf("|"),e.lastIndexOf("P"))+1;
+        var n=e.substring(q);
+        var s;
+        if (n.indexOf("*10^")==-1){
+          s=n.substring(0,digitsOnEnd+1);
+        }else{
+          var z=n.indexOf("*10^");
+          s=n.substring(0,digitsOnEnd+5-n.length+z)+n.substring(z);
+        }
+        if (s.charAt(s.length-1)==".") s=s.substring(0,s.length-1);
+        document.getElementById("space").textContent=e.substring(0,q)+s;
+        collapse();
+      }
+
+      function parseArray(s){
+        return s=="P"?[]:s.substring(s.indexOf("(")+1,s.indexOf(")|")).split(",").map(n=>Decimal(n));
+      }
+      function buildArray(a){
+        return "("+a+")|";
+      }
+    </script>
+  </head>
+  <body>
+    <h1>PsiCubed2's Letter Notation - Official P array only</h1>
+    <div id="space" on="if(document.getElementById(&quot;collapseRealTime&quot;).checked)collapse();" style="resize:none;display:block;overflow:auto;background-color:white;border:darkgray solid 1px;" contentEditable>F5.1928383828</div>
+    <div id="collapsed" onchange="collapse()" style="resize:none;display:block;overflow:auto;background-color:white;border:darkgray solid 1px;">Collapsion here</div>
+    <div id="collapsedHTML" onchange="collapse()" style="resize:none;display:block;overflow:auto;background-color:white;border:darkgray solid 1px;" contentEditable>HTML here</div>
+    <button onclick="step()">Step</button>
+    <button onclick="full()">Full</button>
+    <button onclick="progression()">Progression</button>
+    <button onclick="collapse()">Collapse</button>
+    <input id="collapseRealTime" onchange="collapse()" type="checkbox">
+    <input id="collapseLittleLetters" onchange="collapse()" type="checkbox">
+    <input id="arglim" onchange="ARGLIM=Number(document.getElementById(&quot;arglim&quot;).value)" type="number" value=10 min=1 max=100>
+    <input id="precision" onchange="Decimal.precision=Number(document.getElementById(&quot;precision&quot;).value)" type="number" value=20 min=0 max=1e6>
+    <input id="digitsOnEnd" onchange="digitsOnEnd=Number(document.getElementById(&quot;digitsOnEnd&quot;).value)" type="number" value=12 min=1 max=1e6>
+    <input id="roundOnEnd" type="checkbox"><br>
+    <div id="n">Info here</div>
+  </body>
+</html>
