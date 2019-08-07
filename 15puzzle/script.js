@@ -128,6 +128,8 @@ function draw(passive=false){
   ctx.font="16px serif";
   ctx.fillText("Moves: "+moves,0,20);
   ctx.fillText("Time: "+timeFormat(time),0,40);
+  if (!complete()) time+=(new Date().getTime()-lasttime)/1000;
+  lasttime=new Date().getTime();
   if (passive) return;
   for (var x=0;x<size[0];x++){
   	for (var y=0;y<size[1];y++){
@@ -139,8 +141,6 @@ function draw(passive=false){
       }
     }
   }
-  if (!complete()) time+=(new Date().getTime()-lasttime)/1000;
-  lasttime=new Date().getTime();
 }
 function complete(){
   for (var x=0;x<size[0];x++){
