@@ -160,7 +160,7 @@
             s=String(Decimal.mul(2,Decimal.pow(5,n.minus(Decimal.floor(n)))));
           }else{
             r=m.substring(0,m.length-1)+"g";
-            s=String(Decimal.pow(10,n));
+            s=String(n);
           }
         }else if (m.charAt(m.length-1)=="k"){
           if (n>=ARGLIM){
@@ -204,7 +204,7 @@
             s=String(Decimal.mul(2,Decimal.pow(5,n.minus(Decimal.floor(n)))));
           }else{
             r=m.substring(0,m.length-1)+"le";
-            s=String(Decimal.pow(10,n));
+            s=String(n);
           }
         }else return false;
         console.log(5);
