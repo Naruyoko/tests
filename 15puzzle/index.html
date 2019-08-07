@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- <link rel="stylesheet" href="style.css" type="text/css"> -->
+    <script src="https://naruyoko.github.io/tests/notation/normalsmall.js"></script>
+    <script src="./script.js"></script>
+    <title>15 Puzzle</title>
+  </head>
+  <body onload="onload()" onkey>
+    <canvas id="canvas" width="160" height="200" style="background-color:white;border:darkgray solid 1px;"></canvas><br>
+    <input id="sizex" onchange="resizeboard()" type="number" min=2 max=256 value=4>
+    <input id="sizey" onchange="resizeboard()" type="number" min=2 max=256 value=4>
+    <input id="zoom" onchange="document.getElementById(&quot;canvas&quot;).style.zoom=document.getElementById(&quot;zoom&quot;).value+&quot;%&quot;" type="range" min=1 max=200 value=100>
+    <div id="output" style="float:right;width:50%;height:95vh;resize:none;display:block;overflow:auto;background-color:white;border:darkgray solid 1px;font-size:12px;font-family:monospace;" contentEditable></div><br>
+    <button onclick="document.getElementById(&quot;canvas&quot;).style.display=&quot;&quot;">Show Game</button>
+    <button onclick="document.getElementById(&quot;canvas&quot;).style.display=&quot;none&quot;">Hide Game</button>
+    <button onclick="reset()">Reset</button>
+    <button onclick="shuffle()">Shuffle</button>
+    <button onclick="AI.solve()">Solve</button>
+    <button onclick="clearInterval(AI.interval);AI.moves=&quot;&quot;;">Kill</button>
+    <button onclick="document.getElementById(&quot;output&quot;).style.display=&quot;&quot;">Show Output</button>
+    <button onclick="document.getElementById(&quot;output&quot;).style.display=&quot;none&quot;">Hide Output</button>
+    <input id="step" type="number" value=1>
+  </body>
+</html>
