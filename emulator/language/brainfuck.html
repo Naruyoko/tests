@@ -3,7 +3,7 @@
   <head>
     <title>Brainfuck Emulator</title>
     <script>
-      var runinterval;
+      var runtimeout=-1;
       function run(){
         var memory=[0];
         var programpointer=0;
@@ -33,7 +33,8 @@
             document.getElementById("tape").rows[0].cells[datapointer].style.backgroundColor="";
             datapointer--;
             if (datapointer<0){
-              output("Error");
+              output("Error at position "+programpointer);
+              end();
             }
             document.getElementById("tape").rows[0].cells[datapointer].style.backgroundColor="#ffe0e0";
           }else if (pointerchar=="+"){
@@ -66,12 +67,13 @@
               }
               programpointer--;
               if (programpointer>=document.getElementById("program").value.length){
-                output("Error");
+                end();
               }
             }
           }else if (pointerchar=="]"){
             if (!looppointer.length){
-              output("Error");
+              output("Error at position "+programpointer);
+              end();
             }else if (memory[datapointer]){
               programpointer=looppointer[looppointer.length-1];
             }else{
@@ -79,17 +81,47 @@
             }
           }
           programpointer++;
-          if ((document.getElementById("output").value=="")&&(programpointer>=document.getElementById("program").value.length)){
-            output(null);
+          if (programpointer>=document.getElementById("program").value.length){
+            end();
+            return "end";
+          }
+          if (Number(document.getElementById("delay").value)){
+            runtimeout=setTimeout(step,Number(document.getElementById("delay").value));
           }
         }
-        runinterval=setInterval(step,Number(document.getElementById("delay").value));
+        if (Number(document.getElementById("delay").value)){
+          runtimeout=setTimeout(step,Number(document.getElementById("delay").value));
+        }else{
+          while (step()!="end"){
+            continue;
+          }
+        }
       }
       function output(val){
-        document.getElementById("output").value=String(val);
+        if (typeof val=="number"){
+          var outputformat=document.getElementById("outputformat").value;
+          if (outputformat=="Number"){
+            if (document.getElementById("output").value){
+              document.getElementsById("output").value+=" ";
+            }
+            document.getElementById("output").value+=String(val);
+          }else if (outputformat=="ASCII"){
+            document.getElementById("output").value+=String.fromCharCode(val&0xff);
+          }else if (outputformat=="Unicode"){
+            document.getElementById("output").value+=String.fromCharCode(val);
+          }
+        }else{
+          document.getElementById("output").value+=val;
+        }
+      }
+      function end(){
         document.getElementById("program").style.display="";
         document.getElementById("compiled").style.display="none";
-        clearInterval(runinterval);
+        clearInterval(runtimeout);
+        runtimeout=-1;
+      }
+      function kill(){
+        runtimeout=-1;
       }
     </script>
     <style>
@@ -107,11 +139,16 @@
     <button onclick="run()">Run</button><div style="width:30px;display:inline-block;"></div>
     Extended data values: <input id="extendvalue" type="checkbox"><div style="width:30px;display:inline-block;"></div>
     Delay: <input id="delay" type="number" style="width:60px" step="10" value="1000" max="10000" min="10">ms<div style="width:30px;display:inline-block;"></div>
-    Result: <input id="output" style="width:40px" readonly><br>
-    <textarea id="program" style="margin:auto;width:95%;height:400px;font-size:16px;background-color:#e0e0e0;border:1px #a0a0a0 solid;padding:2px;resize:none;"></textarea><br>
-    <div id="compiled" style="margin:auto;width:95%;height:400px;font-size:16px;background-color:#e0e0e0;border:1px #a0a0a0 solid;padding:2px;display:none;"></div>
+    Output format: <select id="outputformat">
+      <option value="Number">Number</option>
+      <option value="ASCII" selected>ASCII</option>
+      <option value="Unicode">Unicode</option>
+    </select>
+    <textarea id="program" style="margin:auto;width:95%;height:300px;font-size:16px;background-color:#e0e0e0;border:1px #a0a0a0 solid;padding:2px;resize:none;"></textarea><br>
+    <div id="compiled" style="width:95%;height:300px;font-size:16px;background-color:#e0e0e0;border:1px #a0a0a0 solid;padding:2px;display:none;"></div>
+    Result: <textarea id="output" style="width:95%;" readonly></textarea><br>
     <p>
-      Brainfuck is a small programming language by Urban Müller. It consists of eight commands. The only difference is . command, which because this can hold larger value than byte, the program will terminate instead of allowing multi-byte output.
+      Brainfuck is a small programming language by Urban Müller. It consists of eight commands.
     </p>
   </body>
 </html>
