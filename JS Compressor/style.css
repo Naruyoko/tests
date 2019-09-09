@@ -1,0 +1,16 @@
+body {
+  background: white;
+  height: 100vh;
+  margin: 0;
+  font-family: "Courier New",monospace;
+}
+
+h1 {
+  color: #bdbdbd;
+  font-weight: 300;
+}
+
+table,th,td {
+  background-color:white;
+  border:1px black solid;
+}
