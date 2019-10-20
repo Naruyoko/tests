@@ -196,14 +196,14 @@ function compression3(s){
     }
     var s1="_='"+s;
     for (var i=0;i<p.length;i++) s1+=p[i][1]+p[i][0];
-    s1+="';for(Y in $='";
+    s1+="';for(Y of $='";
     for (var i=p.length-1;i>=0;i--) s1+=p[i][1];
-    s1+="')with(_.split($[Y]))_=join(pop());eval(_)";
+    s1+="')with(_.split(Y))_=join(pop());eval(_)";
     var s2="_='"+s;
     for (var i=0;i<p.length;i++) s2+=p[i][1]+p[i][0];
-    s2+="';for(Y in $='";
+    s2+="';for(Y of $='";
     for (var i=p.length-1;i>=0;i--) s2+=p[i][1];
-    s2+="')with(_.split($[Y]))_=join(pop());_";
+    s2+="')with(_.split(Y ))_=join(pop());_";
   }
   /*
   console.log(s1);
