@@ -26,7 +26,7 @@ function compression1(s){
   console.log(availableChars);
   var w=["e"];
   var t=[];
-  while (w.length){
+  while (w.length&&availableChars.length>=3){
     w=[];
     var m=0;
     var r="";
@@ -67,16 +67,16 @@ function compression1(s){
       }
       p.splice(g,0,t[i]);
     }
-    var s1="eval('eval(\""+s+"\".replace(/";
+    var s1="eval('eval(\""+s.replace(/\n/g,"\\n")+"\".replace(/";
     for (var i=0;i<p.length-1;i++) s1+=p[i][1]+availableChars[0]+p[i][0]+availableChars[1];
     s1+=p[p.length-1][1]+availableChars[0]+p[p.length-1][0]+"\"))'.replace(/"+availableChars[0]+"/g,'/g,\"').replace(/"+availableChars[1]+"/g,'\").replace(/'))";
-    var s2="eval('\""+s+"\".replace(/";
+    var s2="eval('\""+s.replace(/\n/g,"\\n")+"\".replace(/";
     for (var i=0;i<p.length-1;i++) s2+=p[i][1]+availableChars[0]+p[i][0]+availableChars[1];
     s2+=p[p.length-1][1]+availableChars[0]+p[p.length-1][0]+"\")'.replace(/"+availableChars[0]+"/g,'/g,\"').replace(/"+availableChars[1]+"/g,'\").replace(/'))";
-    var s3="'\""+s+"\".replace(/";
+    var s3="'\""+s.replace(/\n/g,"\\n")+"\".replace(/";
     for (var i=0;i<p.length-1;i++) s3+=p[i][1]+availableChars[0]+p[i][0]+availableChars[1];
     s3+=p[p.length-1][1]+availableChars[0]+p[p.length-1][0]+"\")'.replace(/"+availableChars[0]+"/g,'/g,\"').replace(/"+availableChars[1]+"/g,'\").replace(/')";
-  }
+  }else s1=s;
   /*
   console.log(s1);
   console.log(s1.length);
@@ -99,7 +99,7 @@ function compression2(s){
   console.log(availableChars);
   var w=["e"];
   var t=[];
-  while (w.length){
+  while (w.length&&availableChars.length>=4){
     w=[];
     var m=0;
     var r="";
@@ -140,16 +140,16 @@ function compression2(s){
       }
       p.splice(g,0,t[i]);
     }
-    var s1="eval('eval(\""+s+"\"";
+    var s1="eval('eval(\""+s.replace(/\n/g,"\\n")+"\"";
     for (var i=0;i<p.length;i++) s1+=availableChars[0]+p[i][1]+availableChars[1]+p[i][0]+availableChars[2];
     s1+="'.replace(/"+availableChars[0]+"/g,'.replace(/').replace(/"+availableChars[1]+"/g,'/g,\"').replace(/"+availableChars[2]+"/g,'\")'))";
-    var s2="eval('\""+s+"\"";
+    var s2="eval('\""+s.replace(/\n/g,"\\n")+"\"";
     for (var i=0;i<p.length;i++) s2+=availableChars[0]+p[i][1]+availableChars[1]+p[i][0]+availableChars[2];
     s2+="'.replace(/"+availableChars[0]+"/g,'.replace(/').replace(/"+availableChars[1]+"/g,'/g,\"').replace(/"+availableChars[2]+"/g,'\")'))";
-    var s3="'\""+s+"\"";
+    var s3="'\""+s.replace(/\n/g,"\\n")+"\"";
     for (var i=0;i<p.length;i++) s3+=availableChars[0]+p[i][1]+availableChars[1]+p[i][0]+availableChars[2];
     s3+="'.replace(/"+availableChars[0]+"/g,'.replace(/').replace(/"+availableChars[1]+"/g,'/g,\"').replace(/"+availableChars[2]+"/g,'\")')";
-  }
+  }else s1=s;
   /*
   console.log(s1);
   console.log(s1.length);
@@ -172,7 +172,7 @@ function compression3(s){
   console.log(availableChars);
   var w=["e"];
   var t=[];
-  while (w.length){
+  while (w.length&&availableChars.length>=2){
     w=[];
     var m=0;
     var r="";
@@ -193,12 +193,12 @@ function compression3(s){
       }
     }
     if (!w.length) break;
-    s=s.replace(new RegExp(w[r][0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'),"g"),availableChars[3]);
+    s=s.replace(new RegExp(w[r][0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'),"g"),availableChars[0]);
     for (var e=0;e<t.length;e++) t[e][0]=t[e][0].replace(new RegExp(w[r][0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'),"g"),availableChars[3]);
-    console.log(w[r][0]+"=>"+availableChars[3]+" -"+m+"B");
+    console.log(w[r][0]+"=>"+availableChars[0]+" -"+m+"B");
     //console.log(w);
-    t.push([w[r][0],availableChars[3]]);
-    availableChars.splice(3,1);
+    t.push([w[r][0],availableChars[0]]);
+    availableChars.splice(0,1);
   }
   console.log(t);
   console.log(w.length);
@@ -215,15 +215,15 @@ function compression3(s){
     }
     var s1="_='"+s;
     for (var i=0;i<p.length;i++) s1+=p[i][1]+p[i][0];
-    s1+="';for(Y of $='";
+    s1=s1.replace(/\n/g,"\\n")+"';for(Y of $='";
     for (var i=p.length-1;i>=0;i--) s1+=p[i][1];
     s1+="')with(_.split(Y))_=join(pop());eval(_)";
     var s2="_='"+s;
     for (var i=0;i<p.length;i++) s2+=p[i][1]+p[i][0];
-    s2+="';for(Y of $='";
+    s2=s2.replace(/\n/g,"\\n")+"';for(Y of $='";
     for (var i=p.length-1;i>=0;i--) s2+=p[i][1];
-    s2+="')with(_.split(Y ))_=join(pop());_";
-  }
+    s2+="')with(_.split(Y))_=join(pop());_";
+  }else s1=s;
   /*
   console.log(s1);
   console.log(s1.length);
@@ -250,7 +250,7 @@ function compress(){
   for (var i=0;i<a.length;i++) m=Math.min(m,a[i][1].length);
   for (var i=0;i<a.length;i++){
     var q=a[i][1].length==m?" style=\"background-color:lime\"":"";
-    e+="<tr><td"+q+">"+a[i][0]+"</td><td"+q+">"+a[i][1].replace(/</g,"&lt;")+"</td><td"+q+">"+a[i][1].length+"</td></tr>";
+    e+="<tr><td"+q+">"+a[i][0]+"</td><td"+q+"><pre>"+a[i][1].replace(/</g,"&lt;")+"</pre></td><td"+q+">"+a[i][1].length+"</td></tr>";
   }
   document.getElementById("output").innerHTML=e;
 }
