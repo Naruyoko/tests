@@ -11,8 +11,9 @@
     <script>
       var ARGLIM=10;
       var digitsOnEnd=12;
-      function step(){
-        var e=document.getElementById("space").textContent;
+      var maxWordCount=24;
+      function step(expression){
+        var e=expression||document.getElementById("space").textContent;
         console.log(0);
         var q=Math.max(e.lastIndexOf("|"),e.lastIndexOf("P"))+1;
         if (q==-1) return false;
@@ -64,6 +65,7 @@
           r=buildArray(a.slice(1,a.length));
           s=String(n);
         }else if (a[a.length-1].eq(0)){
+          if (n.gt(10)) return false;
           do{
             k++;
           }while(a[a.length-k-1].eq(0));
@@ -88,7 +90,7 @@
             b[a.length-1]=Decimal.floor(b[a.length-1].plus(1));
             r=buildArray(b);
             s=String(Decimal.mul(2,Decimal.pow(5,a[a.length-1].minus(Decimal.floor(a[a.length-1])))));
-          }else if (n>=ARGLIM){
+          }else if (n>=ARGLIM||maxWordCount===0){
             return false;
           }else{
             b[a.length-1]=b[a.length-1].minus(1);
@@ -96,194 +98,15 @@
             s=String(Decimal.pow(10,n.minus(Decimal.floor(n))));
           }
         }
-
-
-/*
-        if (m=="E"){
-          if (n.lt(1e13)){
-            r="";
-            s=String(Decimal.pow(10,n)).replace("e+","*10^");
-          }
-          if (s.indexOf(".")>12){
-            s=s.charAt(0)+"."+s.substring(1).replace(".","")+"*10^"+(s.indexOf(".")-1);
-          }
-        }else if (m=="F"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=1){
-            r="EF";
-            s=String(n.minus(1));
-          }else{
-            r="";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m=="G"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=1){
-            r="FG";
-            s=String(n.minus(1));
-          }else{
-            r="";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m=="H"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=1){
-            r="GH";
-            s=String(n.minus(1));
-          }else{
-            r="";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m.charAt(m.length-1)=="e"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=1){
-            r=m.substring(0,m.length-1)+m;
-            s=String(n.minus(1));
-          }else{
-            r="";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m.charAt(m.length-1)=="f"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=1){
-            r=m.substring(0,m.length-1)+"e"+m;
-            s=String(n.minus(1));
-          }else{
-            r="";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m.charAt(m.length-1)=="g"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=1){
-            r=m.substring(0,m.length-1)+"f"+m;
-            s=String(n.minus(1));
-          }else{
-            r="";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m.charAt(m.length-1)=="h"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=1){
-            r=m.substring(0,m.length-1)+"g"+m;
-            s=String(n.minus(1));
-          }else{
-            r="";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m=="J"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=2){
-            var h=Math.floor(n)+1;
-            r=["E","F","G","H"][Math.min(h-1,3)]+trail1(h-4);
-            s=String(Decimal.mul(2,Decimal.pow(5,n.minus(Decimal.floor(n)))));
-          }else{
-            r="G";
-            s=String(n);
-          }
-        }else if (m=="K"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=1){
-            r="JK";
-            s=String(n.minus(1));
-          }else{
-            r="";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m=="L"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=1){
-            r="KL";
-            s=String(n.minus(1));
-          }else{
-            r="";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m=="M"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=2){
-            var h=Math.floor(n)+1;
-            r=["J","K","L"][Math.min(h,2)]+trail1(h-2);
-            s=String(Decimal.mul(2,Decimal.pow(5,n.minus(Math.floor(n)))));
-          }else{
-            r="Le";
-            s=String(n);
-          }
-        }else if (m.charAt(m.length-1)=="j"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=2){
-            var h=Math.floor(n)+1;
-            r=m.substring(0,m.length-1)+trail1(h);
-            s=String(Decimal.mul(2,Decimal.pow(5,n.minus(Decimal.floor(n)))));
-          }else{
-            r=m.substring(0,m.length-1)+"g";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m.charAt(m.length-1)=="k"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=1){
-            r=m.substring(0,m.length-1)+"j"+m;
-            s=String(n.minus(1));
-          }else{
-            r="";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m.charAt(m.length-1)=="l"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=1){
-            r=m.substring(0,m.length-1)+"k"+m;
-            s=String(n.minus(1));
-          }else{
-            r="";
-            s=String(Decimal.pow(10,n));
-          }
-        }else if (m=="N"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=2){
-            var y=Math.floor(n);
-            var z=Decimal.mul(10,n.minus(Decimal.floor(n)));
-            r=trail2(y,Math.floor(z)+1);
-            r=r.charAt(0).toUpperCase()+r.substring(1);
-            s=String(Decimal.mul(2,Decimal.pow(5,z.minus(Decimal.floor(z)))));
-          }else{
-            r="Me";
-            s=String(n);
-          }
-        }else if (m.charAt(m.length-1)=="m"){
-          if (n>=ARGLIM){
-            return false;
-          }else if (n>=2){
-            var h=Math.floor(n)+1;
-            r=m.substring(0,m.length-1)+["J","K","L"][Math.min(h,2)]+trail1(h-2);
-            s=String(Decimal.mul(2,Decimal.pow(5,n.minus(Decimal.floor(n)))));
-          }else{
-            r=m.substring(0,m.length-1)+"le";
-            s=String(Decimal.pow(10,n));
-          }
-        }else return false;
-*/
         console.log(5);
         console.log(document.getElementById("n").textContent="e,q,n,x,m,a,r,s:"+e+","+q+","+n+","+x+","+m+","+a+","+r+","+s);
-        document.getElementById("space").textContent=e.substring(0,x)+r+s;
-        if (document.getElementById("collapseRealTime").checked) collapse();
-        return true;
+        var final=e.substring(0,x)+r+s;
+        if (collapseRaw(final).length>Math.max(maxWordCount,1)) return false;
+        if (!expression) document.getElementById("space").textContent=final;
+        if (!expression&&document.getElementById("collapseRealTime").checked) collapse();
+        return final;
       }
-      function collapse(){
-        var e=document.getElementById("space").textContent;
+      function collapseRaw(e){
         var q=Math.max(e.lastIndexOf("|"),e.lastIndexOf("P"))+1;
         console.log(0);
         var functionArray=[];
@@ -299,6 +122,12 @@
           if (!collapsedArray.length||(a!=collapsedArray[collapsedArray.length-1][0])) collapsedArray.push([a,1]);
           else collapsedArray[collapsedArray.length-1][1]++;
         }
+        return collapsedArray;
+      }
+      function collapse(){
+        var e=document.getElementById("space").textContent;
+        var q=Math.max(e.lastIndexOf("|"),e.lastIndexOf("P"))+1;
+        collapsedArray=collapseRaw(e);
         console.log(2);
         for (var i=0;i<collapsedArray.length;i++){
           var f=collapsedArray[i][0];
@@ -312,8 +141,15 @@
       }
       function full(){
         console.log("full");
-        while(step()) continue;
+        var storedExpression=document.getElementById("space").textContent;
+        while (true){
+          var r=step(storedExpression);
+          if (!r) break;
+          storedExpression=r;
+        };
+        document.getElementById("space").textContent=storedExpression;
         if (document.getElementById("roundOnEnd").checked) shaveOff();
+        if (document.getElementById("collapseRealTime").checked) collapse();
       }
       var k;
       function progression(){
@@ -358,7 +194,8 @@
     <input id="arglim" onchange="ARGLIM=Number(document.getElementById(&quot;arglim&quot;).value)" type="number" value=10 min=1 max=100>
     <input id="precision" onchange="Decimal.precision=Number(document.getElementById(&quot;precision&quot;).value)" type="number" value=20 min=0 max=1e6>
     <input id="digitsOnEnd" onchange="digitsOnEnd=Number(document.getElementById(&quot;digitsOnEnd&quot;).value)" type="number" value=12 min=1 max=1e6>
-    <input id="roundOnEnd" type="checkbox"><br>
+    <input id="roundOnEnd" type="checkbox">
+    <input id="maxWordCount" onchange="maxWordCount=Number(document.getElementById(&quot;maxWordCount&quot;).value)" type="number" value=24 min=0 max=1e6>
     <div id="n">Info here</div>
   </body>
 </html>

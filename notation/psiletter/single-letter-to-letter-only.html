@@ -11,8 +11,8 @@
     <script>
       var ARGLIM=10;
       var digitsOnEnd=12;
-      function step(){
-        var e=document.getElementById("space").textContent;
+      function step(expression){
+        var e=expression||document.getElementById("space").textContent;
         console.log(0);
         if (e.search(/[A-Z]/)==-1) return false;
         console.log(1);
@@ -210,9 +210,10 @@
         }else return false;
         console.log(5);
         console.log(document.getElementById("n").textContent="e,q,n,x,m,r,s:"+e+","+q+","+n+","+x+","+m+","+r+","+s);
-        document.getElementById("space").textContent=e.substring(0,x)+r+s;
-        if (document.getElementById("collapseRealTime").checked) collapse();
-        return true;
+        var final=e.substring(0,x)+r+s;
+        if (!expression) document.getElementById("space").textContent=final;
+        if (!expression&&document.getElementById("collapseRealTime").checked) collapse();
+        return final;
       }
       function collapse(){
         var e=document.getElementById("space").textContent;
@@ -262,8 +263,15 @@
       }
       function full(){
         console.log("full");
-        while(step()) continue;
+        var storedExpression=document.getElementById("space").textContent;
+        while (true){
+          var r=step(storedExpression);
+          if (!r) break;
+          storedExpression=r;
+        };
+        document.getElementById("space").textContent=storedExpression;
         if (document.getElementById("roundOnEnd").checked) shaveOff();
+        if (document.getElementById("collapseRealTime").checked) collapse();
       }
       var k;
       function progression(){
