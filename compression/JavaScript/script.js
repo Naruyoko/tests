@@ -1,3 +1,18 @@
+function lrl(s){
+  var n=s.length;
+  var a=[[]];
+  var l=0;
+  for (var i=1;i<=n+1;i++){
+    a.push([]);
+    for (var j=i+1;j<=n+1;j++){
+      if (s[i-1]==s[j-1]&&a[i-1][j-1]|0<j-i){
+        a[i][j]=(a[i-1][j-1]|0)+1;
+        if (a[i][j]>l) l=a[i][j];
+      }
+    }
+  }
+  return l;
+}
 function occurrences(string, subString, allowOverlapping) {
   string+="";
   subString+="";
@@ -31,8 +46,9 @@ function compression1(s){
     var m=0;
     var r="";
     var x=new Set();
+    var ml=lrl(s);
     for (var i=0;i<s.length;i++){
-      for (var j=2;j<=(s.length-i)/2;j++){
+      for (var j=2;j<=Math.min((s.length-i)/2,ml);j++){
         var sub=s.substring(i,i+j);
         if (x.has(sub)) continue;
         var q=occurrences(s,sub);
@@ -104,8 +120,9 @@ function compression2(s){
     var m=0;
     var r="";
     var x=new Set();
+    var ml=lrl(s);
     for (var i=0;i<s.length;i++){
-      for (var j=2;j<=(s.length-i)/2;j++){
+      for (var j=2;j<=Math.min((s.length-i)/2,ml);j++){
         var sub=s.substring(i,i+j);
         if (x.has(sub)) continue;
         var q=occurrences(s,sub);
@@ -172,13 +189,14 @@ function compression3(s){
   console.log(availableChars);
   var w=["e"];
   var t=[];
-  while (w.length&&availableChars.length>=2){
+  while (w.length&&availableChars.length>=1){
     w=[];
     var m=0;
     var r="";
     var x=new Set();
+    var ml=lrl(s);
     for (var i=0;i<s.length;i++){
-      for (var j=2;j<=(s.length-i)/2;j++){
+      for (var j=2;j<=Math.min((s.length-i)/2,ml);j++){
         var sub=s.substring(i,i+j);
         if (x.has(sub)) continue;
         var q=occurrences(s,sub);
@@ -194,9 +212,10 @@ function compression3(s){
     }
     if (!w.length) break;
     s=s.replace(new RegExp(w[r][0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'),"g"),availableChars[0]);
-    for (var e=0;e<t.length;e++) t[e][0]=t[e][0].replace(new RegExp(w[r][0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'),"g"),availableChars[3]);
+    for (var e=0;e<t.length;e++) t[e][0]=t[e][0].replace(new RegExp(w[r][0].replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'),"g"),availableChars[0]);
     console.log(w[r][0]+"=>"+availableChars[0]+" -"+m+"B");
     //console.log(w);
+    console.log(JSON.stringify(t))
     t.push([w[r][0],availableChars[0]]);
     availableChars.splice(0,1);
   }

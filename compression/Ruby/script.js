@@ -1,3 +1,18 @@
+function lrl(s){
+  var n=s.length;
+  var a=[[]];
+  var l=0;
+  for (var i=1;i<=n+1;i++){
+    a.push([]);
+    for (var j=i+1;j<=n+1;j++){
+      if (s[i-1]==s[j-1]&&a[i-1][j-1]|0<j-i){
+        a[i][j]=(a[i-1][j-1]|0)+1;
+        if (a[i][j]>l) l=a[i][j];
+      }
+    }
+  }
+  return l;
+}
 function occurrences(string, subString, allowOverlapping) {
   string+="";
   subString+="";
@@ -26,13 +41,14 @@ function compression1(s){
   console.log(availableChars);
   var w=["e"];
   var t=[];
-  while (w.length&&availableChars.length>=2){
+  while (w.length&&availableChars.length>=1){
     w=[];
     var m=0;
     var r="";
     var x=new Set();
+    var ml=lrl(s);
     for (var i=0;i<s.length;i++){
-      for (var j=2;j<=(s.length-i)/2;j++){
+      for (var j=2;j<=Math.min((s.length-i)/2,ml);j++){
         var sub=s.substring(i,i+j);
         if (x.has(sub)) continue;
         var q=occurrences(s,sub);
