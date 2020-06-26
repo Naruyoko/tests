@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>whY mountain</title>
+  <script src="./script.js"></script>
+</head>
+<body>
+  <h1>whY mountain</h1>
+  <form name=form>
+    <textarea id="input" style="width:500px;height:60px;display:block;overflow:auto;background-color:white;border:darkgray solid 1px;" oninput="draw(true)" contentEditable>1,2,4,8,10,7,12,14,12</textarea>
+    <input id="ROWHEIGHT" type="range" min=15 max=60 value=20 oninput="draw()">
+    <input id="COLUMNWIDTH" type="range" min=15 max=60 value=20 oninput="draw()">
+    <input id="LINETHICKNESS" type="range" min=1 max=15 value=1 oninput="draw()">
+    <input type="button" value="Draw" onclick="draw(true)">
+  </form>
+  <canvas id="output" width=640 height=960 style="display:none"></canvas>
+  <img id='outimg' style='border-style:none;border-width:1px'>
+</body>
+</html>
