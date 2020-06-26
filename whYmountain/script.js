@@ -18,7 +18,13 @@ function calc(s){
     //assign parents
     var hasNextLayer=false;
     for (var i=0;i<lastLayer.length;i++){
-      var p=lastLayer[i].position+1;
+      var p;
+      if (calculatedMountain.length==1){
+        p=lastLayer[i].position+1;
+      }else{
+        p=0;
+        while (calculatedMountain[calculatedMountain.length-2][p].position<lastLayer[i].position+1) p++;
+      }
       while (true){
         if (p<0) break;
         var j;
@@ -27,8 +33,9 @@ function calc(s){
           j=p-1;
         }else{ //ignoring
           p=calculatedMountain[calculatedMountain.length-2][p].parent;
+          if (p<0) break;
           j=0;
-          while (lastLayer[j].position<p-1) j++;
+          while (lastLayer[j].position<calculatedMountain[calculatedMountain.length-2][p].position-1) j++;
         }
         if (j<0||j<lastLayer.length-1&&lastLayer[j].position+1!=lastLayer[j+1].position) break;
         if (lastLayer[j].value<lastLayer[i].value){
@@ -54,12 +61,13 @@ var input="";
 var ROWHEIGHT=20;
 var COLUMNWIDTH=20;
 var LINETHICKNESS=2;
+var NUMBERSIZE=10;
+var NUMBERTHICKNESS=400;
 function draw(recalculate){
-  for (var i of ["input","ROWHEIGHT","COLUMNWIDTH","LINETHICKNESS"]){
+  for (var i of ["input","ROWHEIGHT","COLUMNWIDTH","LINETHICKNESS","NUMBERSIZE","NUMBERTHICKNESS"]){
     window[i]=dg(i).value;
   }
   if (recalculate) calculatedMountains=input.split(/\r?\n/g).map(calc);
-  ctx.font="15px arial";
   //plagiarized
   for (var cycle=0;cycle<2;cycle++){ //draw twice because image size
     ctx.fillStyle="white"; //clear
@@ -67,6 +75,7 @@ function draw(recalculate){
     ctx.fillStyle="black";
     ctx.strokeStyle="black";
     ctx.lineWidth=+LINETHICKNESS;
+    ctx.font=NUMBERTHICKNESS+" "+NUMBERSIZE+"px Arial";
     var x=0;
     var y=0;
     for (var i=0;i<calculatedMountains.length;i++){
