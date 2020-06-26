@@ -18,9 +18,19 @@ function calc(s){
     //assign parents
     var hasNextLayer=false;
     for (var i=0;i<lastLayer.length;i++){
-      var j=i-1;
-      for (var j=i-1;j>=0;j--){
-        if (lastLayer[j].position+1!=lastLayer[j+1].position) break;
+      var p=lastLayer[i].position+1;
+      while (true){
+        if (p<0) break;
+        var j;
+        if (calculatedMountain.length==1){
+          p--;
+          j=p-1;
+        }else{ //ignoring
+          p=calculatedMountain[calculatedMountain.length-2][p].parent;
+          j=0;
+          while (lastLayer[j].position<p-1) j++;
+        }
+        if (j<0||j<lastLayer.length-1&&lastLayer[j].position+1!=lastLayer[j+1].position) break;
         if (lastLayer[j].value<lastLayer[i].value){
           lastLayer[i].parent=j;
           hasNextLayer=true;
