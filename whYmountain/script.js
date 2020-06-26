@@ -63,8 +63,9 @@ var COLUMNWIDTH=20;
 var LINETHICKNESS=2;
 var NUMBERSIZE=10;
 var NUMBERTHICKNESS=400;
+var LINEPLACE=1;
 function draw(recalculate){
-  for (var i of ["input","ROWHEIGHT","COLUMNWIDTH","LINETHICKNESS","NUMBERSIZE","NUMBERTHICKNESS"]){
+  for (var i of ["input","ROWHEIGHT","COLUMNWIDTH","LINETHICKNESS","NUMBERSIZE","NUMBERTHICKNESS","LINEPLACE"]){
     window[i]=dg(i).value;
   }
   if (recalculate) calculatedMountains=input.split(/\r?\n/g).map(calc);
@@ -90,11 +91,11 @@ function draw(recalculate){
           ctx.fillText(point.value,COLUMNWIDTH*(point.position*2+j+1)/2-ctx.measureText(point.value).width/2,by+ROWHEIGHT*(mountain.length-j)-3);
           if (j>0){
             ctx.beginPath();
-            ctx.moveTo(COLUMNWIDTH*(point.position*2+j+2)/2,by+ROWHEIGHT*(mountain.length-j+1)-13);
+            ctx.moveTo(COLUMNWIDTH*(point.position*2+j+2)/2,by+ROWHEIGHT*(mountain.length-j+1)-NUMBERSIZE*Math.min(LINEPLACE,1)-(ROWHEIGHT-NUMBERSIZE)*Math.max(LINEPLACE-1,0)-3);
             ctx.lineTo(COLUMNWIDTH*(point.position*2+j+1)/2,by+ROWHEIGHT*(mountain.length-j))
             var l=0;
             while (mountain[j-1][l].position!=point.position+1) l++;
-            ctx.lineTo(COLUMNWIDTH*(mountain[j-1][mountain[j-1][l].parent].position*2+j)/2,by+ROWHEIGHT*(mountain.length-j+1)-13);
+            ctx.lineTo(COLUMNWIDTH*(mountain[j-1][mountain[j-1][l].parent].position*2+j)/2,by+ROWHEIGHT*(mountain.length-j+1)-NUMBERSIZE*Math.min(LINEPLACE,1)-(ROWHEIGHT-NUMBERSIZE)*Math.max(LINEPLACE-1,0)-3);
             ctx.stroke();
           }
         }
