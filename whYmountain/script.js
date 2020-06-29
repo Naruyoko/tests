@@ -116,6 +116,7 @@ function draw(recalculate){
 }
 window.onpopstate=function (e){
   load();
+  draw(true);
 }
 function save(clipboard){
   var state={};
