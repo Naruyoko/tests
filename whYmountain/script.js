@@ -118,7 +118,20 @@ window.onpopstate=function (e){
   load();
   draw(true);
 }
-function save(clipboard){
+function saveSimple(clipboard){
+  var encodedInput=input.split(/\r?\n/g).map(e=>e.split(/[ ,]/g).map(Number)).join(";");
+  history.pushState(encodedInput,"","?"+encodedInput);
+  if (clipboard){
+    var copyarea=dg("copyarea");
+    copyarea.value=location.href;
+    copyarea.style.display="";
+    copyarea.select();
+    copyarea.setSelectionRange(0,99999);
+    document.execCommand("copy");
+    copyarea.style.display="none";
+  }
+}
+function saveDetailed(clipboard){
   var state={};
   for (var i of options){
     state[i]=window[i];
@@ -138,11 +151,17 @@ function save(clipboard){
 function load(){
   var encodedState=location.search.substring(1);
   if (!encodedState) return;
-  var state=encodedState.replace(/\-/g,"+").replace(/_/g,"/");
-  if (state.length%4) state+="=".repeat(4-state.length%4);
-  state=JSON.parse(atob(state));
-  console.log(state);
-  for (var i of options){
-    if (state[i]) dg(i).value=state[i];
+  try{
+    var state=encodedState.replace(/\-/g,"+").replace(/_/g,"/");
+    if (state.length%4) state+="=".repeat(4-state.length%4);
+    state=JSON.parse(atob(state));
+  }catch (e){ //simple
+    var input=encodedState.replace(/;/g,"\n");
+    dg("input").value=input;
+  }finally{ //detailed
+    console.log(state);
+    for (var i of options){
+      if (state[i]) dg(i).value=state[i];
+    }
   }
 }
