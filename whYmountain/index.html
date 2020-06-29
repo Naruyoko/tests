@@ -22,11 +22,13 @@
       <input id="NUMBERTHICKNESS" style="width:80px" type="range" min=100 max=900 value=400 step=100 oninput="draw()">
       <input id="LINEPLACE" style="width:120px" type="range" min=0 max=2 value=1 step=0.01 oninput="draw()">
       <input type="button" value="Draw" onclick="draw(true)">
+      <input type="button" value="Save" onclick="save(true)">
+      <input type="text" id="copyarea" style="display:none">
     </div>
   </form>
   <canvas id="output" width=640 height=960 style="display:none"></canvas>
   <img id='outimg' style='border-style:none;border-width:1px'>
   <div>Y sequence by Yukito</div>
-  <div>Version upper-branching ＦＯＮＴ noce.1</div>
+  <div>Version upper-branching ＦＯＮＴ noce--now with save!</div>
 </body>
 </html>

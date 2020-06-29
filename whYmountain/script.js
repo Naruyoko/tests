@@ -4,6 +4,7 @@ window.onload=function (){
   console.clear();
   canvas=dg("output");
   ctx=canvas.getContext("2d");
+  load();
   draw(true);
 }
 function dg(s){
@@ -57,6 +58,7 @@ function calc(s){
   }
   return calculatedMountain;
 }
+var options=["input","ROWHEIGHT","COLUMNWIDTH","LINETHICKNESS","NUMBERSIZE","NUMBERTHICKNESS","LINEPLACE"];
 var input="";
 var ROWHEIGHT=20;
 var COLUMNWIDTH=20;
@@ -65,7 +67,7 @@ var NUMBERSIZE=10;
 var NUMBERTHICKNESS=400;
 var LINEPLACE=1;
 function draw(recalculate){
-  for (var i of ["input","ROWHEIGHT","COLUMNWIDTH","LINETHICKNESS","NUMBERSIZE","NUMBERTHICKNESS","LINEPLACE"]){
+  for (var i of options){
     window[i]=dg(i).value;
   }
   if (recalculate) calculatedMountains=input.split(/\r?\n/g).map(calc);
@@ -111,4 +113,35 @@ function draw(recalculate){
   outimg.width=canvas.width;
   outimg.height=canvas.height;
   outimg.src=canvas.toDataURL('image/jpg');
+}
+window.onpopstate=function (e){
+  load();
+}
+function save(clipboard){
+  var state={};
+  for (var i of options){
+    state[i]=window[i];
+  }
+  var encodedState=btoa(JSON.stringify(state)).replace(/\+/g,"-").replace(/\//g,"_").replace(/\=/g,"");
+  history.pushState(state,"","?"+encodedState);
+  if (clipboard){
+    var copyarea=dg("copyarea");
+    copyarea.value=location.href;
+    copyarea.style.display="";
+    copyarea.select();
+    copyarea.setSelectionRange(0,99999);
+    document.execCommand("copy");
+    copyarea.style.display="none";
+  }
+}
+function load(){
+  var encodedState=location.search.substring(1);
+  if (!encodedState) return;
+  var state=encodedState.replace(/\-/g,"+").replace(/_/g,"/");
+  if (state.length%4) state+="=".repeat(4-state.length%4);
+  state=JSON.parse(atob(state));
+  console.log(state);
+  for (var i of options){
+    if (state[i]) dg(i).value=state[i];
+  }
 }
