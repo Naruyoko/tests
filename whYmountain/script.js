@@ -13,7 +13,9 @@ function dg(s){
 var calculatedMountains=null;
 function calc(s){
   //if (!/^(\d+,)*\d+$/.test(s)) throw Error("BAD");
-  var lastLayer=s.split(/[ ,]/g).map((e,i)=>({value:Number(e),position:i,parent:-1}));
+  var lastLayer;
+  if (typeof s=="string") lastLayer=s.split(/[ ,]/g).map((e,i)=>({value:Number(e),position:i,parentIndex:-1}));
+  else lastLayer=s;
   var calculatedMountain=[lastLayer]; //rows
   while (true){
     //assign parents
@@ -33,14 +35,14 @@ function calc(s){
           p--;
           j=p-1;
         }else{ //ignoring
-          p=calculatedMountain[calculatedMountain.length-2][p].parent;
+          p=calculatedMountain[calculatedMountain.length-2][p].parentIndex;
           if (p<0) break;
           j=0;
           while (lastLayer[j].position<calculatedMountain[calculatedMountain.length-2][p].position-1) j++;
         }
         if (j<0||j<lastLayer.length-1&&lastLayer[j].position+1!=lastLayer[j+1].position) break;
         if (lastLayer[j].value<lastLayer[i].value){
-          lastLayer[i].parent=j;
+          lastLayer[i].parentIndex=j;
           hasNextLayer=true;
           break;
         }
@@ -50,8 +52,8 @@ function calc(s){
     var currentLayer=[];
     calculatedMountain.push(currentLayer);
     for (var i=0;i<lastLayer.length;i++){
-      if (lastLayer[i].parent!=-1){
-        currentLayer.push({value:lastLayer[i].value-lastLayer[lastLayer[i].parent].value,position:lastLayer[i].position-1,parent:-1});
+      if (lastLayer[i].parentIndex!=-1){
+        currentLayer.push({value:lastLayer[i].value-lastLayer[lastLayer[i].parentIndex].value,position:lastLayer[i].position-1,parentIndex:-1});
       }
     }
     lastLayer=currentLayer;
@@ -60,8 +62,8 @@ function calc(s){
 }
 var options=["input","ROWHEIGHT","COLUMNWIDTH","LINETHICKNESS","NUMBERSIZE","NUMBERTHICKNESS","LINEPLACE"];
 var input="";
-var ROWHEIGHT=20;
-var COLUMNWIDTH=20;
+var ROWHEIGHT=32;
+var COLUMNWIDTH=32;
 var LINETHICKNESS=2;
 var NUMBERSIZE=10;
 var NUMBERTHICKNESS=400;
@@ -94,10 +96,10 @@ function draw(recalculate){
           if (j>0){
             ctx.beginPath();
             ctx.moveTo(COLUMNWIDTH*(point.position*2+j+2)/2,by+ROWHEIGHT*(mountain.length-j+1)-NUMBERSIZE*Math.min(LINEPLACE,1)-(ROWHEIGHT-NUMBERSIZE)*Math.max(LINEPLACE-1,0)-3);
-            ctx.lineTo(COLUMNWIDTH*(point.position*2+j+1)/2,by+ROWHEIGHT*(mountain.length-j))
+            ctx.lineTo(COLUMNWIDTH*(point.position*2+j+1)/2,by+ROWHEIGHT*(mountain.length-j));
             var l=0;
             while (mountain[j-1][l].position!=point.position+1) l++;
-            ctx.lineTo(COLUMNWIDTH*(mountain[j-1][mountain[j-1][l].parent].position*2+j)/2,by+ROWHEIGHT*(mountain.length-j+1)-NUMBERSIZE*Math.min(LINEPLACE,1)-(ROWHEIGHT-NUMBERSIZE)*Math.max(LINEPLACE-1,0)-3);
+            ctx.lineTo(COLUMNWIDTH*(mountain[j-1][mountain[j-1][l].parentIndex].position*2+j)/2,by+ROWHEIGHT*(mountain.length-j+1)-NUMBERSIZE*Math.min(LINEPLACE,1)-(ROWHEIGHT-NUMBERSIZE)*Math.max(LINEPLACE-1,0)-3);
             ctx.stroke();
           }
         }
@@ -164,4 +166,94 @@ function load(){
       if (state[i]) dg(i).value=state[i];
     }
   }
+}
+function calcDiagonal(mountain){
+  if (typeof mountain=="string") mountain=calc(mountain);
+  var height=0;
+  var position=mountain[0].length-1;
+  while (mountain[height+1]&&mountain[height+1][mountain[height+1].length-1].position==position-1){ //climb up to the peak
+    height++;
+    position--;
+  }
+  var lastIndex=mountain[height].length-1;
+  var gezandoIndexes=[[lastIndex]]; //indexes of gezando nodes
+  while (gezandoIndexes.length<=height) gezandoIndexes.unshift([]);
+  while (true){
+    if (height===0){
+      if (lastIndex===0) break;
+      lastIndex--;
+    }else{
+      var i=0; //find right-down
+      while (mountain[height-1][i].position!=mountain[height][lastIndex].position+1) i++;
+      i=mountain[height-1][i].parentIndex; //go to its parent=left-down
+      var j=0; //find up-left of that=left
+      while (mountain[height][j].position<mountain[height-1][i].position-1) j++;
+      if (mountain[height][j].position==mountain[height-1][i].position-1){ //left exists
+        lastIndex=j;
+        gezandoIndexes[height-1].unshift(i);
+      }else{
+        height--;
+        lastIndex=i;
+      }
+    }
+    gezandoIndexes[height].unshift(lastIndex);
+  }
+  var lastTreeLevel=new Set(gezandoIndexes[0]);
+  var treeNodeIndexes=[lastTreeLevel];
+  while (height<mountain.length-1){
+    var treeLevel=new Set(gezandoIndexes[height+1]);
+    for (var i=0;i<mountain[height].length;i++){
+      if (lastTreeLevel.has(mountain[height][i].parentIndex)){
+        var j=0;
+        while (mountain[height+1][j].position<mountain[height][i].position-1) j++;
+        treeLevel.add(j);
+      }
+    }
+    lastTreeLevel=treeLevel;
+    treeNodeIndexes.push(lastTreeLevel);
+    height++;
+  }
+  var r=[];
+  for (var i=0;i<mountain[0].length;i++){ //only one diagonal exists for each left-side-up diagonal line
+    for (var j=mountain.length-1;j>=0;j--){ //prioritize the top
+      var found=false;
+      for (var k of treeNodeIndexes[j]){
+        if (mountain[j][k].position+j==i){
+          r.push(mountain[j][k].value);
+          found=true;
+          break;
+        }
+      }
+      if (found) break;
+    }
+  }
+  console.log(gezandoIndexes);
+  console.log(treeNodeIndexes);
+  return r.join(",");
+}
+var ontabopen={};
+var tabs=["input","extractDiagonal"];
+function openTab(name){
+  for (var i of tabs){
+    dg(i+"Tab").style.display="none";
+  }
+  dg(name+"Tab").style.display="";
+  if (ontabopen[name] instanceof Function) ontabopen[name]();
+}
+ontabopen["extractDiagonal"]=function (){
+  var l=dg("extractDiagonal");
+  l.innerHTML="";
+  var lines=input.split(/\r?\n/g);
+  for (var i in lines){
+    var d=document.createElement("li");
+    d.onclick=new Function("extractDiagonal("+i+")");
+    d.textContent=lines[i];
+    l.appendChild(d);
+  }
+}
+function extractDiagonal(line){
+  var diagonal=calcDiagonal(calculatedMountains[line]);
+  dg("input").value+="\n"+diagonal;
+  draw(true);
+  ontabopen["extractDiagonal"]();
 }
