@@ -11,16 +11,33 @@ function dg(s){
   return document.getElementById(s);
 }
 var calculatedMountains=null;
+function parseSequenceElement(s,i){
+  if (s.indexOf("v")==-1||!isFinite(Number(s.substring(s.indexOf("v")+1)))){
+    return {
+      value:Number(s),
+      position:i,
+      parentIndex:-1
+    };
+  }else{
+    return {
+      value:Number(s.substring(0,s.indexOf("v"))),
+      position:i,
+      parentIndex:Math.max(Math.min(i-1,Number(s.substring(s.indexOf("v")+1))),-1),
+      forcedParent:true
+    };
+  }
+}
 function calc(s){
   //if (!/^(\d+,)*\d+$/.test(s)) throw Error("BAD");
   var lastLayer;
-  if (typeof s=="string") lastLayer=s.split(/[ ,]/g).map((e,i)=>({value:Number(e),position:i,parentIndex:-1}));
+  if (typeof s=="string") lastLayer=s.split(/[ ,]/g).map(parseSequenceElement);
   else lastLayer=s;
   var calculatedMountain=[lastLayer]; //rows
   while (true){
     //assign parents
     var hasNextLayer=false;
     for (var i=0;i<lastLayer.length;i++){
+      if (lastLayer[i].forcedParent) continue;
       var p;
       if (calculatedMountain.length==1){
         p=lastLayer[i].position+1;
@@ -121,7 +138,7 @@ window.onpopstate=function (e){
   draw(true);
 }
 function saveSimple(clipboard){
-  var encodedInput=input.split(/\r?\n/g).map(e=>e.split(/[ ,]/g).map(Number)).join(";");
+  var encodedInput=input.split(/\r?\n/g).map(e=>e.split(/[ ,]/g).map(parseSequenceElement).map(e=>e.forcedParent?e.value+"v"+e.parentIndex:e.value)).join(";");
   history.pushState(encodedInput,"","?"+encodedInput);
   if (clipboard){
     var copyarea=dg("copyarea");
@@ -200,26 +217,57 @@ function calcDiagonal(mountain){
   }
   var lastTreeLevel=new Set(gezandoIndexes[0]);
   var treeNodeIndexes=[lastTreeLevel];
+  var treeLevelParent=new Map();
+  for (var i=0;i<mountain[0].length;i++) treeLevelParent.set(i,mountain[0][i].parentIndex);
+  var treeNodeParent=[treeLevelParent];
   while (height<mountain.length-1){
     var treeLevel=new Set(gezandoIndexes[height+1]);
+    var treeLevelParent=new Map();
+    if (gezandoIndexes[height+1]){
+      for (var i=0;i<gezandoIndexes[height+1].length;i++){
+        var j=0; //find right-down
+        while (mountain[height][j].position!=mountain[height+1][i].position+1) j++;
+        j=mountain[height][j].parentIndex; //go to its parent=left-down
+        treeLevelParent.set(i,mountain[height][j].position+height);
+      }
+    }
     for (var i=0;i<mountain[height].length;i++){
       if (lastTreeLevel.has(mountain[height][i].parentIndex)){
         var j=0;
         while (mountain[height+1][j].position<mountain[height][i].position-1) j++;
         treeLevel.add(j);
+        treeLevelParent.set(j,mountain[height][i].parentIndex+height);
+      }
+    }
+    for (var i=0;i<mountain[height+1].length;i++){
+      var j=0; //find right-down
+      while (mountain[height][j].position!=mountain[height+1][i].position+1) j++;
+      j=mountain[height][j].parentIndex; //go to its parent=left-down
+      var k=0; //find up-left of that=left
+      while (mountain[height+1][k].position<mountain[height][j].position-1) k++;
+      if (mountain[height+1][k].position==mountain[height][j].position-1){ //left exists
+        treeLevel.add(i);
+        treeLevelParent.set(i,mountain[height+1][k].position+height+1);
       }
     }
     lastTreeLevel=treeLevel;
     treeNodeIndexes.push(lastTreeLevel);
+    treeNodeParent.push(treeLevelParent);
     height++;
   }
-  var r=[];
+  var t=[];
+  var ts=[];
+  var th=[];
+  var tps=[];
   for (var i=0;i<mountain[0].length;i++){ //only one diagonal exists for each left-side-up diagonal line
     for (var j=mountain.length-1;j>=0;j--){ //prioritize the top
       var found=false;
-      for (var k of treeNodeIndexes[j]){
-        if (mountain[j][k].position+j==i){
-          r.push(mountain[j][k].value);
+      for (var k=mountain[j].length-1;k>=0;k--){
+        if (treeNodeIndexes[j].has(k)&&mountain[j][k].position+j==i){
+          t.push(mountain[j][k].value);
+          ts.push(i);
+          th.push(j);
+          tps.push(treeNodeParent[j].get(k));
           found=true;
           break;
         }
@@ -227,8 +275,34 @@ function calcDiagonal(mountain){
       if (found) break;
     }
   }
-  console.log(gezandoIndexes);
-  console.log(treeNodeIndexes);
+  var pw=[];
+  for (var i=0;i<t.length;i++){
+    var p=-1;
+    for (var j=i-1;j>=0;j--){
+      if (t[j]<t[i]){
+        p=j;
+        break;
+      }
+    }
+    pw.push(p);
+  }
+  var r=[];
+  for (var i=0;i<t.length;i++){
+    var p=-1;
+    var ps=ts[i];
+    while (true){
+      ps=tps[ts.indexOf(ps)];
+      if (ps<0) break;
+      if (t[ps]<t[i]&&th[ps]<=th[i]){
+        p=ps;
+        break;
+      }
+    }
+    if (p==pw[i]) r.push(t[i]);
+    else r.push(t[i]+"v"+p);
+  }
+  //console.log(gezandoIndexes);
+  //console.log(treeNodeIndexes);
   return r.join(",");
 }
 var ontabopen={};
@@ -246,14 +320,38 @@ ontabopen["extractDiagonal"]=function (){
   var lines=input.split(/\r?\n/g);
   for (var i in lines){
     var d=document.createElement("li");
-    d.onclick=new Function("extractDiagonal("+i+")");
-    d.textContent=lines[i];
+    var e=document.createElement("u");
+    e.textContent=lines[i];
+    e.onclick=new Function("extractDiagonal("+i+")");
+    d.appendChild(e);
     l.appendChild(d);
   }
 }
 function extractDiagonal(line){
-  var diagonal=calcDiagonal(calculatedMountains[line]);
-  dg("input").value+="\n"+diagonal;
+  var startTime=Date.now();
+  var lastSequence=calculatedMountains[line];
+  for (var cycles=0;cycles<extractDiagonalModesCount[extractDiagonalMode];cycles++){
+    var diagonal=calcDiagonal(lastSequence);
+    if (cycles>0){
+      var lastSequenceText=lastSequence;
+      if (lastSequence instanceof Array) lastSequenceText=lastSequence[0].map(e=>e.forcedParent?e.value+"v"+e.parentIndex:e.value).join(",");
+      //console.log(diagonal);
+      //console.log(lastSequenceText);
+      if (diagonal==lastSequenceText) break;
+      if (!(Number(diagonal.split(",")[diagonal.split(",").length-1])>1)) break;
+      if (!diagonal.split(",").map(e=>e.indexOf("v")==-1?Number(e):Number(e.substring(0,e.indexOf("v")))).every(e=>isFinite(e)&&e>0)) break;
+    }
+    if (extractDiagonalMode==4&&Date.now()-startTime>5000) break;
+    lastSequence=diagonal;
+    dg("input").value+="\n"+diagonal;
+  }
   draw(true);
   ontabopen["extractDiagonal"]();
+}
+var extractDiagonalMode=0;
+var extractDiagonalModes=["once","5","10","100","5 seconds"];
+var extractDiagonalModesCount=[1,5,10,100,Infinity];
+function toggleExtractDiagonalMode(){
+  extractDiagonalMode=(extractDiagonalMode+1)%extractDiagonalModes.length;
+  dg("toggleExtractDiagonalModeButton").textContent="Mode: "+extractDiagonalModes[extractDiagonalMode];
 }
