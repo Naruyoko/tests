@@ -4,6 +4,7 @@
     <title>JavaScript Compressor</title>
     <link rel="stylesheet" href="./style.css" type="text/css">
     <script src="./script.js"></script>
+    <script type="text/javascript" src="https://naruyoko.github.io/tests/package/utf8.js"></script>
   </head>
   <body style="width:100vw;max-width:100vw">
     <textarea id="input" style="width:95%;max-width:100%;overflow:none;"></textarea>
@@ -15,8 +16,12 @@
       </tr>
     </table><br>
     <button onclick="compress()">!</button>
-    <input type="checkbox" id="n1" checked>
-    <input type="checkbox" id="n2" checked>
+    <input type="checkbox" id="n1">
+    <input type="checkbox" id="n2">
+    <input type="checkbox" id="co">
     <input type="checkbox" id="c" checked>
+    <select id="charSet"></select>
+    <select id="quoteType"></select>
+    <select id="encoding"></select>
   </body>
 </html>

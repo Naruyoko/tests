@@ -1,0 +1,10 @@
+Included external codes (Placed in /package):
+aarexformat.js - https://github.com/aarextiaokhiao/IvarK.github.io (MIT License)
+big.min.js - https://github.com/MikeMcl/big.js (MIT License)
+break_break_infinity.js - https://github.com/Patashu/break_infinity.js/blob/40c06af42d34c4962a38d73925c1835aee48a771/break_break_infinity.js (MIT License) (Note: No longer supported by its creater)
+break_eternity.min.js - https://github.com/Patashu/break_eternity.js (MIT License)
+break_infinity.min.js - https://github.com/Patashu/break_infinity.js (MIT License)
+confractus_numerus.js - https://github.com/aarextiaokhiao/magna_numerus.js (Unknown license)
+decimal.js - https://github.com/MikeMcl/decimal.js (MIT License)
+logarithmica_numerus.js - https://github.com/aarextiaokhiao/magna_numerus.js (Unknown license)
+utf8.js - https://github.com/mathiasbynens/utf8.js (MIT License)
