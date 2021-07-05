@@ -358,7 +358,7 @@ function compression3(s,passes=4){
     var keyCodePoint=NaN;
     var lastReplaced=null;
     while (true){
-      keyCodePoint=nextCodePoint(s,keyCodePoint);
+      keyCodePoint=nextCodePoint(s+dict.map(function(e){return e[0]+e[1];}).join(""),keyCodePoint);
       if (isNaN(keyCodePoint)) break;
       var key=String.fromCharCode(keyCodePoint);
       var keyLength=finalLength(key);
