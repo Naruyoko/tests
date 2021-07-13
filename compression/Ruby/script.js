@@ -85,14 +85,14 @@ function compression1(s){
     }
     var s1="_='"+s;
     for (var i=0;i<p.length;i++) s1+=p[i][1]+p[i][0];
-    s1=s1.replace(/\n/g,"\\n");
+    s1=s1.replace(/\n/g,"\\n")+"';'";
     for (var i=p.length-1;i>=0;i--) s1+=p[i][1];
-    s1+="'.each_char{|Y|_=_.split(Y);_=_.join(_.pop())};eval(_)";
+    s1+="'.each_char{|y|_=_.split(y);_=_.join(_.pop())};eval(_)";
     var s2="_='"+s;
     for (var i=0;i<p.length;i++) s2+=p[i][1]+p[i][0];
-    s2=s2.replace(/\n/g,"\\n")+"'\nfor(Y of $='";
+    s2=s2.replace(/\n/g,"\\n")+"';'";
     for (var i=p.length-1;i>=0;i--) s2+=p[i][1];
-    s2+="'.each_char{|Y|_=_.split(Y);_=_.join(_.pop())};$><<_";
+    s2+="'.each_char{|y|_=_.split(y);_=_.join(_.pop())};$><<_";
   }else s1=s;
   /*
   console.log(s1);
