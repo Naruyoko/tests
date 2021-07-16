@@ -13,7 +13,7 @@ function lrl(s){
   }
   return l;
 }
-function occurrences(string, subString, allowOverlapping) {
+function countOccurrences(string, subString, allowOverlapping) {
   string+="";
   subString+="";
   if (subString.length<=0)return string.length+1;
@@ -28,6 +28,9 @@ function occurrences(string, subString, allowOverlapping) {
     }else break;
   }
   return n;
+}
+function finalLength(s){
+  return utf8.encode(s).length+countOccurrences(s,"\n")+countOccurrences(s,"\r")+countOccurrences(s,"'");
 }
 function compression1(s){
   console.log(s);
@@ -51,9 +54,10 @@ function compression1(s){
       for (var j=2;j<=Math.min((s.length-i)/2,ml);j++){
         var sub=s.substring(i,i+j);
         if (x.has(sub)) continue;
-        var q=occurrences(s,sub);
-        for (var e=0;e<t.length;e++) q+=occurrences(t[e][0],sub);
-        var k=q*(j-1)-j-2;
+        var q=countOccurrences(s,sub);
+        for (var e=0;e<t.length;e++) q+=countOccurrences(t[e][0],sub);
+        var sl=finalLength(sub);
+        var k=(q-1)*sl-q+2;
         if (k>0) w.push([sub,k,q]);
         if (k>m){
           m=k;
@@ -116,7 +120,7 @@ function compress(){
   for (var i=0;i<a.length;i++) m=Math.min(m,a[i][1].length);
   for (var i=0;i<a.length;i++){
     var q=a[i][1].length==m?" style=\"background-color:lime\"":"";
-    e+="<tr><td"+q+">"+a[i][0]+"</td><td"+q+"><pre>"+a[i][1].replace(/</g,"&lt;")+"</pre></td><td"+q+">"+a[i][1].length+"</td></tr>";
+    e+="<tr><td"+q+">"+a[i][0]+"</td><td"+q+"><pre>"+a[i][1].replace(/</g,"&lt;").replace(/ /g,"&nbsp;").replace(/\n/g,"<br>")+"</pre></td><td"+q+">"+utf8.encode(a[i][1]).length+"</td></tr>";
   }
   document.getElementById("output").innerHTML=e;
 }

@@ -481,7 +481,7 @@ function compress(){
   for (var i=0;i<a.length;i++) m=Math.min(m,a[i][1].length);
   for (var i=0;i<a.length;i++){
     var q=a[i][1].length==m?" style=\"background-color:lime\"":"";
-    e+="<tr><td"+q+">"+a[i][0]+"</td><td"+q+"><pre>"+a[i][1].replace(/</g,"&lt;")+"</pre></td><td"+q+">"+utf8.encode(a[i][1]).length+"</td></tr>";
+    e+="<tr><td"+q+">"+a[i][0]+"</td><td"+q+"><pre>"+a[i][1].replace(/</g,"&lt;").replace(/ /g,"&nbsp;").replace(/\n/g,"<br>")+"</pre></td><td"+q+">"+utf8.encode(a[i][1]).length+"</td></tr>";
   }
   document.getElementById("output").innerHTML=e;
 }
