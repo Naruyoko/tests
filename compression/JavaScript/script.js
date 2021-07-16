@@ -121,7 +121,7 @@ function finalLength(s){
   return utf8.encode(s).length+countOccurrences(s,"\n")+countOccurrences(s,"\r")+countOccurrences(s,options.quoteType);
 }
 function escapeNewLinesAndQuotes(s){
-  return s.replace(/\n/g,"\\n").replace(/\r/g,"\\r").replace(/\\/g,"\\\\").replace(new RegExp(options.quoteType,"g"),"\\"+options.quoteType);
+  return s.replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/\r/g,"\\r").replace(new RegExp(options.quoteType,"g"),"\\"+options.quoteType);
 }
 //Adopted from https://stackoverflow.com/a/6714233
 function replaceAll(a,b,c){
