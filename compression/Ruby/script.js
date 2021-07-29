@@ -186,12 +186,12 @@ function compression1o(s){
     for (var i=0;i<p.length;i++) s1+=p[i][1]+p[i][0];
     s1=s1.replace(/\n/g,"\\n")+"';'";
     for (var i=p.length-1;i>=0;i--) s1+=p[i][1];
-    s1+="'.each_char{|y|_=_.split(y);_=_.join(_.pop())};eval(_)";
+    s1+="'.each_char{|y|*_,y=_.split(y);_=_*y};eval(_)";
     var s2="_='"+s;
     for (var i=0;i<p.length;i++) s2+=p[i][1]+p[i][0];
     s2=s2.replace(/\n/g,"\\n")+"';'";
     for (var i=p.length-1;i>=0;i--) s2+=p[i][1];
-    s2+="'.each_char{|y|_=_.split(y);_=_.join(_.pop())};$><<_";
+    s2+="'.each_char{|y|*_,y=_.split(y);_=_*y};$><<_";
   }else s1=s;
   /*
   console.log(s1);
@@ -304,7 +304,7 @@ function compression1(s,passes=4){
       else if (b[0].indexOf(a[1])!=-1) return 1;
       else return 0;
     });
-    r="_="+options.quoteType+escapeNewLinesAndQuotes(s+dict.map(function(s){return s[1]+s[0];}).join(""))+options.quoteType+";"+options.quoteType+escapeNewLinesAndQuotes(dict.map(function(s){return s[1];}).reverse().join(""))+options.quoteType+".each_char{|y|_=_.split(y);_=_.join(_.pop())};eval(_)";
+    r="_="+options.quoteType+escapeNewLinesAndQuotes(s+dict.map(function(s){return s[1]+s[0];}).join(""))+options.quoteType+";"+options.quoteType+escapeNewLinesAndQuotes(dict.map(function(s){return s[1];}).reverse().join(""))+options.quoteType+".each_char{|y|*_,y=_.split(y);_=_*y};eval(_)";
   }else r=s;
   console.log(r);
   return r;
