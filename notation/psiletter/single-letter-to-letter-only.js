@@ -73,7 +73,7 @@ function parseExpression(s){
  * @returns {boolean}
  */
 function opEquals(op1,op2){
-  returns op1===Infinity?op2===Infinity:op2!==Infinity&&op1[0]==op2[0]&&op1[1]==op2[1];
+  return op1===Infinity?op2===Infinity:op2!==Infinity&&op1[0]==op2[0]&&op1[1]==op2[1];
 }
 /**
  * @param {Decimal} num 
