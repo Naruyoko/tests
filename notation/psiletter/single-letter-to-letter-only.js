@@ -77,9 +77,11 @@ function opEquals(op1,op2){
 }
 /**
  * @param {Decimal} num 
+ * @param {Options=} options 
  * @returns {string}
  */
-function formatNumber(num){
+function formatNumber(num,options){
+  var digitsDisplayed=options?options.digitsDisplayed:12;
   var r=expression.num.toPrecision(digitsDisplayed);
   if (r.indexOf("e")!=-1) return r.replace(/\.?0*e\+?/,"*10^");
   else if (r.indexOf(".")!=-1) return r.replace(/\.?0+$/,"");
@@ -87,12 +89,11 @@ function formatNumber(num){
 }
 /**
  * @param {Expression} expression
- * @param {Options} options 
+ * @param {Options=} options 
  * @param {boolean=} collapse
  * @returns {string}
  */
 function stringifyExpression(expression,options,collapse){
-  var digitsDisplayed=options?options.digitsDisplayed:12;
   var collapseLittleLetters=options?options.collapseLittleLetters:true;
   if (collapse===undefined) collapse=false;
   var r="";
@@ -133,7 +134,7 @@ function stringifyExpression(expression,options,collapse){
     }
     r+=sameCount>1?collapse?(part.length>1?"("+part+")":part)+"<sub>"+sameCount+"</sub>":part.repeat(sameCount):part;
   }
-  r+=formatNumber(expression.num);
+  r+=formatNumber(expression.num,options);
   return r;
 }
 /**
@@ -194,7 +195,7 @@ function step(expression){
 }
 /**
  * @param {Expression} expression
- * @param {Options} options
+ * @param {Options=} options
  * @returns {boolean}
  */
 function finished(expression,options){
