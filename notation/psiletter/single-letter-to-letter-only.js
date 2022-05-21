@@ -48,7 +48,7 @@ function parseExpression(s){
     var part=next.value[0];
     if (part=="N") ops.push(Infinity);
     else{
-      /** @type [number,number] **/
+      /** @type {[number,number]} **/
       var op=[0,0];
       for (var k=0;k<part.length;k++){
         var letter=part[k].toLowerCase();
