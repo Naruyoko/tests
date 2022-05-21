@@ -82,7 +82,7 @@ function opEquals(op1,op2){
  */
 function formatNumber(num,options){
   var digitsDisplayed=options?options.digitsDisplayed:12;
-  var r=expression.num.toPrecision(digitsDisplayed);
+  var r=num.toPrecision(digitsDisplayed);
   if (r.indexOf("e")!=-1) return r.replace(/\.?0*e\+?/,"*10^");
   else if (r.indexOf(".")!=-1) return r.replace(/\.?0+$/,"");
   else return r;
