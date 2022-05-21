@@ -169,7 +169,7 @@ function stringifyExpression(expression,options,collapse){
       }else{
         part="(";
         for (var j=op.length-1;j>=0;j--){
-          part+=formatNumber(op[j]);
+          part+=formatNumber(op[j],options);
           if (j>0) part+=",";
         }
         part+=")|";
