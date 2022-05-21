@@ -68,6 +68,24 @@ function parseExpression(s){
   return {ops:ops,num:num};
 }
 /**
+ * @param {Operation} op1 
+ * @param {Operation} op2 
+ * @returns {boolean}
+ */
+function opEquals(op1,op2){
+  returns op1===Infinity?op2===Infinity:op2!==Infinity&&op1[0]==op2[0]&&op1[1]==op2[1];
+}
+/**
+ * @param {Decimal} num 
+ * @returns {string}
+ */
+function formatNumber(num){
+  var r=expression.num.toPrecision(digitsDisplayed);
+  if (r.indexOf("e")!=-1) return r.replace(/\.?0*e\+?/,"*10^");
+  else if (r.indexOf(".")!=-1) return r.replace(/\.?0+$/,"");
+  else return r;
+}
+/**
  * @param {Expression} expression
  * @param {Options} options 
  * @param {boolean=} collapse
@@ -81,9 +99,9 @@ function stringifyExpression(expression,options,collapse){
   for (var i=0;i<expression.ops.length;i++){
     var op=expression.ops[i];
     var part="";
-    if (collapse&&collapseLittleLetters){
-      if (op===Infinity) part="N";
-      else{
+    if (op===Infinity) part="N";
+    else{
+      if (collapse&&collapseLittleLetters){
         if (op[1]>=2){
           var rep=Math.floor(op[1]/2);
           part+=rep==1?"m":part?"m<sub>"+rep+"</sub>":rep==2?"mm":"mm<sub>"+(rep-1)+"</sub>";
@@ -96,10 +114,7 @@ function stringifyExpression(expression,options,collapse){
         }
         if (remop0%4) part+="efg"[remop0%4-1];
         part=part[0].toUpperCase()+part.substring(1);
-      }
-    }else{
-      if (op===Infinity) part="N";
-      else{
+      }else{
         if (op[1]>=2) part+="m".repeat(Math.floor(op[1]/2));
         if (op[1]%2) part+="jkl"[Math.min(op[0],2)];
         var remop0=op[1]%2?Math.max(op[0]-2,0):op[0];
@@ -109,21 +124,16 @@ function stringifyExpression(expression,options,collapse){
       }
     }
     var sameCount=1;
-    if (collapse){
-      while (i+1<expression.ops.length){
-        var op2=expression.ops[i+1];
-        if (op[0]==op2[0]&&op[1]==op2[1]){
-          sameCount++;
-          i++;
-        }else break;
-      }
+    while (i+1<expression.ops.length){
+      var op2=expression.ops[i+1];
+      if (opEquals(op,op2)){
+        sameCount++;
+        i++;
+      }else break;
     }
-    r+=sameCount>1?(part.length>1?"("+part+")":part)+"<sub>"+sameCount+"</sub>":part;
+    r+=sameCount>1?collapse?(part.length>1?"("+part+")":part)+"<sub>"+sameCount+"</sub>":part.repeat(sameCount):part;
   }
-  var num=expression.num.toPrecision(digitsDisplayed);
-  if (num.indexOf("e+")!=-1) num=num.replace(/\.?0*e\+/,"*10^");
-  else num=num.replace(/\.?0+$/,"");
-  r+=num;
+  r+=formatNumber(expression.num);
   return r;
 }
 /**
@@ -163,8 +173,7 @@ function step(expression){
       var whole=num.floor();
       /** @type {Decimal} */
       var frac=num.sub(whole);
-      newops=[];
-      for (var i=0;i<whole;i++) newops.push([op[0]-1,op[1]]);
+      newops=Array(whole.toNumber()).fill([op[0]-1,op[1]]);
       newnum=Decimal.pow(10,frac);
     }else{
       if (num.lt(2)){
@@ -194,7 +203,7 @@ function finished(expression,options){
   var argumentLimit=options?options.argumentLimit:10;
   var op=expression.ops[expression.ops.length-1];
   var num=expression.num;
-  if (op[0]==1&&op[1]==0){
+  if (op!==Infinity&&op[0]==1&&op[1]==0){
     if (!num.lt(eLimit)) return true;
   }else{
     if (!num.lt(argumentLimit)) return true;
