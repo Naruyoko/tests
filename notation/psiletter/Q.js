@@ -230,10 +230,10 @@ function parseExpression(s){
       if (numop[0]||numop[1]||numop[2]||numop[3]){
         /** @type {Ordinal} */
         var op={ord:[],frac:null};
-        if (numop[0]) op.ord.unshift({pow:ORDINAL_ZERO,coef:numop[0]});
-        if (numop[1]) op.ord.unshift({pow:ORDINAL_ONE,coef:numop[1]});
-        if (numop[2]) op.ord.unshift({pow:ORDINAL_TWO,coef:numop[2]});
-        if (numop[3]) op.ord.unshift({pow:ORDINAL_OMEGA,coef:numop[3]});
+        if (numop[0]) op.ord.push({pow:ORDINAL_ZERO,coef:numop[0]});
+        if (numop[1]) op.ord.push({pow:ORDINAL_ONE,coef:numop[1]});
+        if (numop[2]) op.ord.push({pow:ORDINAL_TWO,coef:numop[2]});
+        if (numop[3]) op.ord.push({pow:ORDINAL_OMEGA,coef:numop[3]});
         ops.push(op);
       }
     }
