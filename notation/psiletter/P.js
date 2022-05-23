@@ -59,7 +59,7 @@ function parseExpression(s){
   var next;
   while (next=m.next(),!next.done){
     var part=next.value[0];
-    if (part=="P") ops.unshift(Infinity);
+    if (part=="P") ops.push(Infinity);
     else if (part[0]=="("){
       /** @type {number[]} **/
       var op=[];
@@ -69,7 +69,7 @@ function parseExpression(s){
         var entry=Decimal(next2);
         if (op.length||entry.neq(0)) op.unshift(entry);
       }
-      if (op.length) ops.unshift(op);
+      if (op.length) ops.push(op);
     }else{
       var op=[0,0,0];
       for (var k=0;k<part.length;k++){
@@ -84,9 +84,9 @@ function parseExpression(s){
         else if (letter=="m") op[1]+=2;
         else if (letter=="n") op[2]+=1;
       }
-      if (op[2]) ops.unshift([Decimal(op[0]),Decimal(op[1]),Decimal(op[2])]);
-      else if (op[1]) ops.unshift([Decimal(op[0]),Decimal(op[1])]);
-      else if (op[0]) ops.unshift([Decimal(op[0])]);
+      if (op[2]) ops.push([Decimal(op[0]),Decimal(op[1]),Decimal(op[2])]);
+      else if (op[1]) ops.push([Decimal(op[0]),Decimal(op[1])]);
+      else if (op[0]) ops.push([Decimal(op[0])]);
     }
   }
   var num=Decimal(numberPart.replace("*10^","e"));

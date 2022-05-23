@@ -46,7 +46,7 @@ function parseExpression(s){
   var next;
   while (next=m.next(),!next.done){
     var part=next.value[0];
-    if (part=="N") ops.unshift(Infinity);
+    if (part=="N") ops.push(Infinity);
     else{
       /** @type {[number,number]} **/
       var op=[0,0];
@@ -61,7 +61,7 @@ function parseExpression(s){
         else if (letter=="l") op[0]+=2,op[1]+=1;
         else if (letter=="m") op[1]+=2;
       }
-      if (op[0]||op[1]) ops.unshift(op);
+      if (op[0]||op[1]) ops.push(op);
     }
   }
   var num=Decimal(numberPart.replace("*10^","e"));

@@ -196,21 +196,21 @@ function parseExpression(s){
   var next;
   while (next=m.next(),!next.done){
     var part=next.value[0];
-    if (part=="Q") ops.unshift(Infinity);
+    if (part=="Q") ops.push(Infinity);
     else if (part[0]=="["){
-      if (part.search(/[eε]/)!=-1) ops.unshift(Infinity);
+      if (part.search(/[eε]/)!=-1) ops.push(Infinity);
       else if (part.search(/[wω+*^\{\}]/)!=-1){
         var result=parseOrdinal(part.substring(1,part.length-1));
         if (result===null) continue;
         var op=result[0];
         normalizeOrdinal(op);
-        if (op instanceof Object&&op.ord.length) ops.unshift(op);
+        if (op instanceof Object&&op.ord.length) ops.push(op);
       }else{
         var result=parseArray(part.substring(1,part.length-1));
         if (result===null) continue;
         var op=result[0];
         normalizeOrdinal(op);
-        if (op instanceof Object&&op.ord.length) ops.unshift(op);
+        if (op instanceof Object&&op.ord.length) ops.push(op);
       }
     }else{
       var numop=[0,0,0,0];
@@ -234,7 +234,7 @@ function parseExpression(s){
         if (numop[1]) op.ord.unshift({pow:ORDINAL_ONE,coef:numop[1]});
         if (numop[2]) op.ord.unshift({pow:ORDINAL_TWO,coef:numop[2]});
         if (numop[3]) op.ord.unshift({pow:ORDINAL_OMEGA,coef:numop[3]});
-        ops.unshift(op);
+        ops.push(op);
       }
     }
   }
