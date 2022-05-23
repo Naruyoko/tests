@@ -75,8 +75,8 @@
         <li>Maximum argument for not E: <input id="argumentLimit" type="number" value=10 min=1 max=100 onchange="updateOptions();"></li>
         <li>Maximum number of operations: <input id="opCountLimit" type="number" value=24 min=1 max=100 onchange="updateOptions();"></li>
         <li>Do not count duplicate operations: <input id="opCountSkipDuplicates" type="checkbox" onchange="updateOptions();" checked></li>
-        <li>Precision: <input id="precision" type="number" value=20 min=0 max=1e6 onchange="updateOptions();"></li>
-        <li>Digits displayed: <input id="digitsDisplayed" type="number" value=12 min=1 max=1e6 onchange="updateOptions();updateDisplay(false);updateHistory();"></li>
+        <li>Precision: <input id="precision" type="number" value=20 min=0 max=1000 onchange="updateOptions();"></li>
+        <li>Digits displayed: <input id="digitsDisplayed" type="number" value=12 min=1 max=1000 onchange="updateOptions();updateDisplay(false);updateHistory();"></li>
         <li>Progression delay: <input id="stepDelay" type="number" value=100 min=0 onchange="updateOptions();"></li>
         <li>Collapse duplicates: <input id="collapseDuplicates" type="checkbox" onchange="updateOptions();updateDisplay(false);updateHistory();" checked></li>
         <li>Use letters if possible: <input id="useLetters" type="checkbox" onchange="updateOptions();updateDisplay(false);updateHistory();" checked></li>
