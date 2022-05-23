@@ -19,6 +19,7 @@ var stepHistory=null;
  * opCountSkipDuplicates:boolean,
  * digitsDisplayed:number,
  * stepDelay:number,
+ * collapseDuplicates:boolean,
  * useLetters:boolean,
  * collapseLittleLetters:boolean,
  * maxHistoryLength:number,
@@ -35,6 +36,7 @@ var options={
   opCountSkipDuplicates:true,
   digitsDisplayed:12,
   stepDelay:100,
+  collapseDuplicates:true,
   useLetters:false,
   collapseLittleLetters:true,
   maxHistoryLength:100000,
@@ -123,6 +125,7 @@ function formatNumber(num,options){
  * @returns {string}
  */
 function stringifyExpression(expression,options,collapse){
+  var collapseDuplicates=options?options.collapseDuplicates:true;
   var useLetters=options?options.useLetters:false;
   var collapseLittleLetters=options?options.collapseLittleLetters:true;
   if (collapse===undefined) collapse=false;
@@ -183,7 +186,7 @@ function stringifyExpression(expression,options,collapse){
         i++;
       }else break;
     }
-    r+=sameCount>1?collapse?(part.length>1&&part[0]!="("?"("+part+")":part)+"<sub>"+sameCount+"</sub>":part.repeat(sameCount):part;
+    r+=sameCount>1?collapse&&collapseDuplicates?(part.length>1&&part[0]!="("?"("+part+")":part)+"<sub>"+sameCount+"</sub>":part.repeat(sameCount):part;
   }
   r+=formatNumber(expression.num,options);
   return r;
@@ -358,6 +361,7 @@ function updateOptions(){
   Decimal.set({precision:+document.getElementById("precision").value});
   options.digitsDisplayed=+document.getElementById("digitsDisplayed").value;
   options.stepDelay=+document.getElementById("stepDelay").value;
+  options.collapseDuplicates=document.getElementById("collapseDuplicates").checked;
   options.useLetters=document.getElementById("useLetters").checked;
   options.collapseLittleLetters=document.getElementById("collapseLittleLetters").checked;
   options.maxHistoryLength=+document.getElementById("maxHistoryLength").value;

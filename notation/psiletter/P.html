@@ -78,6 +78,7 @@
         <li>Precision: <input id="precision" type="number" value=20 min=0 max=1e6 onchange="updateOptions();"></li>
         <li>Digits displayed: <input id="digitsDisplayed" type="number" value=12 min=1 max=1e6 onchange="updateOptions();updateDisplay(false);updateHistory();"></li>
         <li>Progression delay: <input id="stepDelay" type="number" value=100 min=0 onchange="updateOptions();"></li>
+        <li>Collapse duplicates: <input id="collapseDuplicates" type="checkbox" onchange="updateOptions();updateDisplay(false);updateHistory();" checked></li>
         <li>Use letters if possible: <input id="useLetters" type="checkbox" onchange="updateOptions();updateDisplay(false);updateHistory();" checked></li>
         <li>Collapse little letters: <input id="collapseLittleLetters" type="checkbox" onchange="updateOptions();updateDisplay(false);updateHistory();" checked></li>
       </ul>
@@ -105,6 +106,6 @@
       <a href="https://googology.fandom.com/wiki/User_blog:PsiCubed2/Letter_Notation_Part_III" target="_blank">Definition</a> by PsiCubed2, Retrieved 2022/05/21<br>
       The program is licensed by <a href="https://creativecommons.org/licenses/by-sa/3.0/legalcode" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
     </div>
-    <div>Last updated: 2022/05/21</div>
+    <div>Last updated: 2022/05/23</div>
   </body>
 </html>
