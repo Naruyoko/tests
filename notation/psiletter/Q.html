@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notations - PsiCubed2's Letter Notation - Q</title>
+    <style>
+      * {
+        font-family:"Verdana",sans-serif;
+      }
+      #iocontainer {
+        width:auto;
+      }
+      #input, #collapsed, #collapsedHTML, #history {
+        resize:none;
+        display:block;
+        overflow:auto;
+        background-color:white;
+        border:1px solid darkgray;
+        font-size:14px;
+        padding:4px;
+        width:100%;
+        box-sizing:border-box;
+      }
+      #input, #collapsed, #collapsedHTML {
+        height: 40px;
+        overflow-wrap:break-word;
+      }
+      #history {
+        list-style:none;
+      }
+      #history>li {
+        white-space:nowrap;
+      }
+      #history>li.unaccepted {
+        color:gray;
+        text-decoration:line-through;
+      }
+      #history>li:before {
+        display: inline-block;
+        content:attr(seq) ". ";
+        width:3em;
+        text-align:right;
+        padding-right:4px
+      }
+      #historyButtons>button {
+        margin:0 4px;
+        width:40px;
+      }
+      input {
+        width:60px;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.3.1/decimal.min.js" integrity="sha512-Ou4M+sSU8oa+mE3juYqR3JmW633MUpMhe1cd+IusOtfjkMo8I3zXs4fRmjmCFqpRg5RK/geqoXBY8XRwFY2Rsg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="./Q.js"></script>
+    <script>
+    </script>
+  </head>
+  <body>
+    <h1>PsiCubed2's Letter Notation - Q</h1>
+    <div id="iocontainer">
+      <textarea id="input" onchange="updateInput()">F5.1928383828</textarea>
+      <div id="collapsed">Collapsed view here</div>
+      <textarea id="collapsedHTML" readonly>HTML here</textarea>
+    </div>
+    <div>
+      <button onclick="calculateStep()">Step</button>
+      <button onclick="calculateFull()">Full</button>
+      <button onclick="progression()">Progression</button>
+    </div>
+    <div>
+      Options:
+      <ul>
+        <li>Maximum argument for E: <input id="eLimit" type="number" value=1e13 onchange="updateOptions();"></li>
+        <li>Maximum argument for not E: <input id="argumentLimit" type="number" value=10 min=1 max=100 onchange="updateOptions();"></li>
+        <li>Maximum number of operations: <input id="opCountLimit" type="number" value=24 min=1 max=100 onchange="updateOptions();"></li>
+        <li>Maximum complexity of operations: <input id="opComplexityLimit" type="number" value=24 min=1 max=100 onchange="updateOptions();"></li>
+        <li>Maximum total complexity of operations: <input id="opTotalComplexityLimit" type="number" value=100 min=1 max=10000 onchange="updateOptions();"></li>
+        <li>Do not count duplicate operations: <input id="opCountSkipDuplicates" type="checkbox" onchange="updateOptions();" checked></li>
+        <li>Precision: <input id="precision" type="number" value=20 min=0 max=1000 onchange="updateOptions();"></li>
+        <li>Digits displayed: <input id="digitsDisplayed" type="number" value=12 min=1 max=1000 onchange="updateOptions();updateDisplay(false);updateHistory();"></li>
+        <li>Progression delay: <input id="stepDelay" type="number" value=100 min=0 onchange="updateOptions();"></li>
+        <li>Collapse duplicates: <input id="collapseDuplicates" type="checkbox" onchange="updateOptions();updateDisplay(false);updateHistory();" checked></li>
+        <li>Use array notation: <input id="useArray" type="checkbox" onchange="updateOptions();updateDisplay(false);updateHistory();"></li>
+        <li>Collapse separators: <input id="collapseSeparators" type="checkbox" onchange="updateOptions();updateDisplay(false);updateHistory();" checked></li>
+        <li>Use letters if possible: <input id="useLetters" type="checkbox" onchange="updateOptions();updateDisplay(false);updateHistory();"></li>
+        <li>Collapse little letters: <input id="collapseLittleLetters" type="checkbox" onchange="updateOptions();updateDisplay(false);updateHistory();" checked></li>
+      </ul>
+    </div>
+    <div style="margin-top:24px;">
+      History:
+      <ul>
+        <li>Maximum lines of history: <input id="maxHistoryLength" type="number" value=100000 onchange="updateOptions();"></li>
+        <li>History position: <input id="historyPosition" type="number" value=0 min=0  onchange="updateOptions();updateHistory();"></li>
+        <li>Lines shown: <input id="historyLinesShown" type="number" value=10 min=0  onchange="updateOptions();updateHistory();"></li>
+        <li>Collapse: <input id="collapseInHistory" type="checkbox" onchange="updateOptions();updateHistory();" checked></li>
+      </ul>
+      <div id="historyButtons">
+        <button onclick="firstPage();">&lt;&lt;</button>
+        <button onclick="lastPage();">&lt;</button>
+        <button onclick="nextPage();">&gt;</button>
+        <button onclick="finalPage();">&gt;&gt;</button>
+      </div>
+      <div id="historyPositionDisplay">Showing --- of - steps</div>
+      <ol id="history">
+        <li seq="-">History here</li>
+      </ol>
+    </div>
+    <div>
+      <a href="https://static.wikia.nocookie.net/googology/images/d/d4/Q.pdf/revision/latest?cb=20211118030908&format=original" target="_blank">Definition</a> by Plain'N'Simple, Retrieved 2022/05/23<br>
+      The program is licensed by <a href="https://creativecommons.org/licenses/by-sa/3.0/legalcode" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+    </div>
+    <div>Last updated: 2022/05/23</div>
+  </body>
+</html>
