@@ -50,12 +50,12 @@ var options={
  * @returns {Expression}
  */
 function parseExpression(s){
-  var numPos=s.search(/\d(\.\d*)?((e|\*10\^)[\+-]?\d+)?$/);
+  var numPos=s.search(/\d+(\.\d*)?((e|\*10\^)[\+-]?\d+)?$/);
   var opPart=s.substring(0,numPos);
   var numberPart=s.substring(numPos);
   /** @type {Operation[]} */
   var ops=[];
-  var m=opPart.matchAll(/\(\d(\.\d*)?(,\d(\.\d*)?)*\)\||[A-Z][a-z]*/g);
+  var m=opPart.matchAll(/\(\d+(\.\d*)?(,\d+(\.\d*)?)*\)\||[A-Z][a-z]*/g);
   var next;
   while (next=m.next(),!next.done){
     var part=next.value[0];
