@@ -271,7 +271,6 @@ function step(expression){
  * @returns {boolean}
  */
 function unacceptable(expression,options){
-  if (expression.ops.length==0) return true;
   var opCountLimit=options?options.opCountLimit:24;
   var opCountSkipDuplicates=options?options.opCountSkipDuplicates:true;
   var op=expression.ops[expression.ops.length-1];

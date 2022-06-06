@@ -640,7 +640,6 @@ function complexity(op){
  * @returns {boolean}
  */
 function unacceptable(expression,options){
-  if (expression.ops.length==0) return true;
   var opCountLimit=options?options.opCountLimit:24;
   var opCountSkipDuplicates=options?options.opCountSkipDuplicates:true;
   var opComplexityLimit=options?options.opComplexityLimit:24;
