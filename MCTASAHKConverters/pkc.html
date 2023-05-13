@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>PKC to AHK TAS Tools converter</title>
+  <script src="./pkc.js"></script>
+  <script>
+    function run(){
+      var x = document.getElementById("input").value;
+      var fpt=+document.getElementById("fpt").value;
+      var tps=+document.getElementById("tps").value;
+      var tickoffset=+document.getElementById("tickoffset").value;
+      var maxSafeYaw=+document.getElementById("maxSafeYaw").value;
+      var y = document.getElementById("output");
+      try{
+        y.innerHTML = convert(x,{fpt,tps,tickoffset,maxSafeYaw});
+      }catch(e){
+        y.innerHTML = e.message;
+      }
+    }
+    window.onload=function(){
+      ["input","fpt","tps","tickoffset","maxSafeYaw"].forEach(e=>document.getElementById(e).oninput=run);
+    }
+  </script>
+</head>
+<body>
+  <textarea id="input" style="width:100%;height:200px;font-family:'Courier New', Courier, monospace;"></textarea>
+  <input type="number" id="fpt" value="10">
+  <input type="number" id="tps" value="2">
+  <input type="number" id="tickoffset" value="3">
+  <input type="number" id="maxSafeYaw" value="900">
+  <input type="button" onclick="run()" value="Run">
+  <textarea id="output" style="width:100%;height:200px;font-family:'Courier New', Courier, monospace;" readonly></textarea>
+</body>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>MCSIM to AHK TAS Tools converter</title>
+  <script src="./mcsim.js"></script>
+  <script>
+    function run(){
+      var x = document.getElementById("input").value;
+      var tickoffset=+document.getElementById("tickoffset").value;
+      var y = document.getElementById("output");
+      try{
+        y.innerHTML = convert(x,tickoffset);
+      }catch(e){
+        y.innerHTML = e.message;
+      }
+    }
+    window.onload=function(){
+      document.getElementById("input").oninput=document.getElementById("tickoffset").oninput=run;
+    }
+  </script>
+</head>
+<body>
+  Old, bad, too specialized, don't use
+  <textarea id="input" style="width:100%;height:200px;font-family:'Courier New', Courier, monospace;"></textarea>
+  <input type="number" id="tickoffset" value="3">
+  <input type="button" onclick="run()" value="Run">
+  <textarea id="output" style="width:100%;height:200px;font-family:'Courier New', Courier, monospace;" readonly></textarea>
+</body>
