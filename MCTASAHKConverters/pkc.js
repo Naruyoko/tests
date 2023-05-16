@@ -13,7 +13,6 @@ function parseCSV(s){
 function convert(s,{fpt=10,tps=2,tickoffset=3,maxSafeYaw=900}){
   var info=parseCSV(s);
   var r="fps "+(fpt*tps);
-  var lastYawP=0;
   var lastPitchP=90*2400/360;
   var keyMap=["w","a","s","d","Space","Shift","Ctrl","LButton","RButton"];
   var keyHeaders=["W","A","S","D","JUMP","SNEAK","SPRINT","LMB","RMB"];
@@ -21,9 +20,8 @@ function convert(s,{fpt=10,tps=2,tickoffset=3,maxSafeYaw=900}){
   for (var tick=0;tick<info.length;tick++){
     var tickinfo=info[tick];
     var tickText="";
-    var thisYawP=Math.round(tickinfo["YAW"]*2400/360);
+    var yawDiff=Math.round(tickinfo["YAW"]*2400/360);
     var thisPitchP=Math.round(tickinfo["PITCH"]*2400/360);
-    var yawDiff=thisYawP-lastYawP;
     var pitchDiff=thisPitchP-lastPitchP;
     if (yawDiff>maxSafeYaw){
       r+="\n"+
@@ -37,7 +35,6 @@ function convert(s,{fpt=10,tps=2,tickoffset=3,maxSafeYaw=900}){
       yawDiff+=maxSafeYaw;
     }
     if (yawDiff||pitchDiff) tickText+="\nmousePosR "+yawDiff+","+pitchDiff;
-    lastYawP=thisYawP;
     lastPitchP=thisPitchP;
     var thisKeys=keyHeaders.map(e=>tickinfo[e]=="true");
     for (var j=0;j<keyMap.length;j++){
