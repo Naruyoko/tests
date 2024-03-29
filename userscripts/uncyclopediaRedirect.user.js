@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Uncyclopedia - Better mobile redirect
-// @version      2024-03-22
+// @version      2024-03-29
 // @description  try to take over the world!
 // @author       Naruyoko
 // @match        https://ja.uncyclopedia.info/wiki/*
@@ -15,14 +15,18 @@
 // ==/UserScript==
 
 (function() {
-  'use strict';
-  setTimeout(function(){
-      if (window.location.origin=="https://m.ansaikuropedia.org"){
-          document.querySelector(".stopMobileRedirectToggle").style.display="none";
+    'use strict';
+    var t=setInterval(function(){
+      var e=document.querySelector(".stopMobileRedirectToggle>a");
+      // eslint-disable-next-line no-undef
+      var mwObj=typeof mw!="undefined"?mw:typeof unsafeWindow!="undefined"?unsafeWindow.mw:null;
+      if (!e||!mwObj||!mwObj.config.get("skin")) return;
+      if (mwObj.config.get("skin")=="minerva"){
+        e.href="https://ja.uncyclopedia.info/index.php?title="+encodeURI(mwObj.config.get("wgPageName"))+"&mobileaction=toggle_view_desktop";
+        e.children[0].innerHTML="<s>モバイル</s>デスクトップビューに切り替え";
       }else{
-          var e=document.querySelector(".stopMobileRedirectToggle>a");
-          //eslint-disable-next-line no-undef
-          e.href=e.href.replace(encodeURI("メインページ"),encodeURI(mw.config.get("wgPageName")));
+        e.href="https://m.ansaikuropedia.org/index.php?title="+encodeURI(mwObj.config.get("wgPageName"))+"&mobileaction=toggle_view_mobile";
       }
-  },100);
-})();
+      clearInterval(t);
+    },0);
+  })();
