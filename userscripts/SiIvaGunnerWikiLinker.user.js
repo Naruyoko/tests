@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         SiIvaGunner wiki linker
 // @namespace    http://tampermonkey.net/
-// @version      2024-05-29_2
+// @version      2024-05-30
 // @description  Links SiIvaGunner wiki when watching the videos
 // @author       Naruyoko
-// @match        https://www.youtube.com/watch?*
+// @match        https://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant        none
 // ==/UserScript==
