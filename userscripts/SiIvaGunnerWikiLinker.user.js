@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SiIvaGunner wiki linker
 // @namespace    http://tampermonkey.net/
-// @version      2024-05-29
+// @version      2024-05-29_2
 // @description  Links SiIvaGunner wiki when watching the videos
 // @author       Naruyoko
 // @match        https://www.youtube.com/watch?*
@@ -14,14 +14,24 @@
   var intervalId=setInterval(function(){
     var titleElem=document.querySelector("#title > h1 > yt-formatted-string");
     if (!titleElem) return;
-    if (document.querySelector("#channel-name a").href=='https://www.youtube.com/@SiIvaGunner'){
-      var linkElem=document.createElement("a");
-      linkElem.className="yt-simple-endpoint style-scope";
-      linkElem.href="https://siivagunner.fandom.com/wiki/"+titleElem.textContent;
-      linkElem.target="_blank";
-      titleElem.before(linkElem);
-      linkElem.appendChild(titleElem);
+    var linkElem=document.createElement("a");
+    linkElem.className="yt-simple-endpoint style-scope";
+    linkElem.target="_blank";
+    titleElem.before(linkElem);
+    linkElem.appendChild(titleElem);
+    function updateLink(){
+      if (document.querySelector("#channel-name a").href=='https://www.youtube.com/@SiIvaGunner'){
+        linkElem.href="https://siivagunner.fandom.com/wiki/"+titleElem.textContent;
+        linkElem.style.pointerEvents="auto";
+        linkElem.style.cursor="pointer";
+      }else{
+        linkElem.href="";
+        linkElem.style.pointerEvents="none";
+        linkElem.style.cursor="default";
+      }
     }
+    updateLink();
+    new MutationObserver(updateLink).observe(titleElem,{subtree:true,childList:true});
     clearInterval(intervalId)
   },1000);
 })();
