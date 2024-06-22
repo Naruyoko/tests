@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SiIvaGunner wiki linker
 // @namespace    http://tampermonkey.net/
-// @version      2024-05-30
+// @version      2024-06-22
 // @description  Links SiIvaGunner wiki when watching the videos
 // @author       Naruyoko
 // @match        https://www.youtube.com/*
@@ -20,8 +20,14 @@
     titleElem.before(linkElem);
     linkElem.appendChild(titleElem);
     function updateLink(){
-      if (document.querySelector("#channel-name a").href=='https://www.youtube.com/@SiIvaGunner'){
-        linkElem.href="https://siivagunner.fandom.com/wiki/"+titleElem.textContent;
+      var channelLinkElem=document.querySelector("ytd-watch-metadata #channel-name a");
+      if (!channelLinkElem) return;
+      if (channelLinkElem.href=='https://www.youtube.com/@SiIvaGunner'){
+        linkElem.href="https://siivagunner.fandom.com/wiki/"+encodeURIComponent(titleElem.textContent);
+        linkElem.style.pointerEvents="auto";
+        linkElem.style.cursor="pointer";
+      }else if (channelLinkElem.href=='https://www.youtube.com/@TimmyTurnersGrandDad'){
+        linkElem.href="https://ttgd.fandom.com/wiki/"+encodeURIComponent(titleElem.textContent);
         linkElem.style.pointerEvents="auto";
         linkElem.style.cursor="pointer";
       }else{
@@ -30,8 +36,8 @@
         linkElem.style.cursor="default";
       }
     }
-    updateLink();
     new MutationObserver(updateLink).observe(titleElem,{subtree:true,childList:true});
-    clearInterval(intervalId)
+    clearInterval(intervalId);
+    updateLink();
   },1000);
 })();
