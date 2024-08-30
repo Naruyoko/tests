@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>C3 Linearization Visualization</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src='main.js'></script>
+</head>
+<body>
+  <h1>C3 Linearization Visualization</h1>
+  <div id="mainDisplay" tabindex="0">
+    <canvas id="canvas"></canvas>
+    <div id="controls">
+      <button onclick="showPage(1)">&larrb;</button>
+      <button onclick="showPage(currentPageNumber-1)">&larr;</button>
+      <span id="pageNumber"></span>
+      <button onclick="showPage(currentPageNumber+1)">&rarr;</button>
+      <button onclick="showPage(calculatedInfo.pages.length)">&rarrb;</button>
+    </div>
+  </div>
+  <div id="saveContainer">
+    <button onclick="saveCurrentFrame()">Save this frame</button>
+    <button onclick="saveAllFrames()">Save all frames</button>
+  </div>
+  <div id="inputContainer">
+    <textarea id="input" rows="10">
+class O
+class A extends O
+class B extends O
+class C extends O
+class D extends O
+class E extends O
+class K1 extends C, A, B
+class K3 extends A, D
+class K2 extends B, D, E
+class Z extends K1, K3, K2</textarea>
+    <button onclick="updatePages()">Update</button>
+  </div>
+  <p>See also <a href="https://en.wikipedia.org/wiki/C3_linearization" target="_blank">Wikipedia article on C3 Linearization</a>.</p>
+  <p>This work is licensed under <a href="LICENSE.txt" rel="license" target="_blank">MIT License</a>.</p>
+  <p>Last updated: 2024/08/30</p>
+</body>
+</html>
