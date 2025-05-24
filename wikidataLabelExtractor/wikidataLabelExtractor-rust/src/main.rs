@@ -16,6 +16,15 @@ fn main() {
                 .map(|s| s.get(0).unwrap().as_str().parse().unwrap())
                 .collect()
         }
+        "--" => {
+            let list_str = &args[2..].join(",");
+            println!("Got {list_str}");
+            Regex::new(r"\d+")
+                .unwrap()
+                .captures_iter(list_str)
+                .map(|s| s.get(0).unwrap().as_str().parse().unwrap())
+                .collect()
+        }
         s => panic!("Invalid option {s}"),
     };
     let mut out = fs::File::create("out.txt").unwrap();
@@ -40,9 +49,9 @@ fn main() {
         vec.sort();
         vec.insert(0, (&enlang, &enlabel));
         vec.iter().for_each(|(lang, label)| {
-            out.write(format!("{}:{}\n", lang.0, label).as_bytes());
+            let _ = out.write(format!("{}:{}\n", lang.0, label).as_bytes());
         });
-        out.write(format!("wikidata:en:Q{id}\n\n").as_bytes());
+        let _ = out.write(format!("wikidata:en:Q{id}\n\n").as_bytes());
         println!(", wrote {}", vec.len());
     });
 }
