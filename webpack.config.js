@@ -8,7 +8,7 @@ targets.forEach(s=>entries[s.substring(__dirname.length)]=s);
 // console.log(es6infos,targets,entries);
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   devtool: 'source-map',
   entry: entries,
   target: ['web', 'es5'],
