@@ -1,0 +1,71 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  -ms-text-size-adjust: none;
+  text-size-adjust: none;
+}
+input, textarea {
+  font-family: monospace;
+}
+#input, #output {
+  resize: none;
+  border-width: 1px;
+  padding: 2px;
+  width: 100%;
+  min-height: calc(5lh + 21px);
+  max-height: calc(20lh + 21px);
+  line-height: 1;
+}
+#edit-area {
+  width: 100%;
+}
+.item {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.item-content {
+  resize: none;
+  margin: 0 2px;
+  border-width: 1px;
+  padding: 2px;
+  min-width: 16em;
+  flex-grow: 2;
+  min-height: calc(1lh + 21px);
+  max-height: calc(4lh + 21px);
+  line-height: 1;
+}
+.item-key {
+  margin: 0 2px;
+  border-width: 1px;
+  padding: 2px;
+  width: 8em;
+  flex-grow: 1;
+}
+.item-button-container {
+  margin: 0 2px;
+  line-height: 1;
+}
+.item-button-container > button {
+  padding: 1px 0;
+  width: calc(1lh + 6px);
+  height: calc(1lh + 6px);
+}
+.word-wrap-target {
+  white-space: pre;
+}
+.word-wrap-enabled {
+  white-space: pre-wrap;
+}
+#word-wrap-control-label {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 4px 8px 0 0;
+  background-color: rgb(255 255 255 / 50%);
+}

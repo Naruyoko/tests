@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>TV Tropes Alphabetizer</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+  <script src='main.js'></script>
+</head>
+<body>
+  <h1>TV Tropes Alphabetizer</h1>
+  <label id="word-wrap-control-label"><input type="checkbox" id="word-wrap-control"> Word wrap</label>
+  <textarea id="input" class="word-wrap-target resize-height-to-content"></textarea>
+  <button id="loadinput-button">Load</button>
+  <div id="edit-area"></div>
+  <template id="item-template">
+    <div class="item">
+      <textarea class="item-content word-wrap-target resize-height-to-content"></textarea>
+      <input type="text" class="item-key">
+      <div class="item-button-container">
+        <button title="Split" class="item-split-button">S</button>
+        <button title="Merge" class="item-merge-button">M</button>
+      </div>
+    </div>
+  </template>
+  <button id="alphabetize-button">Alphabetize</button>
+  <textarea id="output" class="word-wrap-target resize-height-to-content"></textarea>
+  <hr>
+  <details>
+    <summary>How To Use</summary>
+    <ol>
+    <li>Paste the list into the top input field.</li>
+    <li>Click the "Load" button and type "yes" to confirm. The list will be divided into items and listed below.</li>
+    <li>
+      <p>In each row, the left box contains the item text. On the right are buttons that change the list.</p>
+      <ul>
+      <li>"S"plit: Adds a column below.</li>
+      <li>"M"erge: Joins with the next column. The texts are concatenated.</li>
+      </ul>
+    </li>
+    <li>
+      <p>Enter the strings the items should be sorted by in the second input fields of the rows. It is the title of tropes or works, but be careful with leading articles and custom titles. Capitalizations, spaces, and punctuations are removed automatically. Follow <a href="https://tvtropes.org/pmwiki/pmwiki.php/Administrivia/HowToAlphabetizeThings" target="_blank">the Administrivia "How to Alphabetize Things"</a>. It is recommended to refer to the preview.</p>
+      <p>Additional keyboard controls while focused in one of the boxes:</p>
+      <ul>
+      <li><kbd>Enter</kbd>: Focus on the next item. On the last row, focus instead on the "Alphabetize" button.</li>
+      <li><kbd>Shift</kbd> + <kbd>Enter</kbd>: Focus on the previous item.</li>
+      <li><kbd>Shift</kbd> + <kbd>Space</kbd>: On an empty box, searches for the first wick and extracts the article title.</li>
+      </ul>
+    </li>
+    <li>Click the "Alphabetize" button. The sorted list will appear below.</li>
+    </ol>
+  </details>
+  <p>Last updated: 2025/08/24</p>
+</body>
+</html>
