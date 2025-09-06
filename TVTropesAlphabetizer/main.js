@@ -353,6 +353,13 @@ window.onload=function (){
       /** @type {HTMLButtonElement} */(newItem.getElementsByClassName("item-split-button")[0]);
     newItem.mergeButton=
       /** @type {HTMLButtonElement} */(newItem.getElementsByClassName("item-merge-button")[0]);
+    function fillTitleAndSelect(){
+      const searchResult=searchFirstArticleWick(newItem.contentInput.value);
+      if (!searchResult) return;
+      newItem.keyInput.value=
+        newItem.contentInput.value.substring(searchResult.articleTitle.start,searchResult.articleTitle.end);
+      newItem.keyInput.setSelectionRange(0,searchResult.articleTitle.end-searchResult.articleTitle.start)
+    }
     newItem.keyInput.onkeydown=e=>{
       if (e.key=="Enter"){
         const nextItem=
@@ -361,12 +368,14 @@ window.onload=function (){
         e.preventDefault();
       }
       if (e.key==" "&&e.shiftKey&&!newItem.keyInput.value){
-        const searchResult=searchFirstArticleWick(newItem.contentInput.value);
-        if (searchResult)
-          newItem.keyInput.value=
-            newItem.contentInput.value.substring(searchResult.articleTitle.start,searchResult.articleTitle.end);
+        fillTitleAndSelect();
         e.preventDefault();
       }
+    }
+    newItem.keyInput.onfocus=_=>{
+      if (/** @type {HTMLInputElement} */(document.getElementById("autofill-on-focus")).checked&&
+          !newItem.keyInput.value)
+        fillTitleAndSelect();
     }
     newItem.keyInput.onblur=newItem.keyInput.onchange=_=>
       newItem.keyInput.value=newItem.keyInput.value

@@ -62,10 +62,15 @@ input, textarea {
 .word-wrap-enabled {
   white-space: pre-wrap;
 }
-#word-wrap-control-label {
+#settings {
   position: fixed;
   top: 0;
   right: 0;
-  padding: 4px 8px 0 0;
+  margin: 0;
+  padding: 4px 0 0 0;
   background-color: rgb(255 255 255 / 50%);
+  list-style: none;
+}
+#settings > li {
+  padding-right: 8px;
 }

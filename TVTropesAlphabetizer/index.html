@@ -10,7 +10,11 @@
 </head>
 <body>
   <h1>TV Tropes Alphabetizer</h1>
-  <label id="word-wrap-control-label"><input type="checkbox" id="word-wrap-control"> Word wrap</label>
+  <ul id="settings">
+    <li><label><input type="checkbox" id="word-wrap-control">Word wrap</label></li>
+    <li><label><input type="checkbox" id="warn-empty-key" checked>Warn empty keys</label></li>
+    <li><label><input type="checkbox" id="autofill-on-focus">Autofill on focus</label></li>
+  </ul>
   <textarea id="input" class="word-wrap-target resize-height-to-content"></textarea>
   <button id="loadinput-button">Load</button>
   <div id="edit-area"></div>
@@ -51,6 +55,6 @@
     <li>Click the "Alphabetize" button. The sorted list will appear below.</li>
     </ol>
   </details>
-  <p>Last updated: 2025/08/24</p>
+  <p>Last updated: 2025/09/06</p>
 </body>
 </html>
