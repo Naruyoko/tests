@@ -300,9 +300,8 @@ function handleResize(){
   this.style.minHeight="";
 }
 window.onload=function (){
-  /** @type {HTMLInputElement} */
-  //@ts-ignore
-  const wordWrapControl=document.getElementById("word-wrap-control");
+  const wordWrapControl=
+    /** @type {HTMLInputElement} */(document.getElementById("word-wrap-control"));
   const applyWordWrapState=(/** @type {Element} */ e)=>
     e.classList.toggle("word-wrap-enabled",wordWrapControl.checked);
   const addHandleResize=(/** @type {Element} */e)=>
@@ -316,9 +315,7 @@ window.onload=function (){
       mutations.forEach(mutation=>
         mutation.addedNodes.forEach(node=>{
           if (node.nodeType!=Node.ELEMENT_NODE) return;
-          /** @type {HTMLElement} */
-          //@ts-ignore
-          const e=node;
+          const e=/** @type {HTMLElement} */(node);
           if (e.classList.contains("word-wrap-target")) applyWordWrapState(e);
           [...e.getElementsByClassName("word-wrap-target")].forEach(applyWordWrapState);
         })))
@@ -328,16 +325,13 @@ window.onload=function (){
       mutations.forEach(mutation=>
         mutation.addedNodes.forEach(node=>{
           if (node.nodeType!=Node.ELEMENT_NODE) return;
-          /** @type {HTMLElement} */
-          //@ts-ignore
-          const e=node;
+          const e=/** @type {HTMLElement} */(node);
           if (e.classList.contains("resize-height-to-content")) addHandleResize(e);
           [...e.getElementsByClassName("resize-height-to-content")].forEach(addHandleResize);
         })))
     .observe(document.body,{childList:true,subtree:true});
-  /** @type {HTMLTemplateElement} */
-  //@ts-ignore
-  const template=document.getElementById("item-template");
+  const template=
+    /** @type {HTMLTemplateElement} */(document.getElementById("item-template"));
   /**
    * @typedef {HTMLElement&{
    *   contentInput:HTMLTextAreaElement,
@@ -351,26 +345,26 @@ window.onload=function (){
     /** @type {Item} */
     //@ts-ignore
     const newItem=template.content.cloneNode(true).firstElementChild;
-    //@ts-ignore
-    newItem.contentInput=newItem.getElementsByClassName("item-content")[0];
-    //@ts-ignore
-    newItem.keyInput=newItem.getElementsByClassName("item-key")[0];
-    //@ts-ignore
-    newItem.splitButton=newItem.getElementsByClassName("item-split-button")[0];
-    //@ts-ignore
-    newItem.mergeButton=newItem.getElementsByClassName("item-merge-button")[0];
+    newItem.contentInput=
+      /** @type {HTMLTextAreaElement} */(newItem.getElementsByClassName("item-content")[0]);
+    newItem.keyInput=
+      /** @type {HTMLInputElement} */(newItem.getElementsByClassName("item-key")[0]);
+    newItem.splitButton=
+      /** @type {HTMLButtonElement} */(newItem.getElementsByClassName("item-split-button")[0]);
+    newItem.mergeButton=
+      /** @type {HTMLButtonElement} */(newItem.getElementsByClassName("item-merge-button")[0]);
     newItem.keyInput.onkeydown=e=>{
       if (e.key=="Enter"){
-        /** @type {Item} */
-        //@ts-ignore
-        const nextItem=e.shiftKey?newItem.previousElementSibling:newItem.nextElementSibling;
+        const nextItem=
+          /** @type {Item} */(e.shiftKey?newItem.previousElementSibling:newItem.nextElementSibling);
         (nextItem?.keyInput||(e.shiftKey?null:document.getElementById("alphabetize-button")))?.focus();
         e.preventDefault();
       }
       if (e.key==" "&&e.shiftKey&&!newItem.keyInput.value){
         const searchResult=searchFirstArticleWick(newItem.contentInput.value);
         if (searchResult)
-          newItem.keyInput.value=newItem.contentInput.value.substring(searchResult.articleTitle.start,searchResult.articleTitle.end);
+          newItem.keyInput.value=
+            newItem.contentInput.value.substring(searchResult.articleTitle.start,searchResult.articleTitle.end);
         e.preventDefault();
       }
     }
@@ -385,9 +379,7 @@ window.onload=function (){
       newItem.mergeButton.disabled=false;
     };
     newItem.mergeButton.onclick=_=>{
-      /** @type {Item} */
-      //@ts-ignore
-      const nextItem=newItem.nextElementSibling;
+      const nextItem=/** @type {Item} */(newItem.nextElementSibling);
       nextItem.contentInput.value=newItem.contentInput.value+"\n"+nextItem.contentInput.value;
       handleResize.call(nextItem.contentInput);
       nextItem.keyInput.value=newItem.keyInput.value||nextItem.keyInput.value;
@@ -398,10 +390,7 @@ window.onload=function (){
   document.getElementById("loadinput-button").onclick=_=>{
     if (prompt("This will overwrite the current content. Type \"yes\" to continue.")!="yes") return;
     [...document.getElementById("edit-area").children].forEach(e=>e.remove());
-    /** @type {HTMLTextAreaElement} */
-    //@ts-ignore
-    const inputElement=document.getElementById("input");
-    const input=inputElement.value;
+    const input=/** @type {HTMLTextAreaElement} */(document.getElementById("input")).value;
     const regex=/^\* /gm;
     regex.lastIndex=1;
     let lastIndex=0;
@@ -415,16 +404,17 @@ window.onload=function (){
     }while (lastIndex!=undefined);
   };
   document.getElementById("alphabetize-button").onclick=_=>{
-    /** @type {HTMLTextAreaElement} */
-    //@ts-ignore
-    const outputElement=document.getElementById("output");
-    /** @type {Item[]} */
-    //@ts-ignore
-    let items=[...document.getElementById("edit-area").children];
+    const outputElement=
+      /** @type {HTMLTextAreaElement} */(document.getElementById("output"));
+    let items=/** @type {Item[]} */([...document.getElementById("edit-area").children]);
     items.sort((a,b)=>
       a.keyInput.value==b.keyInput.value?0:a.keyInput.value<b.keyInput.value?-1:1);
+    if (/** @type {HTMLInputElement} */(document.getElementById("warn-empty-key")).checked&&
+        items[0]?.keyInput.value==="")
+      alert("Some items is missing the sort key. They are sorted to the beginning.\n"+
+        "This warning can be disabled.");
     outputElement.value=items.map(e=>e.contentInput.value).join("\n");
-    handleResize.call(outputElement)
+    handleResize.call(outputElement);
   }
   window.onresize=_=>
     [...document.getElementsByClassName("resize-height-to-content")].forEach(e=>handleResize.call(e));
