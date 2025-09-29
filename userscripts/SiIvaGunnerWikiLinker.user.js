@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SiIvaGunner wiki linker
 // @namespace    http://tampermonkey.net/
-// @version      2024-06-22
+// @version      2025-09-30
 // @description  Links SiIvaGunner wiki when watching the videos
 // @author       Naruyoko
 // @match        https://www.youtube.com/*
