@@ -23,7 +23,7 @@
       var channelLinkElem=document.querySelector("ytd-watch-metadata #channel-name a");
       if (!channelLinkElem) return;
       if (channelLinkElem.href=='https://www.youtube.com/@SiIvaGunner'){
-        linkElem.href="https://siivagunner.fandom.com/wiki/"+encodeURIComponent(titleElem.textContent);
+        linkElem.href="https://www.siivagunner.wiki/wiki/"+encodeURIComponent(titleElem.textContent);
         linkElem.style.pointerEvents="auto";
         linkElem.style.cursor="pointer";
       }else if (channelLinkElem.href=='https://www.youtube.com/@TimmyTurnersGrandDad'){
