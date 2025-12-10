@@ -292,6 +292,13 @@ function searchFirstArticleWick(s){
   }
   return null;
 }
+/**
+ * First phase of title normalization: remove spaces and puctuations but keep capitalizations.
+ * @param {string} s
+ */
+function plainTitle(s){
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[\p{P}\s|]/gu,"");
+}
 /** @this {HTMLElement} */
 function handleResize(){
   this.style.height="0";
@@ -357,7 +364,8 @@ window.onload=function (){
       const searchResult=searchFirstArticleWick(newItem.contentInput.value);
       if (!searchResult) return;
       newItem.keyInput.value=
-        newItem.contentInput.value.substring(searchResult.articleTitle.start,searchResult.articleTitle.end);
+        plainTitle(newItem.contentInput.value
+          .substring(searchResult.articleTitle.start,searchResult.articleTitle.end));
       newItem.keyInput.setSelectionRange(0,searchResult.articleTitle.end-searchResult.articleTitle.start)
     }
     newItem.keyInput.onkeydown=e=>{
@@ -378,9 +386,7 @@ window.onload=function (){
         fillTitleAndSelect();
     }
     newItem.keyInput.onblur=newItem.keyInput.onchange=_=>
-      newItem.keyInput.value=newItem.keyInput.value
-        .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-        .replace(/[\p{P}\s|]/gu,"").toLowerCase();
+      newItem.keyInput.value=plainTitle(newItem.keyInput.value).toLowerCase();
     newItem.splitButton.onclick=_=>{
       const nextItem=createItem();
       newItem.after(nextItem);
@@ -409,8 +415,9 @@ window.onload=function (){
       newItem.contentInput.value=input.substring(lastIndex,index==undefined?input.length:index-1);
       newItem.mergeButton.disabled=index==undefined;
       document.getElementById("edit-area").appendChild(newItem);
+      if (index==undefined) break;
       lastIndex=index;
-    }while (lastIndex!=undefined);
+    }while (true);
   };
   document.getElementById("alphabetize-button").onclick=_=>{
     const outputElement=
