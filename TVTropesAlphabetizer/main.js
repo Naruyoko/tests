@@ -315,7 +315,7 @@ window.onload=function (){
     (e.addEventListener("input", handleResize),handleResize.call(e));
   wordWrapControl.onchange=_=>{
     [...document.getElementsByClassName("word-wrap-target")].forEach(applyWordWrapState);
-    [...document.getElementsByClassName("resize-height-to-content")]
+    /** @type {HTMLElement[]} */([...document.getElementsByClassName("resize-height-to-content")])
       .forEach(e=>handleResize.call(e));
   };
   new MutationObserver(mutations=>
@@ -327,14 +327,16 @@ window.onload=function (){
           [...e.getElementsByClassName("word-wrap-target")].forEach(applyWordWrapState);
         })))
     .observe(document.body,{childList:true,subtree:true});
-  [...document.getElementsByClassName("resize-height-to-content")].forEach(addHandleResize);
+  /** @type {HTMLElement[]} */([...document.getElementsByClassName("resize-height-to-content")])
+    .forEach(addHandleResize);
   new MutationObserver(mutations=>
       mutations.forEach(mutation=>
         mutation.addedNodes.forEach(node=>{
           if (node.nodeType!=Node.ELEMENT_NODE) return;
           const e=/** @type {HTMLElement} */(node);
           if (e.classList.contains("resize-height-to-content")) addHandleResize(e);
-          [...e.getElementsByClassName("resize-height-to-content")].forEach(addHandleResize);
+          /** @type {HTMLElement[]} */([...e.getElementsByClassName("resize-height-to-content")])
+            .forEach(addHandleResize);
         })))
     .observe(document.body,{childList:true,subtree:true});
   const template=
@@ -402,9 +404,10 @@ window.onload=function (){
     };
     return newItem;
   }
-  document.getElementById("loadinput-button").onclick=_=>{
+  const editAreaElement=/** @type {HTMLElement} */(document.getElementById("edit-area"));
+  /** @type {HTMLInputElement} */(document.getElementById("loadinput-button")).onclick=_=>{
     if (prompt("This will overwrite the current content. Type \"yes\" to continue.")!="yes") return;
-    [...document.getElementById("edit-area").children].forEach(e=>e.remove());
+    [...editAreaElement.children].forEach(e=>e.remove());
     const input=/** @type {HTMLTextAreaElement} */(document.getElementById("input")).value;
     const regex=/^\* /gm;
     regex.lastIndex=1;
@@ -413,16 +416,16 @@ window.onload=function (){
       let index=regex.exec(input)?.index;
       let newItem=createItem();
       newItem.contentInput.value=input.substring(lastIndex,index==undefined?input.length:index-1);
-      newItem.mergeButton.disabled=index==undefined;
-      document.getElementById("edit-area").appendChild(newItem);
+      newItem.mergeButton.disabled=index===undefined;
+      editAreaElement.appendChild(newItem);
       if (index==undefined) break;
       lastIndex=index;
     }while (true);
   };
-  document.getElementById("alphabetize-button").onclick=_=>{
+  /** @type {HTMLButtonElement} */(document.getElementById("alphabetize-button")).onclick=_=>{
     const outputElement=
       /** @type {HTMLTextAreaElement} */(document.getElementById("output"));
-    let items=/** @type {Item[]} */([...document.getElementById("edit-area").children]);
+    let items=/** @type {Item[]} */([...editAreaElement.children]);
     items.sort((a,b)=>
       a.keyInput.value==b.keyInput.value?0:a.keyInput.value<b.keyInput.value?-1:1);
     if (/** @type {HTMLInputElement} */(document.getElementById("warn-empty-key")).checked&&
@@ -433,5 +436,6 @@ window.onload=function (){
     handleResize.call(outputElement);
   }
   window.onresize=_=>
-    [...document.getElementsByClassName("resize-height-to-content")].forEach(e=>handleResize.call(e));
+    /** @type {HTMLElement[]} */([...document.getElementsByClassName("resize-height-to-content")])
+      .forEach(e=>handleResize.call(e));
 }
