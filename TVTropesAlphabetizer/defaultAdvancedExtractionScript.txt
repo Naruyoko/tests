@@ -1,0 +1,34 @@
+(let*
+  (
+    (go (lambda (l)
+      (if l
+        (if (= &_ (car l))
+          (progn (set &_ (cadr l)) (exit))
+          (go (cddr l)))
+        nil))))
+  (go (quote (
+    ATeam ATeam))))
+(let*
+  (
+    (go (lambda (l)
+      (if l
+        (if (string-match &_ (+ \"^ (car l) \"\(?=[A-Z]\)))
+          (set &_ (+ &` &&))
+          (go (cdr l)))
+        nil))))
+  (go (quote (The A An Le La Les L El Los Las))))
+(let*
+  (
+    (replace-all (lambda (h n r)
+      (if (string-match h n)
+        (replace-all (+ &` r &') n r)
+        h)))
+    (go (lambda (l)
+      (if l
+        (progn
+          (set &_ (replace-all &_ (car l) (cadr l)))
+          (go (cddr l)))
+        nil))))
+  (go (quote (
+    Æ Ae
+    æ ae))))

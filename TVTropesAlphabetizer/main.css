@@ -10,7 +10,7 @@ body {
 input, textarea {
   font-family: monospace;
 }
-#input, #output {
+.large-textarea {
   resize: none;
   border-width: 1px;
   padding: 2px;
@@ -73,4 +73,7 @@ input, textarea {
 }
 #settings > li {
   padding-right: 8px;
+}
+#settings > li > button {
+  margin-left: 8px;
 }

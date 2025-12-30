@@ -299,6 +299,587 @@ function searchFirstArticleWick(s){
 function plainTitle(s){
   return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[\p{P}\s|]/gu,"");
 }
+/**
+ * @param {string} script
+ * @param {string} s
+ * @returns {string}
+ */
+function advancedExtraction(script,s){
+  /**
+   * @typedef {string|{children:Expression[]}} Expression
+   * @param {string} s
+   * @returns {Expression[]}
+   */
+  function parse(s){
+    let scannerPos=0;
+    function getToken(){
+      {
+        let matcher=/\S/g;
+        matcher.lastIndex=scannerPos;
+        let matchResult=matcher.exec(s);
+        if (!matchResult) return null;
+        scannerPos=matchResult.index;
+      }
+      if (s[scannerPos]=="\\"&&"{}".includes(s[scannerPos+1])) return s.substring(scannerPos,scannerPos+=2);
+      if ("()".includes(s[scannerPos])) return s.substring(scannerPos,++scannerPos);
+      {
+        let matcher=/[\s()]|\\./gs;
+        matcher.lastIndex=scannerPos+1;
+        let endIndex;
+        while (s[endIndex=matcher.exec(s)?.index??s.length]=="\\");
+        return s.substring(scannerPos,scannerPos=endIndex);
+      }
+    }
+    /** @type {Expression[]} */
+    let r=[];
+    /** @type {Exclude<Expression,string>[]} */
+    let c=[];
+    let commentDepth=0;
+    while(true){
+      let token=getToken();
+      if (!token){
+        if (c.length!=0) throw Error("Mismatched open parenthesis");
+        return r;
+      }
+      if (token=="\\{"){
+        commentDepth++;
+        continue;
+      }else if (token=="\\}"){
+        commentDepth--;
+        continue;
+      }
+      if (commentDepth!=0) continue;
+      if (token=="("){
+        let n={children:[]};
+        (c.length==0?r:c[c.length-1].children).push(n);
+        c.push(n);
+      }else if (token==")"){
+        if (c.length==0) throw Error("Mismatched closing parenthesis");
+        c.pop();
+      }else (c.length==0?r:c[c.length-1].children).push(token);
+    }
+  }
+  /** @typedef {typeof NIL_VALUE} NilValue */
+  const NIL_VALUE=/** @type {const} */({type:"nil"});
+  /** @typedef {typeof T_VALUE} TValue */
+  const T_VALUE=/** @type {const} */({type:"t"});
+  /**
+   * @typedef {{type:"cons",car:Value,cdr:NilValue|ConsValue}} ConsValue
+   * @typedef {(
+   *   NilValue|TValue|
+   *   {type:"number",value:number}|
+   *   {type:"string",value:string}|
+   *   ConsValue|
+   *   {type:"function",value:((args:Array<Value>)=>EvalResult)}
+   * )} Value
+   * @typedef {{type:"error",value:string}} EvalError
+   * @typedef {Value|EvalError} EvalResult
+   */
+  const parentEnv=Symbol();
+  /** @typedef {Record<string,EvalResult>&{[parentEnv]:Environment?}} Environment */
+  const COMMON_ERRORS=/** @type {const} */({
+    INVALID_ARGUMENT_COUNT:(/** @type {number} */n)=>
+      /** @type {const} */({type:"error",value:"Invalid number of arguments: "+n}),
+    INCOMPATIBLE_TYPES:{type:"error",value:"Incompatible types"},
+  });
+  const EXIT_SIGNAL=/** @type {const} */({type:"error",value:"Exit signaled"});
+  /**
+   * @param {Environment} env
+   * @param {string} name
+   * @returns {EvalResult}
+   */
+  let lookupVar=(env,name)=>
+    Object.hasOwn(env,name)?env[name]:
+      env[parentEnv]?lookupVar(env[parentEnv],name):{type:"error",value:"Undefined variable: "+name};
+  /**
+   * @param {Environment} env
+   * @param {string} name
+   * @param {Value} value
+   */
+  let setVar=(env,name,value)=>
+    void (Object.hasOwn(env,name)||!env[parentEnv]?env[name]=value:setVar(env[parentEnv],name,value));
+  let booleanValue=(/** @type {*} */b)=>b?T_VALUE:NIL_VALUE;
+  let valueBoolean=(/** @type {Value} */v)=>v.type!="nil";
+  /**
+   * @param {Expression} e
+   * @param {Environment} env
+   * @returns {EvalResult}
+   */
+  function quote(e,env){
+    if (typeof e=="string") return {type:"string",value:e.replace(/\\(.)/gs,"$1")};
+    else{
+      if (e.children[0]==="unquote") return evalExpression(e.children[1],env);
+      /** @type {Array<Value>} */
+      let a=[];
+      for (let f of e.children){
+        let y=quote(f,env);
+        if (y.type=="error") return y;
+        a.push(y);
+      }
+      /** @type {NilValue|ConsValue} */
+      let r=NIL_VALUE;
+      for (let i=a.length-1;i>=0;i--) r={type:"cons",car:a[i],cdr:r};
+      return r;
+    }
+  }
+  /**
+   * @param {Value} v
+   * @returns {Expression?} `null` if failed
+   */
+  function unquote(v){
+    if (v.type=="string") return v.value;
+    if (v.type=="nil"||v.type=="cons"){
+      /** @type {Expression[]} */
+      let a=[];
+      while (v.type=="cons"){
+        let y=unquote(v.car);
+        if (y===null) return null;
+        a.push(y);
+        v=v.cdr;
+      }
+      if (v!==null) return null;
+      return {children:a};
+    }
+    return null;
+  }
+  /**
+   * @param {Expression} e
+   * @param {Environment} env
+   * @returns {EvalResult}
+   */
+  function evalExpression(e,env){
+    if (typeof e=="string"){
+      if (e[0]=="\\"){
+        if (e[1]=="#") return {type:"number",value:+e.substring(2)};
+        if (e[1]=="\"") return {type:"string",value:e.substring(2).replace(/\\(.)/gs,"$1")};
+      }
+      return lookupVar(env,e);
+    }else{
+      if (e.children[0]==="if"){
+        let p=evalExpression(e.children[1],env);
+        if (p.type=="error") return p;
+        return evalExpression(e.children[valueBoolean(p)?2:3],env);
+      }else if (e.children[0]==="quote") return quote(e.children[1],env);
+      else if (e.children[0]==="unquote") return {type:"error",value:"Bare unquote"};
+      else if (e.children[0]==="progn"){
+        if (e.children.length==1) return NIL_VALUE;
+        for (let i=1;;i++){
+          let v=evalExpression(e.children[i],env);
+          if (v.type=="error") return v;
+          if (i==e.children.length-1) return v;
+        }
+      }else if (e.children[0]==="let"||e.children[0]==="let*"){
+        if (e.children.length<3) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(e.children.length);
+        if (typeof e.children[1]=="string") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        /** @type {Environment} */
+        let childEnv={[parentEnv]:env};
+        for (let p of e.children[1].children){
+          if (typeof p=="string") childEnv[p]=NIL_VALUE;
+          else{
+            if (p.children.length<2) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(p.children.length);
+            if (typeof p.children[0]!="string") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+            let value=evalExpression(p.children[1],e.children[0]==="let"?env:childEnv);
+            if (value.type=="error") return value;
+            childEnv[p.children[0]]=value;
+          }
+        }
+        for (let i=2;;i++){
+          let v=evalExpression(e.children[i],childEnv);
+          if (v.type=="error") return v;
+          if (i==e.children.length-1) return v;
+        }
+      }else if (e.children[0]==="set"){
+        if (e.children.length<3) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(e.children.length);
+        if (typeof e.children[1]!="string") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        let value=evalExpression(e.children[2],env);
+        if (value.type=="error") return value;
+        setVar(env,e.children[1],value);
+        return NIL_VALUE;
+      }else if (e.children[0]==="lambda"){
+        if (e.children.length<3) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(e.children.length);
+        if (typeof e.children[1]=="string"||e.children[1].children.some(k=>typeof k!="string"))
+          return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        let vars=/** @type {string[]} */(e.children[1].children);
+        /** @type {Environment} */
+        let childEnvT={[parentEnv]:env};
+        vars.forEach(k=>childEnvT[k]=NIL_VALUE);
+        return {type:"function",value:args=>{
+          let childEnv={...childEnvT};
+          for (let i=0;i<args.length&&vars.length;i++) childEnv[vars[i]]=args[i];
+          for (let i=2;;i++){
+            let v=evalExpression(e.children[i],childEnv);
+            if (v.type=="error") return v;
+            if (i==e.children.length-1) return v;
+          }
+        }};
+      }else if (e.children[0]==="exit"){
+        return EXIT_SIGNAL;
+      }else{
+        if (e.children.length<1) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(e.children.length);
+        let f=evalExpression(e.children[0],env);
+        if (f.type=="error") return f;
+        if (f.type!="function") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        /** @type {Array<Value>} */
+        let args=[];
+        for (let i=1;i<e.children.length;i++){
+          let v=evalExpression(e.children[i],env);
+          if (v.type=="error") return v;
+          args.push(v);
+        }
+        return f.value(args);
+      }
+    }
+  }
+  let parsedScript=parse(script);
+  /** @type {Environment} */
+  let env={
+    "&_":{type:"string",value:s},
+    "nil":NIL_VALUE,
+    "t":T_VALUE,
+    "null":{type:"function",value:args=>{
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        return booleanValue(!args.some(valueBoolean));
+      }},
+    "not":{type:"function",value:args=>{
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        return booleanValue(!args.some(valueBoolean));
+      }},
+    "and":{type:"function",value:args=>{
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        return booleanValue(args.every(valueBoolean));
+      }},
+    "or":{type:"function",value:args=>{
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        return booleanValue(args.some(valueBoolean));
+      }},
+    "=":{type:"function",value:args=>{
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        /**
+         * @param {Value} a
+         * @param {Value} b
+         * @returns {boolean}
+         */
+        function internal(a,b){
+          if (a.type=="nil") return b.type=="nil";
+          if (a.type=="t") return b.type=="t";
+          if (a.type=="number") return b.type=="number"&&a.value==b.value;
+          if (a.type=="string") return b.type=="string"&&a.value==b.value;
+          if (a.type=="cons") return b.type=="cons"&&internal(a.car,b.car)&&internal(a.cdr,b.cdr);
+          if (a.type=="function") return b.type=="function"&&a.value==b.value;
+          return false;
+        }
+        for (let i=0;i<args.length-1;i++) if (!internal(args[i],args[i+1])) return NIL_VALUE;
+        return T_VALUE;
+      }},
+    "<":{type:"function",value:args=>{
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        /**
+         * @param {Value} a
+         * @param {Value} b
+         * @returns {boolean?}
+         */
+        function internal(a,b){
+          if (a.type=="nil") return b.type!="nil";
+          if (b.type=="nil") return false;
+          if (a.type=="t"&&b.type=="t") return false;
+          if (a.type=="number"&&b.type=="number") return a.value<b.value;
+          if (a.type=="string"&&b.type=="string") return a.value<b.value;
+          return null;
+        }
+        for (let i=0;i<args.length-1;i++){
+          let r=internal(args[i],args[i+1]);
+          if (r===null) return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+          if (!r) return NIL_VALUE;
+        }
+        return T_VALUE;
+      }},
+    "<=":{type:"function",value:args=>{
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        /**
+         * @param {Value} a
+         * @param {Value} b
+         * @returns {boolean?}
+         */
+        function internal(a,b){
+          if (a.type=="nil") return true;
+          if (b.type=="nil") return false;
+          if (a.type=="t"&&b.type=="t") return true;
+          if (a.type=="number"&&b.type=="number") return a.value<=b.value;
+          if (a.type=="string"&&b.type=="string") return a.value<=b.value;
+          return null;
+        }
+        for (let i=0;i<args.length-1;i++){
+          let r=internal(args[i],args[i+1]);
+          if (r===null) return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+          if (!r) return NIL_VALUE;
+        }
+        return T_VALUE;
+      }},
+    ">":{type:"function",value:args=>{
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        /**
+         * @param {Value} a
+         * @param {Value} b
+         * @returns {boolean?}
+         */
+        function internal(a,b){
+          if (a.type=="nil") return false;
+          if (b.type=="nil") return true;
+          if (a.type=="t"&&b.type=="t") return false;
+          if (a.type=="number"&&b.type=="number") return a.value>b.value;
+          if (a.type=="string"&&b.type=="string") return a.value>b.value;
+          return null;
+        }
+        for (let i=0;i<args.length-1;i++){
+          let r=internal(args[i],args[i+1]);
+          if (r===null) return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+          if (!r) return NIL_VALUE;
+        }
+        return T_VALUE;
+      }},
+    ">=":{type:"function",value:args=>{
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        /**
+         * @param {Value} a
+         * @param {Value} b
+         * @returns {boolean?}
+         */
+        function internal(a,b){
+          if (a.type=="nil") return b.type=="nil";
+          if (b.type=="nil") return true;
+          if (a.type=="t"&&b.type=="t") return true;
+          if (a.type=="number"&&b.type=="number") return a.value>=b.value;
+          if (a.type=="string"&&b.type=="string") return a.value>=b.value;
+          return null;
+        }
+        for (let i=0;i<args.length-1;i++){
+          let r=internal(args[i],args[i+1]);
+          if (r===null) return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+          if (!r) return NIL_VALUE;
+        }
+        return T_VALUE;
+      }},
+    "+":{type:"function",value:args=>{
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        let a=args[0];
+        for (let i=1;i<args.length;i++){
+          let e=args[i];
+          if (a.type=="nil") a=e;
+          else if (e.type=="nil") a=a;
+          else if (a.type=="number"&&e.type=="number") a={type:"number",value:a.value+e.value};
+          else if (a.type=="string"&&e.type=="string") a={type:"string",value:a.value+e.value};
+          else if (a.type=="cons"&&e.type=="cons"){
+            let r={...a},t=r;
+            while (t.cdr.type=="cons") t=t.cdr={...t.cdr};
+            t.cdr=e;
+            a=r;
+          }else return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        }
+        return a;
+      }},
+    "-":{type:"function",value:args=>{
+        /**
+         * @param {Value} x
+         * @returns {EvalResult}
+         */
+        function neg(x){
+          if (x.type=="nil") return NIL_VALUE;
+          if (x.type=="number") return {type:"number",value:-x.value};
+          return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        }
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args.length==1) return neg(args[0]);
+        let a=args[0];
+        for (let i=1;i<args.length;i++){
+          let e=args[i];
+          if (a.type=="nil") a=e;
+          else if (e.type=="nil") a=a;
+          else if (a.type=="number"&&e.type=="number") a={type:"number",value:a.value-e.value};
+          else return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        }
+        return a;
+      }},
+    "*":{type:"function",value:args=>{
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        let a=args[0];
+        for (let i=1;i<args.length;i++){
+          let e=args[i];
+          if (a.type=="nil") a=e;
+          else if (e.type=="nil") a=a;
+          else if (a.type=="number"&&e.type=="number") a={type:"number",value:a.value*e.value};
+          else return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        }
+        return a;
+      }},
+    "/":{type:"function",value:args=>{
+        /**
+         * @param {Value} x
+         * @returns {EvalResult}
+         */
+        function rec(x){
+          if (x.type=="nil") return NIL_VALUE;
+          if (x.type=="number") return {type:"number",value:1/x.value};
+          return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        }
+        if (args.length==0) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args.length==1) return rec(args[0]);
+        let a=args[0];
+        for (let i=1;i<args.length;i++){
+          let e=args[i];
+          if (a.type=="nil") a=e;
+          else if (e.type=="nil") a=a;
+          else if (a.type=="number"&&e.type=="number") a={type:"number",value:a.value/e.value};
+          else return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        }
+        return a;
+      }},
+    "mod":{type:"function",value:args=>{
+        if (args.length!=2) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[0].type=="number"&&args[1].type=="number")
+          return {type:"number",value:args[0].value%args[1].value};
+        return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+      }},
+    "char":{type:"function",value:args=>{
+        if (args.length!=2) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[0].type!="string"||args[1].type!="number") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        return args[0].value[args[1].value]?{type:"string",value:args[0].value[args[1].value]}:NIL_VALUE;
+      }},
+    "char-code":{type:"function",value:args=>{
+        if (args.length!=1) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[0].type!="string") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        return args[0].value.length>=1?{type:"number",value:args[0].value.charCodeAt(0)}:NIL_VALUE;
+      }},
+    "code-char":{type:"function",value:args=>{
+        if (args.length!=1) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[0].type!="number") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        return {type:"string",value:String.fromCharCode(args[0].value)};
+      }},
+    "uppercase":{type:"function",value:args=>{
+        if (args.length!=1) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[0].type!="string") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        return {type:"string",value:args[0].value.toUpperCase()};
+      }},
+    "lowercase":{type:"function",value:args=>{
+        if (args.length!=1) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[0].type!="string") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        return {type:"string",value:args[0].value.toLowerCase()};
+      }},
+    "string-reverse":{type:"function",value:args=>{
+        if (args.length!=1) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[0].type!="string") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        return {type:"string",value:args[0].value.split("").reverse().join("")};
+      }},
+    "string-match":{type:"function",value:args=>{
+        if (args.length!=2&&args.length!=3) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        let [s,r]=args,f=args[2]??{type:"string",value:""};
+        if (s.type!="string"||r.type!="string"||f.type!="string") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        let m=new RegExp(r.value,f.value).exec(s.value);
+        if (m===null) return NIL_VALUE;
+        setVar(env,"&&",{type:"string",value:m[0]});
+        setVar(env,"&'",{type:"string",value:s.value.substring(0,m.index)});
+        setVar(env,"&`",{type:"string",value:s.value.substring(m.index+m[0].length)});
+        for (let i=0;i<m.length;i++) setVar(env,"&"+i,m[i]?{type:"string",value:m[i]}:NIL_VALUE);
+        for (let k in m.groups) setVar(env,"&"+k,m.groups[k]?{type:"string",value:m.groups[k]}:NIL_VALUE);
+        setVar(env,"&@",{type:"number",value:m.index});
+        return {type:"string",value:m[0]};
+      }},
+    "cons":{type:"function",value:args=>{
+        if (args.length!=2) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[1].type!="nil"&&args[1].type!="cons") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        return {type:"cons",car:args[0],cdr:args[1]};
+      }},
+    "list":{type:"function",value:args=>{
+        /** @type {NilValue|ConsValue} */
+        let r=NIL_VALUE;
+        for (let i=args.length-1;i>=0;i--) r={type:"cons",car:args[i],cdr:r};
+        return r;
+      }},
+    "car":{type:"function",value:args=>{
+        if (args.length!=1) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[0].type=="nil") return NIL_VALUE;
+        if (args[0].type=="cons") return args[0].car;
+        return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+      }},
+    "cdr":{type:"function",value:args=>{
+        if (args.length!=1) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[0].type=="nil") return NIL_VALUE;
+        if (args[0].type=="cons") return args[0].cdr;
+        return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+      }},
+    "apply":{type:"function",value:args=>{
+        if (args.length!=2) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[0].type!="function") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        if (args[1].type!="nil"&&args[1].type!="cons") return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+        let v=args[1],/** @type {Array<Value>} */a=[];
+        while (v.type=="cons") a.push(v.car),v=v.cdr;
+        return args[0].value(a);
+      }},
+    "length":{type:"function",value:args=>{
+        if (args.length!=1) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        if (args[0].type=="nil") return {type:"number","value":0};
+        if (args[0].type=="string") return {type:"number","value":args[0].value.length};
+        if (args[0].type=="cons"){
+          /** @type {NilValue|ConsValue} */
+          let a=args[0],n=0;
+          while (a.type=="cons") n++,a=a.cdr;
+          return {type:"number","value":n};
+        }
+        return COMMON_ERRORS.INCOMPATIBLE_TYPES;
+      }},
+    "console":{type:"function",value:args=>(console.log(args),NIL_VALUE)},
+    "eval":{type:"function",value:args=>{
+        if (args.length!=1) return COMMON_ERRORS.INVALID_ARGUMENT_COUNT(args.length);
+        let e=unquote(args[0]);
+        return e!==null?evalExpression(e,env):COMMON_ERRORS.INCOMPATIBLE_TYPES;
+      }},
+    [parentEnv]:null
+  };
+  evalExpression(parse(`
+    (progn
+      (let* ((_nthcdr (lambda (n l) (if (> n \\#0) (_nthcdr (- n 1) l) l)))) (set nthcdr _nthcdr))
+      (set nth (lambda (n l) (car (nthcdr n l))))
+      (set cadr (lambda (l) (car (cdr l))))
+      (set caddr (lambda (l) (car (cdr (cdr l)))))
+      (set cadddr (lambda (l) (car (cdr (cdr (cdr l))))))
+      (set cddr (lambda (l) (cdr (cdr l))))
+      (set cdddr (lambda (l) (cdr (cdr (cdr l)))))
+      (set cddddr (lambda (l) (cdr (cdr (cdr (cdr l))))))
+      (set first car)
+      (set second cadr)
+      (set third caddr)
+      (set rest cdr)
+      (set last (lambda (l n) (nthcdr (- (length l) (if n n 1)) l)))
+      (let*
+        (
+          (_append (lambda (a b)
+            (if a (cons (car a) (_append (cdr a) b))) b))))
+        (set append _append)
+      (let*
+        (
+          (go (lambda (p l n)
+            (if l
+              (if (p (car l)) n (go p (cdr l) (+ n 1)))
+              nil))))
+        (set position-if (go p l \\#0)))
+      (set position (lambda (x l) (position-if (lambda (y) (= x y)) l)))
+      (set position-if-not (lambda (p l) (position-if (lambda (x) (not (p x))) l)))
+      (set member (lambda (x l) (nthcdr (position x l) l)))
+      (set member-if (lambda (x l) (nthcdr (position-if x l) l)))
+      (set member-if-not (lambda (x l) (nthcdr (position-if-not x l) l)))
+      (set find (lambda (x l) (nth (position x l) l)))
+      (set find-if (lambda (x l) (nth (position-if x l) l)))
+      (set find-if-not (lambda (x l) (nth (position-if-not x l) l)))
+      )`)[0],env);
+  for (let e of parsedScript) {
+    let r=evalExpression(e,env);
+    if (r===EXIT_SIGNAL) break;
+    if (r.type=="error") throw Error("Script error.\n"+r.value);
+  }
+  let r=lookupVar(env,"&_");
+  if (r.type=="error") throw Error("Script error.\n"+r.value);
+  if (r.type!="string") throw Error("\"&_\" variable became a non-string value.");
+  return r.value;
+}
 /** @this {HTMLElement} */
 function handleResize(){
   this.style.height="0";
@@ -311,8 +892,8 @@ window.onload=function (){
     /** @type {HTMLInputElement} */(document.getElementById("word-wrap-control"));
   const applyWordWrapState=(/** @type {Element} */ e)=>
     e.classList.toggle("word-wrap-enabled",wordWrapControl.checked);
-  const addHandleResize=(/** @type {Element} */e)=>
-    (e.addEventListener("input", handleResize),handleResize.call(e));
+  const addHandleResize=(/** @type {HTMLElement} */e)=>
+    (e.addEventListener("input",handleResize),handleResize.call(e));
   wordWrapControl.onchange=_=>{
     [...document.getElementsByClassName("word-wrap-target")].forEach(applyWordWrapState);
     /** @type {HTMLElement[]} */([...document.getElementsByClassName("resize-height-to-content")])
@@ -362,13 +943,20 @@ window.onload=function (){
       /** @type {HTMLButtonElement} */(newItem.getElementsByClassName("item-split-button")[0]);
     newItem.mergeButton=
       /** @type {HTMLButtonElement} */(newItem.getElementsByClassName("item-merge-button")[0]);
-    function fillTitleAndSelect(){
+    /** @param {boolean} advanced  */
+    function fillTitleAndSelect(advanced){
       const searchResult=searchFirstArticleWick(newItem.contentInput.value);
       if (!searchResult) return;
-      newItem.keyInput.value=
-        plainTitle(newItem.contentInput.value
-          .substring(searchResult.articleTitle.start,searchResult.articleTitle.end));
-      newItem.keyInput.setSelectionRange(0,searchResult.articleTitle.end-searchResult.articleTitle.start)
+      let value=plainTitle(newItem.contentInput.value
+        .substring(searchResult.articleTitle.start,searchResult.articleTitle.end));
+      try{
+        if (advanced) value=advancedExtraction(
+          /** @type {HTMLTextAreaElement} */(document.getElementById("advanced-extraction-script")).value,value);
+      }catch (e){
+        alert(e);
+      }
+      newItem.keyInput.value=value;
+      newItem.keyInput.setSelectionRange(0,value.length);
     }
     newItem.keyInput.onkeydown=e=>{
       if (e.key=="Enter"){
@@ -378,14 +966,16 @@ window.onload=function (){
         e.preventDefault();
       }
       if (e.key==" "&&e.shiftKey&&!newItem.keyInput.value){
-        fillTitleAndSelect();
+        fillTitleAndSelect(e.ctrlKey!=
+          /** @type {HTMLInputElement} */(document.getElementById("reverse-advanced-extraction-control")).checked);
         e.preventDefault();
       }
     }
     newItem.keyInput.onfocus=_=>{
       if (/** @type {HTMLInputElement} */(document.getElementById("autofill-on-focus")).checked&&
           !newItem.keyInput.value)
-        fillTitleAndSelect();
+        fillTitleAndSelect(
+          /** @type {HTMLInputElement} */(document.getElementById("advanced-extraction-autofill")).checked);
     }
     newItem.keyInput.onblur=newItem.keyInput.onchange=_=>
       newItem.keyInput.value=plainTitle(newItem.keyInput.value).toLowerCase();
@@ -435,6 +1025,82 @@ window.onload=function (){
     outputElement.value=items.map(e=>e.contentInput.value).join("\n");
     handleResize.call(outputElement);
   }
+  const advancedExtractionScriptTextarea=
+    /** @type {HTMLTextAreaElement} */(document.getElementById("advanced-extraction-script"));
+  const advancedExtractionDefaultScriptTextarea=
+    /** @type {HTMLTextAreaElement} */(document.getElementById("advanced-extraction-default-script"));
+  fetch("defaultAdvancedExtractionScript.txt")
+    .then(res=>res.text())
+    .then(s=>{
+      advancedExtractionScriptTextarea.value||=s;
+      handleResize.call(advancedExtractionScriptTextarea);
+      advancedExtractionDefaultScriptTextarea.value=s;
+      handleResize.call(advancedExtractionDefaultScriptTextarea);
+    })
+    .catch(e=>advancedExtractionDefaultScriptTextarea.value="Failed to get the default script...\n"+e);
+  const modificationIndicator=
+    /** @type {HTMLElement} */(document.getElementById("advanced-extraction-script-modified"));
+  let savedScript=localStorage.getItem("advancedExtractionScript");
+  if (savedScript!==null){
+    advancedExtractionScriptTextarea.value=savedScript;
+    handleResize.call(advancedExtractionScriptTextarea);
+    modificationIndicator.style.display="";
+  }else modificationIndicator.style.display="none";
+  advancedExtractionScriptTextarea.onchange=_=>{
+    if (advancedExtractionScriptTextarea.value!=advancedExtractionDefaultScriptTextarea.value){
+      localStorage.setItem("advancedExtractionScript",advancedExtractionScriptTextarea.value);
+      modificationIndicator.style.display="";
+    }else{
+      localStorage.removeItem("advancedExtractionScript");
+      modificationIndicator.style.display="none";
+    }
+  };
+  let markString=localStorage.getItem("advancedExtractionScriptMark");
+  let /** @type {*} */markedCommit,/** @type {*} */markedFile;
+  if (markString!==null){
+    try{
+      let mark=JSON.parse(markString);
+      markedCommit=mark.commit;
+      markedFile=mark.file;
+      let commitLinkElement=/** @type {HTMLAnchorElement} */(document.getElementById("advanced-extraction-script-marked-commit-link"));
+      commitLinkElement.textContent=markedCommit.sha.substring(0,6);
+      commitLinkElement.href=markedCommit.html_url;
+      let fileLinkElement=/** @type {HTMLAnchorElement} */(document.getElementById("advanced-extraction-script-marked-file-link"));
+      fileLinkElement.textContent=markedFile.sha.substring(0,6);
+      fileLinkElement.href=markedFile.html_url;
+      /** @type {HTMLElement} */(document.getElementById("advanced-extraction-script-marked-unmarked")).style.display="none";
+      /** @type {HTMLElement} */(document.getElementById("advanced-extraction-script-marked-marked")).style.display="";
+    }catch (e){
+      console.error(e);
+    }
+  }
+  let /** @type {*} */latestCommit,/** @type {*} */latestFile;
+  /** @type {HTMLButtonElement} */(document.getElementById("advanced-extraction-script-latest-retrieve-button")).onclick=async _=>{
+    let commitRes=await fetch("https://api.github.com/repos/Naruyoko/tests/commits"+
+      "?path=TVTropesAlphabetizer/defaultAdvancedExtractionScript.txt&per_page=1");
+    let commitResData=await commitRes.json();
+    latestCommit=commitResData[0];
+    let commitLinkElement=/** @type {HTMLAnchorElement} */(document.getElementById("advanced-extraction-script-latest-commit-link"));
+    commitLinkElement.textContent=latestCommit.sha.substring(0,6);
+    commitLinkElement.href=latestCommit.html_url;
+    let contentsRes=await fetch("https://api.github.com/repos/Naruyoko/tests/contents/"+
+      "TVTropesAlphabetizer/defaultAdvancedExtractionScript.txt?ref="+latestCommit.sha);
+    latestFile=await contentsRes.json();
+    delete latestFile.content;
+    let fileLinkElement=/** @type {HTMLAnchorElement} */(document.getElementById("advanced-extraction-script-latest-file-link"));
+    fileLinkElement.textContent=latestFile.sha.substring(0,6);
+    fileLinkElement.href=latestFile.html_url;
+    /** @type {HTMLDivElement} */(document.getElementById("advanced-extraction-script-latest-section")).style.display="";
+    if (markedCommit){
+      let compareLinkElement=/** @type {HTMLAnchorElement} */(document.getElementById("advanced-extraction-script-compare-link"));
+      compareLinkElement.href="https://github.com/Naruyoko/tests/compare/"+markedCommit.sha+"..."+latestCommit.sha;
+      compareLinkElement.style.display="";
+    }
+    latestCommit.sha="470720c795013f84bc41699511907d7edc1cd2b4"
+    console.log(latestCommit,latestFile);
+  };
+  /** @type {HTMLButtonElement} */(document.getElementById("advanced-extraction-script-mark-button")).onclick=_=>
+    localStorage.setItem("advancedExtractionScriptMark",JSON.stringify({commit:latestCommit,file:latestFile}));
   window.onresize=_=>
     /** @type {HTMLElement[]} */([...document.getElementsByClassName("resize-height-to-content")])
       .forEach(e=>handleResize.call(e));
