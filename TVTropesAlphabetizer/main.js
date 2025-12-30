@@ -1096,8 +1096,6 @@ window.onload=function (){
       compareLinkElement.href="https://github.com/Naruyoko/tests/compare/"+markedCommit.sha+"..."+latestCommit.sha;
       compareLinkElement.style.display="";
     }
-    latestCommit.sha="470720c795013f84bc41699511907d7edc1cd2b4"
-    console.log(latestCommit,latestFile);
   };
   /** @type {HTMLButtonElement} */(document.getElementById("advanced-extraction-script-mark-button")).onclick=_=>
     localStorage.setItem("advancedExtractionScriptMark",JSON.stringify({commit:latestCommit,file:latestFile}));
