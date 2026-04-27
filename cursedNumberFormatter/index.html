@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>>Number formatter</title>
+  <script type="module">
+    import * as formatterModule from "./formatter.js";
+    let formatter=formatterModule.makeFormatterDefault();
+    document.getElementById("input").oninput=function (){
+      document.getElementById("inputr").value=Math.cbrt(Math.log10(Math.abs(+document.getElementById("input").value)));
+      updateOutput();
+    };
+    document.getElementById("input2").oninput=updateOutput;
+    document.getElementById("inputr").oninput=function (){
+      document.getElementById("input").value=10**(+document.getElementById("inputr").value)**3;
+      updateOutput();
+    };
+    document.getElementById("final").oninput=updateOutput;
+    document.getElementById("rerollButton").onclick=function (){
+      formatter=formatterModule.makeFormatterDefault();
+      updateOutput();
+    };
+    function updateOutput(){
+      return document.getElementById("output").value=formatter[document.getElementById("final").value](+document.getElementById("input").value,+document.getElementById("input2").value);
+    }
+    window.formatterModule=formatterModule;
+  </script>
+</head>
+<body>
+  <h1>Number formatter</h1>
+  <input type="text" id="input" value="1">
+  <input type="number" id="input2" min="0" value="4"><br>
+  <input type="range" id="inputr" value="0" min="-7" max="7" step="0.01" style="width:400px;"><br>
+  <select id="final">
+    <option value="toString">toString</option>
+    <option value="toFixed">toFixed</option>
+    <option value="toPrecision" selected>toPrecision</option>
+    <option value="toExponential">toExponential</option>
+  </select><br>
+  <button id="rerollButton">Reroll</button><br>
+  <input type="text" id="output" style="width:400px;" readonly><br>
+  &#x1f608;
+  <hr>
+  <p>Last updated: 2026/04/27</p>
+</body>
+</html>
