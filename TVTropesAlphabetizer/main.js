@@ -1023,6 +1023,8 @@ window.onload=function (){
       alert("Some items is missing the sort key. They are sorted to the beginning.\n"+
         "This warning can be disabled.");
     outputElement.value=items.map(e=>e.contentInput.value).join("\n");
+    outputElement.setSelectionRange(0,outputElement.value.length);
+    outputElement.select();
     handleResize.call(outputElement);
   }
   const advancedExtractionScriptTextarea=
