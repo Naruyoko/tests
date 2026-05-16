@@ -7,16 +7,26 @@
           (go (cddr l)))
         nil))))
   (go (quote (
-    ATeam ATeam))))
+    ANNOMutationem ANNOMutationem
+    ARMS ARMS
+    ATeam ATeam
+    AToZMysteries AToZMysteries
+    DotHackGU hackGU
+    SixHundredSixtySixParkAvenue 666ParkAvenue
+    TheLionKingOneAndAHalf LionKing112The
+    ThirtyRock 30Rock
+    TwentiethCenturyStudios 20thCenturyStudios
+    TwentyFour 24
+    TwentyOneJumpStreet1987 21JumpStreet1987))))
 (let*
   (
     (go (lambda (l)
       (if l
-        (if (string-match &_ (+ \"^ (car l) \"\(?=[A-Z]\)))
+        (if (string-match &_ (+ \"^ (car l) \"\(?=[0-9A-Z]\)))
           (set &_ (+ &` &&))
           (go (cdr l)))
         nil))))
-  (go (quote (The A An Le La Les L El Los Las))))
+  (go (quote (A An As El L La Le Les Las Los O Os The))))
 (let*
   (
     (replace-all (lambda (h n r)
