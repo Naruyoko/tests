@@ -7,17 +7,82 @@
           (go (cddr l)))
         nil))))
   (go (quote (
+    BlakesSeven Blakes7
+    DotHack hack
+    DotHackGU hackGU
+    DungeonsAndDragonsFifthEdition DungeonsAndDragons5thEdition
+    EightBitTheater 8BitTheater
+    EightMile 8Mile
+    EightRealms 8Realms
+    EightSimpleRules 8SimpleRules
+    ElevenTwentyTwoSixtyThree 112263
+    FiftyWaysToDieInMinecraft 50WaysToDieInMinecraft
+    FiveCentimetersPerSecond 5CentimetersPerSecond
+    FiveDChessWithMultiverseTimeTravel 5DChessWithMultiverseTimeTravel
+    FMinusMinus F
+    FortyDaysAndFortyNights 40DaysAnd40Nights
+    NineOneOneLoneStar 911LoneStar
+    NineteenEightyThreeDoomsday 1983Doomsday
+    NineteenSeventeen 1917
+    NinetyNineNightsInTheForest 99NightsInTheForest
+    OneHundredAndOneDalmatianStreet 101DalmatianStreet
+    OneThousandAndOneSpikes 1001Spikes
+    RanmaOneHalf Ranma12
+    SeventeenThousandSevenHundredSeventySix 17776
+    SeventhSea 7thSea
+    SixHundredSixtySixParkAvenue 666ParkAvenue
+    TheFifthWave 5thWaveThe
+    TheLionKingOneAndAHalf LionKing112The
+    TheTwentyFifthAnnualPutnamCountySpellingBe 25thAnnualPutnamCountySpellingBeThe
+    ThirdRockFromTheSun 3rdRockFromTheSun
+    Thirteen2007 132007
+    ThirteenSentinelsAegisRim 13SentinelsAegisRim
+    ThirtyRock 30Rock
+    ThreeDDinosaurAdventure 3DDinosaurAdventure
+    ThreeHundred 300
+    TreintaYUnMinutos 31Minutos
+    TwelveAngryMen 12AngryMen
+    TwentiethCenturyStudios 20thCenturyStudios
+    TwentyEightYearsLater 28YearsLater
+    TwentyFour 24
+    TwentyOneJumpStreet1987 21JumpStreet1987
+    TwentyXX 20XX
+    TwoBrokeGirls 2BrokeGirls
+    TwoOverZero 20
+    TwoStupidDogs 2StupidDogs
+    TwoThousandTenTheYearWeMakeContact 2010TheYearWeMakeContact
+
+    AdamCarolla CarollaAdam
+    AlanDeanFoster FosterAlanDean
+    ArthurCClarke ClarkeArthurC
+    BarbaraHambly HamblyBarbara
+    BillMaher MaherBill
+    BillyConnolly ConnollyBilly
+    EphraimKishon KishonEphraim
+    HayaoMiyazaki MiyazakiHayao
+    HonorHarrington HarringtonHonor
+    IsaacAsimov AsimovIsaac
+    JackieChan ChanJackie
+    JimGaffigan GaffiganJim
+    JohnWyndham WyndhamJohn
+    OrsonScottCard CardOrsonScott
+    OrsonWelles WellesOrson
+    NoraRoberts RobertsNora
+    VladimirNabokov NabokovVladimir
+    VladimirVasilyev VasilyevVladimir
+
+    ABCWarriors ABCWarriors
+    AIR AIR
+    AIWarFleetCommand AIWarFleetCommand
+    AMCSquad AMCSquad
+    AMVHell AMVHell
     ANNOMutationem ANNOMutationem
     ARMS ARMS
+    ASDFMovie ASDFMovie
     ATeam ATeam
     AToZMysteries AToZMysteries
-    DotHackGU hackGU
-    SixHundredSixtySixParkAvenue 666ParkAvenue
-    TheLionKingOneAndAHalf LionKing112The
-    ThirtyRock 30Rock
-    TwentiethCenturyStudios 20thCenturyStudios
-    TwentyFour 24
-    TwentyOneJumpStreet1987 21JumpStreet1987))))
+    ElGoonishShive ElGoonishShive
+    LEGO LEGO))))
 (let*
   (
     (go (lambda (l)
