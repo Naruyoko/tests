@@ -2,7 +2,7 @@
 // @name        Gooboo Shapes Counter
 // @namespace   Violentmonkey Scripts
 // @icon        https://tendsty.github.io/gooboo/favicon-32x32.png
-// @version     2026-09-23
+// @version     2026-09-24
 //
 // @match       https://tendsty.github.io/gooboo/
 // @grant       none
@@ -15,7 +15,10 @@ window.addEventListener("load",()=>{
   let p;
   setInterval(()=>{
     let t=document.getElementById("galleryShape_0_0")?.closest("table");
-    if (!t) return;
+    if (!t){
+      p=null;
+      return;
+    }
     let a=[...
       [...t.getElementsByTagName("i")]
         .map(e=>[...e.classList].find(s=>s.startsWith("mdi-")))
