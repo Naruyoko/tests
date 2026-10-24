@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Expand TV Tropes Notes
 // @namespace    http://tampermonkey.net/
-// @version      2025-07-22
+// @version      2026-10-24
 // @description  Adds a button to expand all notes on TV Tropes
 // @author       Naruyoko
 // @match        https://tvtropes.org/pmwiki/pmwiki.php/*
@@ -11,5 +11,13 @@
 
 (function() {
   'use strict';
-  document.querySelector("nav.body-options").innerHTML+="<button onclick=\"document.querySelectorAll(&quot;span[isnote=true]&quot;).forEach(e=>e.style.display=&quot;inline&quot;)\">Expand notes</button>";
+  setTimeout(function(){
+    var e=document.createElement("button");
+    e.onclick=()=>document.querySelectorAll("span[isnote=true]").forEach(e=>e.style.display="inline");
+    e.textContent="Expand Notes";
+    e.style.float="right";
+    e.style.border="1px solid gray";
+    e.style.margin="0 0 8px 8px";
+    document.querySelector("nav.subpage-links").after(e);
+  },1000);
 })();
