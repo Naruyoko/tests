@@ -2,7 +2,7 @@
 // @name        Gooboo Shapes Counter
 // @namespace   Violentmonkey Scripts
 // @icon        https://tendsty.github.io/gooboo/favicon-32x32.png
-// @version     2026-09-24
+// @version     2026-11-06
 //
 // @match       https://tendsty.github.io/gooboo/
 // @grant       none
@@ -28,10 +28,29 @@ window.addEventListener("load",()=>{
     t.after(d);
     [...d.childNodes].forEach(e=>e.remove());
     (p=a).forEach(([k,v])=>{
+      let target=k.substr(4);
       let n=document.querySelector("."+k).closest("span").cloneNode(true);
-      n.querySelector("i").innerHTML=`<span style="position:absolute;font-size:10px;margin:auto;background-color:#ffff0080;color:black;user-select:text;">${k.substr(4)}</span>`;
+      n.querySelector("i").innerHTML=`<span style="position:absolute;font-size:10px;margin:auto;background-color:#ffff0080;color:black;user-select:text;">${target}</span>`;
+      n.ondblclick=async e=>{
+        if (!e.altKey) return;
+        let store=document.getElementById("app").__vue__.$store,
+            getGrid=()=>store._modules.root.state.gallery.shapeGrid,
+            canAfford=()=>store.getters['currency/canAfford']({gallery_motivation:1});
+        for (let y=0;y<getGrid().length;y++){
+          for (let x=0;x<getGrid()[y].length;x++){
+            if (getGrid()[y][x]!=target) continue;
+            let y2=y;
+            while (canAfford()&&y2&&getGrid()[y2-1][x]!=target)
+              await store.dispatch('gallery/switchShape',{fromX:x,fromY:y2,toX:x,toY:--y2});
+            let x2=x;
+            while (canAfford()&&x2&&getGrid()[y2][x2-1]!=target)
+              await store.dispatch('gallery/switchShape',{fromX:x2,fromY:y2,toX:--x2,toY:y2});
+          }
+        }
+        if (canAfford()) await store.dispatch('gallery/clickShape',{x:0,y:0});
+      };
       d.appendChild(n);
-      d.innerHTML+=v;
+      d.appendChild(document.createTextNode(v));
     });
   },100);
 });
