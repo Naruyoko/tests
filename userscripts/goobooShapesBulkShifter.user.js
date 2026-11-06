@@ -2,8 +2,7 @@
 // @name        Gooboo Shapes Bulk Shifter
 // @namespace   Violentmonkey Scripts
 // @icon        https://tendsty.github.io/gooboo/favicon-32x32.png
-// @version     2026-09-17
-//
+// @version     2026-11-07
 // @match       https://tendsty.github.io/gooboo/
 // @grant       none
 //
@@ -25,6 +24,7 @@ window.addEventListener("load",()=>{
         let y2=y;
         while (canAfford()&&y2&&getGrid()[y2-1][x]!=target)
           await store.dispatch('gallery/switchShape',{fromX:x,fromY:y2,toX:x,toY:--y2});
+        if (y2&&getGrid()[y2-1][x]==target) continue;
         let x2=x;
         while (canAfford()&&x2&&getGrid()[y2][x2-1]!=target)
           await store.dispatch('gallery/switchShape',{fromX:x2,fromY:y2,toX:--x2,toY:y2});
